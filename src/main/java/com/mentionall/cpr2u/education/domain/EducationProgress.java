@@ -1,9 +1,12 @@
 package com.mentionall.cpr2u.education.domain;
 
 import com.mentionall.cpr2u.util.Timestamped;
+import lombok.Getter;
+
 import javax.persistence.*;
 
 @Entity
+@Getter
 public class EducationProgress extends Timestamped {
 
     @Id

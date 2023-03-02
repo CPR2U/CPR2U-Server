@@ -1,8 +1,11 @@
 package com.mentionall.cpr2u.education.domain;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 
 @Entity
+@Getter
 public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

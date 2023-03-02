@@ -4,3 +4,18 @@ spring:
       matching-strategy: ant_path_matcher
   profiles:
     include: local
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql: trace

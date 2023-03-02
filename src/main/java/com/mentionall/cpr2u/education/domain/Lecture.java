@@ -1,10 +1,13 @@
 package com.mentionall.cpr2u.education.domain;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 public class Lecture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +20,7 @@ public class Lecture {
     private String videoUrl;
 
     @Column
-    private int sequence;
+    private int step;
 
     @Column(length = 50)
     private String description;
