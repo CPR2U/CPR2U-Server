@@ -4,3 +4,6 @@ spring:
       matching-strategy: ant_path_matcher
   profiles:
     include: local
+  config:
+    import:
+      - optional:classpath:/value.yml
