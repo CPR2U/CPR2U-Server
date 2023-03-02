@@ -3,6 +3,7 @@ package com.mentionall.cpr2u.education.dto;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.ProgressStatus;
 import com.mentionall.cpr2u.education.domain.TestStandard;
+import com.mentionall.cpr2u.user.domain.User;
 import lombok.Data;
 
 @Data
@@ -17,7 +18,9 @@ public class EducationProgressDto {
     private ProgressStatus isPostureCompleted;
 
 
-    public EducationProgressDto(EducationProgress progress) {
+    public EducationProgressDto(EducationProgress progress, User user) {
+        // TODO: set angel status
+
         int currentProgress = progress.getLecture().getStep();
         if (progress.getQuizScore() >= TestStandard.quiz) currentProgress++;
         if (progress.getPostureScore() >= TestStandard.posture) currentProgress++;

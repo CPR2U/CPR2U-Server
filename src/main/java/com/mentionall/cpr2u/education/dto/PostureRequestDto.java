@@ -1,2 +1,8 @@
-package com.mentionall.cpr2u.education.dto;public class PostureRequestDto {
+package com.mentionall.cpr2u.education.dto;
+
+import lombok.Data;
+
+@Data
+public class PostureRequestDto {
+    int score;
 }

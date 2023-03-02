@@ -26,4 +26,16 @@ public class EducationProgress extends Timestamped {
 
     @Column
     private int postureScore;
+
+    public void updateQuizScore(int score) {
+        this.quizScore = score;
+    }
+
+    public void updatePostureScore(int score) {
+        this.postureScore = score;
+    }
+
+    public void updateLecture(Lecture lecture) {
+        this.lecture = lecture;
+    }
 }

@@ -19,7 +19,7 @@ public class Lecture {
     @Column(length = 255)
     private String videoUrl;
 
-    @Column
+    @Column(unique = true)
     private int step;
 
     @Column(length = 50)
