@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-abstract class Timestamped {
+public abstract class Timestamped {
 
     @CreatedDate
     protected LocalDateTime createdAt;
 
     @LastModifiedDate
-    protected LocalDateTime modifiedAt
+    protected LocalDateTime modifiedAt;
 }
