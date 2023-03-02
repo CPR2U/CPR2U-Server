@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ResponseCode {
-    ;
+    OK(HttpStatus.OK, "성공");
 
     private final HttpStatus httpStatus;
     private final String detail;
