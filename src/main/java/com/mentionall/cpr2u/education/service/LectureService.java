@@ -7,6 +7,7 @@ import com.mentionall.cpr2u.education.dto.LectureProgressDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
 import com.mentionall.cpr2u.user.domain.User;
+import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -18,20 +19,21 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class LectureService {
+    private final UserRepository userRepository;
     private final LectureRepository lectureRepository;
     private final EducationProgressRepository progressRepository;
 
     public LectureProgressDto readLectureProgressList(String userId) {
-        // TODO: userId로 user 조회 -> user로 progress 조회
-        // User user = userRepository.findById(userId);
-        // EducationProgress progress = progressRepository.findByUser(user);
-
-        User user = new User();
-        EducationProgress progress = new EducationProgress();
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION)
+        );
+        EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
+                () -> new CustomException(ResponseCode.EDUCATION_PROGRESS_NOT_FOUND)
+        );
 
         List<LectureDto> lectureDtoList = new ArrayList();
         lectureRepository.findAll().stream()
-                .map(l -> new LectureDto(l));
+                .map(l -> lectureDtoList.add(new LectureDto(l)));
 
         return new LectureProgressDto(progress, lectureDtoList);
     }

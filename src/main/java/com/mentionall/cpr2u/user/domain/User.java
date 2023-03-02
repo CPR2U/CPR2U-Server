@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.user.domain;
 
+import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.util.RandomGenerator;
 import com.mentionall.cpr2u.util.Timestamped;
@@ -27,15 +28,18 @@ public class User extends Timestamped implements UserDetails {
     @Column
     private String nickname;
 
-    @Column(name = "phone_number")
+    @Column
     private String phoneNumber;
 
-    @Column(name = "date_of_issue")
+    @Column
     private LocalDateTime dateOfIssue;
 
     @Column
     @Enumerated(EnumType.STRING)
     private AngelStatusEnum status;
+
+    @OneToOne(mappedBy = "user")
+    private EducationProgress educationProgress;
 
     public User(UserSignUpDto userSignUpDto) {
         this.nickname = userSignUpDto.getNickName();

@@ -8,6 +8,7 @@ import com.mentionall.cpr2u.education.dto.QuizRequestDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
 import com.mentionall.cpr2u.user.domain.User;
+import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -16,43 +17,48 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class EducationProgressService {
+    private final UserRepository userRepository;
     private final EducationProgressRepository progressRepository;
     private final LectureRepository lectureRepository;
 
-    public static void completePosture(String userId, PostureRequestDto requestDto) {
-        // TODO: User로 EducationProgress 조회
-        // User user = userRepository.findById(userId);
-        // EducationProgress progress = progressRepository.findByUser(user);
-        User user = new User();
-        EducationProgress progress = new EducationProgress();
+    public void completePosture(String userId, PostureRequestDto requestDto) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION)
+        );
+        EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
+                () -> new CustomException(ResponseCode.EDUCATION_PROGRESS_NOT_FOUND)
+        );
         progress.updatePostureScore(requestDto.getScore());
     }
 
-    public static void completeQuiz(String userId, QuizRequestDto requestDto) {
-        // TODO: User로 EducationProgress 조회
-        // User user = userRepository.findById(userId);
-        // EducationProgress progress = progressRepository.findByUser(user);
-        User user = new User();
-        EducationProgress progress = new EducationProgress();
+    public void completeQuiz(String userId, QuizRequestDto requestDto) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION)
+        );
+        EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
+                () -> new CustomException(ResponseCode.EDUCATION_PROGRESS_NOT_FOUND)
+        );
         progress.updateQuizScore(requestDto.getScore());
     }
 
     public EducationProgressDto readEducationInfo(String userId) {
-        // TODO: User로 EducationProgress 조회
-        // User user = userRepository.findById(userId);
-        // EducationProgress progress = progressRepository.findByUser(user);
-        User user = new User();
-        EducationProgress progress = new EducationProgress();
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION)
+        );
+        EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
+                () -> new CustomException(ResponseCode.EDUCATION_PROGRESS_NOT_FOUND)
+        );
 
         return new EducationProgressDto(progress, user);
     }
 
     public void completeLecture(String userId, Long lectureId) {
-        // TODO: User로 EducationProgress 조회
-        // User user = userRepository.findById(userId);
-        // EducationProgress progress = progressRepository.findByUser(user);
-        User user = new User();
-        EducationProgress progress = new EducationProgress();
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION)
+        );
+        EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
+                () -> new CustomException(ResponseCode.EDUCATION_PROGRESS_NOT_FOUND)
+        );
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(
                 () -> new CustomException(ResponseCode.LECTURE_NOT_FOUND)
         );

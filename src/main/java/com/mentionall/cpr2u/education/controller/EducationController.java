@@ -8,9 +8,6 @@ import com.mentionall.cpr2u.education.service.QuizService;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,7 +63,7 @@ public class  EducationController {
             @RequestBody QuizRequestDto requestDto
             ) {
         String userId = request.getUserPrincipal().getName();
-        EducationProgressService.completeQuiz(userId, requestDto);
+        progressService.completeQuiz(userId, requestDto);
 
         return ResponseTemplate.toResponseEntity(ResponseCode.OK);
     }
@@ -83,7 +80,7 @@ public class  EducationController {
             HttpServletRequest request,
             @RequestBody PostureRequestDto requestDto) {
         String userId = request.getUserPrincipal().getName();
-        EducationProgressService.completePosture(userId, requestDto);
+        progressService.completePosture(userId, requestDto);
 
         return ResponseTemplate.toResponseEntity(ResponseCode.OK);
     }
