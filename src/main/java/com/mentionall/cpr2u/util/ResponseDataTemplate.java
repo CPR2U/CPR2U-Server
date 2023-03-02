@@ -9,18 +9,20 @@ import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
-public class ResponseTemplate {
+public class ResponseDataTemplate {
     public int status;
     public String message;
+    public Object data;
 
     private final LocalDateTime timestamp = LocalDateTime.now();
 
-    public static ResponseEntity<ResponseTemplate> toResponseEntity(ResponseCode responseCode) {
+    public static ResponseEntity<ResponseDataTemplate> toResponseEntity(ResponseCode responseCode, Object data) {
         return ResponseEntity
                 .status(responseCode.getHttpStatus())
-                .body(ResponseTemplate.builder()
+                .body(ResponseDataTemplate.builder()
                         .status(responseCode.getHttpStatus().value())
                         .message(responseCode.getDetail())
+                        .data(data)
                         .build()
                 );
     }

@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.util.exception;
 
+import com.mentionall.cpr2u.util.ResponseTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -8,7 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ExceptionHandler extends ResponseEntityExceptionHandler{
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = CustomException.class)
-    protected ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
-        return ErrorResponse.toResponseEntity(e.getResponseCode());
+    protected ResponseEntity<ResponseTemplate> handleCustomException(CustomException e) {
+        return ResponseTemplate.toResponseEntity(e.getResponseCode());
     }
 }
