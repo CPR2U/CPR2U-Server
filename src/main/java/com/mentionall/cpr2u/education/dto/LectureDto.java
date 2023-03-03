@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.education.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mentionall.cpr2u.education.domain.Lecture;
 import com.mentionall.cpr2u.education.service.LectureService;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,6 +19,7 @@ public class LectureDto {
     private String description;
 
     @Schema(example = "강의 영상 URL")
+    @JsonProperty("video_url")
     private String videoUrl;
 
     public LectureDto(Lecture lecture) {

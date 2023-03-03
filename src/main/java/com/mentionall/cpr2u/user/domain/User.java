@@ -42,7 +42,7 @@ public class User extends Timestamped implements UserDetails {
     private EducationProgress educationProgress;
 
     public User(UserSignUpDto userSignUpDto) {
-        this.nickname = userSignUpDto.getNickName();
+        this.nickname = userSignUpDto.getNickname();
         this.phoneNumber = userSignUpDto.getPhoneNumber();
         this.dateOfIssue = null;
         this.status = AngelStatusEnum.UNACQUIRED;

@@ -3,11 +3,13 @@ package com.mentionall.cpr2u.education.domain;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.util.Timestamped;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class EducationProgress extends Timestamped {
 
     @Id
@@ -27,6 +29,13 @@ public class EducationProgress extends Timestamped {
 
     @Column
     private int postureScore;
+
+    public EducationProgress(User user) {
+        this.user = user;
+        this.lecture = null;
+        this.quizScore = 0;
+        this.postureScore = 0;
+    }
 
     public void updateQuizScore(int score) {
         this.quizScore = score;

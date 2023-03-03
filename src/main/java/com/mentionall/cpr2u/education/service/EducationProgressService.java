@@ -3,8 +3,7 @@ package com.mentionall.cpr2u.education.service;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.Lecture;
 import com.mentionall.cpr2u.education.dto.EducationProgressDto;
-import com.mentionall.cpr2u.education.dto.PostureRequestDto;
-import com.mentionall.cpr2u.education.dto.QuizRequestDto;
+import com.mentionall.cpr2u.education.dto.ScoreDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
 import com.mentionall.cpr2u.user.domain.User;
@@ -21,7 +20,7 @@ public class EducationProgressService {
     private final EducationProgressRepository progressRepository;
     private final LectureRepository lectureRepository;
 
-    public void completePosture(String userId, PostureRequestDto requestDto) {
+    public void completePosture(String userId, ScoreDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION)
         );
@@ -31,7 +30,7 @@ public class EducationProgressService {
         progress.updatePostureScore(requestDto.getScore());
     }
 
-    public void completeQuiz(String userId, QuizRequestDto requestDto) {
+    public void completeQuiz(String userId, ScoreDto requestDto) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION)
         );

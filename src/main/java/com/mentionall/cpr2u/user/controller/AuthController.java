@@ -13,12 +13,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -37,6 +36,10 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ResponseDataTemplate> signup(@RequestBody UserSignUpDto userSignUpDto){
+        log.info("AuthController - /signup : " + userSignUpDto.toString());
+
+        log.info(userSignUpDto.getNickname());
+
         return ResponseDataTemplate.toResponseEntity(
                 ResponseCode.OK,
                 userService.signup(userSignUpDto)

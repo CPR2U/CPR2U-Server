@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -21,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @Tag(name = "EducationController", description = "학습 화면 컨트롤러")
 @RestController
@@ -80,7 +78,7 @@ public class  EducationController {
     public ResponseEntity<ResponseDataTemplate> getQuizList() {
         return ResponseDataTemplate.toResponseEntity(
                 ResponseCode.OK,
-                quizService.readRandomQuizList(5));
+                quizService.readRandom5Quiz());
     }
 
     @Operation(summary = "퀴즈 테스트 완료", description = "유저가 퀴즈 테스트를 통과했음을 저장한다.")
@@ -90,7 +88,7 @@ public class  EducationController {
     @PostMapping("/quiz/progress")
     public ResponseEntity<ResponseTemplate> completeQuiz(
             HttpServletRequest request,
-            @Parameter(description = "유저의 퀴즈 점수") @RequestBody QuizRequestDto requestDto
+            @Parameter(description = "유저의 퀴즈 점수") @RequestBody ScoreDto requestDto
             ) {
         String userId = request.getUserPrincipal().getName();
         progressService.completeQuiz(userId, requestDto);
@@ -116,7 +114,7 @@ public class  EducationController {
     @PostMapping("/posture/progress")
     public ResponseEntity<ResponseTemplate> completePosture(
             HttpServletRequest request,
-            @Parameter(description = "유저의 자세실습 점수") @RequestBody PostureRequestDto requestDto) {
+            @Parameter(description = "유저의 자세실습 점수") @RequestBody ScoreDto requestDto) {
         String userId = request.getUserPrincipal().getName();
         progressService.completePosture(userId, requestDto);
 

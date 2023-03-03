@@ -13,8 +13,8 @@ import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,9 +31,9 @@ public class LectureService {
                 () -> new CustomException(ResponseCode.EDUCATION_PROGRESS_NOT_FOUND)
         );
 
-        List<LectureDto> lectureDtoList = new ArrayList();
-        lectureRepository.findAll().stream()
-                .map(l -> lectureDtoList.add(new LectureDto(l)));
+        List<LectureDto> lectureDtoList = lectureRepository.findAll().stream()
+                .map(l -> new LectureDto(l))
+                .collect(Collectors.toList());
 
         return new LectureProgressDto(progress, lectureDtoList);
     }

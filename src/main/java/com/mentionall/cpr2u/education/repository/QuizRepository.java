@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
-    @Query(nativeQuery = true, value = "SELECT * FROM Quiz q ORDER BY RAND() LIMIT :count")
-    List<Quiz> findRandom(@Param("count") int count);
+    @Query(nativeQuery = true, value = "SELECT * FROM Quiz q ORDER BY RAND() LIMIT 5")
+    List<Quiz> findRandomLimit5();
 }
