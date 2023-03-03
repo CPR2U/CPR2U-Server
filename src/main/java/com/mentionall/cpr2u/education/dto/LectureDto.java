@@ -2,13 +2,22 @@ package com.mentionall.cpr2u.education.dto;
 
 import com.mentionall.cpr2u.education.domain.Lecture;
 import com.mentionall.cpr2u.education.service.LectureService;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 public class LectureDto {
+
+    @Schema(example = "강의 섹션")
     private int step;
+
+    @Schema(example = "강의 제목")
     private String title;
+
+    @Schema(example = "강의 설명")
     private String description;
+
+    @Schema(example = "강의 영상 URL")
     private String videoUrl;
 
     public LectureDto(Lecture lecture) {
