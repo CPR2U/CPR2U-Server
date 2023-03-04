@@ -7,7 +7,6 @@ import com.mentionall.cpr2u.education.dto.LectureProgressDto;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.service.UserService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,14 +63,11 @@ public class LectureServiceTest {
             assertThat(lecture.getStep()).isGreaterThan(beforeStep);
             beforeStep = lecture.getStep();
         }
-
-
     }
 
     @Test
     public void readPostureLecture() {
-        //given
-        //when
+        //given & when
         List<LectureResponseDto> lectureList = lectureService.readPostureLecture();
 
         //then

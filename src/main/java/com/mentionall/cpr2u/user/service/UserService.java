@@ -31,10 +31,4 @@ public class UserService {
                 jwtTokenProvider.createToken(user.getId()),
                 jwtTokenProvider.createToken(user.getId()));
     }
-
-    public User readById(String userId) {
-        return userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION)
-        );
-    }
 }

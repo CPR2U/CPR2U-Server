@@ -28,16 +28,13 @@ public class QuizService {
         Quiz quiz = quizRepository.findById(quizId).orElseThrow(
                 () -> new CustomException(ResponseCode.QUIZ_NOT_FOUND)
         );
-
         quiz.update(requestDto);
-        quizRepository.save(quiz);
     }
 
     public void deleteQuiz(Long quizId) {
         Quiz quiz = quizRepository.findById(quizId).orElseThrow(
                 () -> new CustomException(ResponseCode.QUIZ_NOT_FOUND)
         );
-
         quizRepository.delete(quiz);
     }
 

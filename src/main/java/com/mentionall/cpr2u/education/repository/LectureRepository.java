@@ -11,8 +11,6 @@ import java.util.Optional;
 @Repository
 public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
-    Optional<Lecture> findByStep(int step);
-
     Boolean existsByStep(int step);
 
     List<Lecture> findAllByType(LectureType type);

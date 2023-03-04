@@ -15,7 +15,6 @@ public class LectureProgressDto {
     @JsonProperty("last_step")
     private int lastStep;
 
-
     @JsonProperty("lecture_list")
     private List<LectureResponseDto> lectureList = new ArrayList();
 

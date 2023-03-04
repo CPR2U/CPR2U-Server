@@ -2,6 +2,7 @@ package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.Lecture;
+import com.mentionall.cpr2u.education.domain.TestStandard;
 import com.mentionall.cpr2u.education.dto.EducationProgressDto;
 import com.mentionall.cpr2u.education.dto.ScoreDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
@@ -27,6 +28,14 @@ public class EducationProgressService {
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
                 () -> new CustomException(ResponseCode.EDUCATION_PROGRESS_NOT_FOUND)
         );
+
+        if (requestDto.getScore() < TestStandard.posture)
+            throw new CustomException(ResponseCode.EDUCATION_POSTURE_FAIL);
+
+        // TODO: Lecture null object 문제 처리
+        if (progress.getLecture().getStep() < 4 || progress.getQuizScore() < TestStandard.quiz)
+            throw new CustomException(ResponseCode.EDUCATION_PROGRESS_BAD_REQUEST);
+
         progress.updatePostureScore(requestDto.getScore());
     }
 
@@ -37,6 +46,13 @@ public class EducationProgressService {
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
                 () -> new CustomException(ResponseCode.EDUCATION_PROGRESS_NOT_FOUND)
         );
+
+        if (requestDto.getScore() < TestStandard.quiz)
+            throw new CustomException(ResponseCode.EDUCATION_QUIZ_FAIL);
+
+        if (progress.getLecture().getStep() < 4)
+            throw new CustomException(ResponseCode.EDUCATION_PROGRESS_BAD_REQUEST);
+
         progress.updateQuizScore(requestDto.getScore());
     }
 

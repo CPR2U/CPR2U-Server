@@ -38,20 +38,18 @@ public class EducationProgressDto {
     private ProgressStatus isQuizCompleted;
 
     @Schema(example = "사용자의 자세 실습 완료 여부")
-
     @JsonProperty("is_posture_completed")
     private ProgressStatus isPostureCompleted;
-
 
     public EducationProgressDto(EducationProgress progress, User user) {
         this.angelStatus = user.getStatus();
 
-        int currentProgress = progress.getLecture().getStep();
+        int currentProgress = (progress.getLecture() == null) ? 0 : progress.getLecture().getStep();
         if (progress.getQuizScore() >= TestStandard.quiz) currentProgress++;
         if (progress.getPostureScore() >= TestStandard.posture) currentProgress++;
 
         progressAll = (double)currentProgress / 6.0;
-        lastLectureTitle = progress.getLecture().getTitle();
+        lastLectureTitle = (progress.getLecture() == null) ? null :progress.getLecture().getTitle();
 
         isLectureCompleted = ProgressStatus.NotCompleted;
         isQuizCompleted = ProgressStatus.NotCompleted;

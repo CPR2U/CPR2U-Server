@@ -20,8 +20,8 @@ public class QuizServiceTest {
     @Autowired
     private QuizService quizService;
 
-    @Transactional
     @Test
+    @Transactional
     public void readRandom5Quiz() {
         //given
         quizService.createQuiz(new QuizDto("지구는 둥글다.", "O"));
