@@ -17,10 +17,10 @@ public class LectureProgressDto {
 
 
     @JsonProperty("lecture_list")
-    private List<LectureDto> lectureList = new ArrayList();
+    private List<LectureResponseDto> lectureList = new ArrayList();
 
-    public LectureProgressDto(EducationProgress progress, List<LectureDto> lectureList) {
-        this.lastStep = progress.getLecture().getStep();
+    public LectureProgressDto(EducationProgress progress, List<LectureResponseDto> lectureList) {
+        this.lastStep = (progress.getLecture() == null) ? 0 : progress.getLecture().getStep();
         this.lectureList = lectureList;
     }
 }

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,14 +20,7 @@ public class QuizServiceTest {
     @Autowired
     private QuizService quizService;
 
-    @Autowired
-    private QuizRepository quizRepository;
-
-    @AfterEach
-    private void afterEach() {
-        quizRepository.deleteAll();
-    }
-
+    @Transactional
     @Test
     public void readRandom5Quiz() {
         //given

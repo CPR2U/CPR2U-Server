@@ -1,6 +1,7 @@
 package com.mentionall.cpr2u.education.repository;
 
 import com.mentionall.cpr2u.education.domain.Lecture;
+import com.mentionall.cpr2u.education.domain.LectureType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,8 @@ import java.util.Optional;
 public interface LectureRepository extends JpaRepository<Lecture, Long> {
 
     Optional<Lecture> findByStep(int step);
+
+    Boolean existsByStep(int step);
+
+    List<Lecture> findAllByType(LectureType type);
 }

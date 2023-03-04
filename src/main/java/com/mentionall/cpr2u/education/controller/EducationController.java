@@ -98,7 +98,7 @@ public class  EducationController {
 
     @Operation(summary = "자세실습 강의 조회", description = "자세실습 강의 영상 URL를 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureDto.class)))),
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureResponseDto.class)))),
     })
     @GetMapping("/posture")
     public ResponseEntity<ResponseDataTemplate> getPostureLecture() {

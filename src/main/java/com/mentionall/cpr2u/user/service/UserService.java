@@ -7,6 +7,8 @@ import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.UserJwtDto;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
+import com.mentionall.cpr2u.util.exception.CustomException;
+import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +30,11 @@ public class UserService {
         return new UserJwtDto(
                 jwtTokenProvider.createToken(user.getId()),
                 jwtTokenProvider.createToken(user.getId()));
+    }
+
+    public User readById(String userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION)
+        );
     }
 }

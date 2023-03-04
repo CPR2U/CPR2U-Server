@@ -1,6 +1,10 @@
 package com.mentionall.cpr2u.education.domain;
 
+import com.mentionall.cpr2u.education.dto.LectureRequestDto;
+import com.mentionall.cpr2u.education.dto.LectureResponseDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import net.bytebuddy.utility.nullability.MaybeNull;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,7 +12,8 @@ import java.util.List;
 
 @Entity
 @Getter
-public class Lecture {
+@NoArgsConstructor
+public class Lecture implements Comparable<Lecture> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,6 +30,23 @@ public class Lecture {
     @Column(length = 50)
     private String description;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private LectureType type;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lecture")
     List<EducationProgress> progressList = new ArrayList();
+
+    public Lecture(LectureRequestDto requestDto) {
+        this.step = requestDto.getStep();
+        this.title = requestDto.getTitle();
+        this.description = requestDto.getDescription();
+        this.videoUrl = requestDto.getVideoUrl();
+        this.type = LectureType.valueOf(requestDto.getType());
+    }
+
+    @Override
+    public int compareTo(Lecture other) {
+        return this.step - other.step;
+    }
 }
