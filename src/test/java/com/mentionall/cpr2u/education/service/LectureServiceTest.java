@@ -1,6 +1,7 @@
 package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
+import com.mentionall.cpr2u.education.domain.TestStandard;
 import com.mentionall.cpr2u.education.dto.LectureRequestDto;
 import com.mentionall.cpr2u.education.dto.LectureResponseDto;
 import com.mentionall.cpr2u.education.dto.LectureProgressDto;
@@ -56,7 +57,7 @@ public class LectureServiceTest {
 
         //then
         assertThat(progressDto.getCurrentStep()).isEqualTo(0);
-        assertThat(progressDto.getLectureList().size()).isEqualTo(4);
+        assertThat(progressDto.getLectureList().size()).isEqualTo(TestStandard.finalLectureStep);
 
         int beforeStep = 0;
         for (LectureResponseDto lecture : progressDto.getLectureList()) {
@@ -71,6 +72,7 @@ public class LectureServiceTest {
         List<LectureResponseDto> lectureList = lectureService.readPostureLecture();
 
         //then
+        // TODO: 매직넘버 치환
         assertThat(lectureList.size()).isEqualTo(1);
         assertThat(lectureList.get(0).getStep()).isEqualTo(5);
     }

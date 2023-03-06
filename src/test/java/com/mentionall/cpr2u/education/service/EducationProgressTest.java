@@ -54,18 +54,21 @@ public class EducationProgressTest {
         //given
         String userId = getUserId("현애", "010-0000-0000");
 
-        //when & then
-        assertThatLectureCourseIsNotStarted(userId);
+        //when lecture course is not started,
+        assertThatLectureProgressIsEqualTo(userId, null, ProgressStatus.NotCompleted);
 
+        //when lecture course is in progress,
         for (LectureResponseDto lecture : lectureService.readAllTheoryLecture()) {
             progressService.completeLecture(userId, lecture.getId());
 
             int currentStep = lectureService.readLectureProgress(userId).getCurrentStep();
             assertThat(currentStep).isEqualTo(lecture.getStep());
             if (currentStep < TestStandard.finalLectureStep)
-                assertThatLectureCourseIsInProgress(userId, lecture);
+                assertThatLectureProgressIsEqualTo(userId, lecture, ProgressStatus.InProgress);
         }
-        assertThatLectureCourseIsCompleted(userId);
+
+        //when lecture course is completed,
+        assertThatLectureProgressIsEqualTo(userId, null, ProgressStatus.Completed);
     }
 
     @Test
@@ -73,23 +76,18 @@ public class EducationProgressTest {
     public void completeQuiz() {
         //given
         String userId = getUserId("현애", "010-0000-0000");
-        progressService.completeLectureCourse(userId);
+        progressService.completeAllLectureCourse(userId);
 
         //when quiz test is not started,
-        ProgressStatus quizStatus = progressService.readEducationInfo(userId).getIsQuizCompleted();
-        assertThat(quizStatus).isEqualTo(ProgressStatus.NotCompleted);
+        assertThatQuizProgressIsEqualTo(userId, ProgressStatus.NotCompleted);
 
         //when the user fails the quiz test,
-        Assertions.assertThrows(CustomException.class, () -> {
-            progressService.completeQuiz(userId, new ScoreDto(50));
-        });
-        quizStatus = progressService.readEducationInfo(userId).getIsQuizCompleted();
-        assertThat(quizStatus).isEqualTo(ProgressStatus.NotCompleted);
+        Assertions.assertThrows(CustomException.class, () -> progressService.completeQuiz(userId, new ScoreDto(50)));
+        assertThatQuizProgressIsEqualTo(userId, ProgressStatus.NotCompleted);
 
         //when the user succeeds the quiz test,
         progressService.completeQuiz(userId, new ScoreDto(100));
-        quizStatus = progressService.readEducationInfo(userId).getIsQuizCompleted();
-        assertThat(quizStatus).isEqualTo(ProgressStatus.Completed);
+        assertThatQuizProgressIsEqualTo(userId, ProgressStatus.Completed);
     }
 
     @Test
@@ -97,33 +95,53 @@ public class EducationProgressTest {
     public void completePosture() {
         //given
         String userId = getUserId("현애", "010-0000-0000");
-        progressService.completeLectureCourse(userId);
+        progressService.completeAllLectureCourse(userId);
         progressService.completeQuiz(userId, new ScoreDto(100));
 
         //when a posture test is not started,
-        EducationProgressDto educationProgress = progressService.readEducationInfo(userId);
-        assertThat(educationProgress.getIsPostureCompleted()).isEqualTo(ProgressStatus.NotCompleted);
+        assertThatPostureProgressIsEqualTo(userId, ProgressStatus.NotCompleted);
 
         //when the user fails the posture test,
-        Assertions.assertThrows(CustomException.class, () -> {
-            progressService.completePosture(userId, new ScoreDto(79));
-        });
-        educationProgress = progressService.readEducationInfo(userId);
-        assertThat(educationProgress.getIsPostureCompleted()).isEqualTo(ProgressStatus.NotCompleted);
+        Assertions.assertThrows(CustomException.class, () -> progressService.completePosture(userId, new ScoreDto(79)));
+        assertThatPostureProgressIsEqualTo(userId, ProgressStatus.NotCompleted);
 
         //when the user succeeds the posture test,
         progressService.completePosture(userId, new ScoreDto(81));
-        educationProgress = progressService.readEducationInfo(userId);
-        assertThat(educationProgress.getTotalProgress()).isEqualTo(1.0);
-        assertThat(educationProgress.getIsPostureCompleted()).isEqualTo(ProgressStatus.Completed);
+        assertThatPostureProgressIsEqualTo(userId, ProgressStatus.Completed);
     }
 
+    @Test
+    @Transactional
     public void completeQuizWithoutLecture() {
-        // TODO: 강의 수강 여부가 NOT COMPLETED / IN PROGRESS인 경우
+        //given
+        String userId = getUserId("현애", "010-0000-0000");
+
+        // when the lecture course is not completed,
+        Assertions.assertThrows(CustomException.class, () -> progressService.completeQuiz(userId, new ScoreDto(100)));
+
+        // when the lecture course is in progress,
+        LectureResponseDto lecture = lectureService.readAllTheoryLecture().get(0);
+        progressService.completeLecture(userId, lecture.getId());
+        Assertions.assertThrows(CustomException.class, () -> progressService.completeQuiz(userId, new ScoreDto(100)));
     }
 
+    @Test
+    @Transactional
     public void completePostureWithoutQuizOrLecture() {
-        // TODO: 강의 수강 여부가 NOT COMPLETED / IN PROGRESS / COMPLETED인 경우
+        //given
+        String userId = getUserId("현애", "010-0000-0000");
+
+        // when the lecture course is not completed,
+        Assertions.assertThrows(CustomException.class, () -> progressService.completePosture(userId, new ScoreDto(100)));
+
+        // when the lecture course is in progress,
+        LectureResponseDto lecture = lectureService.readAllTheoryLecture().get(0);
+        progressService.completeLecture(userId, lecture.getId());
+        Assertions.assertThrows(CustomException.class, () -> progressService.completePosture(userId, new ScoreDto(100)));
+
+        // when the lecture course is completed, but quiz test is not
+        progressService.completeAllLectureCourse(userId);
+        Assertions.assertThrows(CustomException.class, () -> progressService.completePosture(userId, new ScoreDto(100)));
     }
 
     private String getUserId(String nickname, String phoneNumber) {
@@ -131,24 +149,30 @@ public class EducationProgressTest {
         return jwtTokenProvider.getUserId(accessToken);
     }
 
-    private void assertThatLectureCourseIsNotStarted(String userId) {
-        assertThatLectureProgressIsEqualTo(userId, ProgressStatus.NotCompleted, 0.0, "");
-    }
-
-    private void assertThatLectureCourseIsInProgress(String userId, LectureResponseDto lecture) {
-        assertThatLectureProgressIsEqualTo(userId, ProgressStatus.InProgress,
-                (double)lecture.getStep() / (double)TestStandard.totalStep, lecture.getTitle());
-    }
-
-    private void assertThatLectureCourseIsCompleted(String userId) {
-        assertThatLectureProgressIsEqualTo(userId, ProgressStatus.Completed,
-                (double)TestStandard.finalLectureStep / (double)TestStandard.totalStep, "");
-    }
-
-    private void assertThatLectureProgressIsEqualTo(String userId, ProgressStatus status, double totalProgress, String lectureTitle) {
+    private void assertThatLectureProgressIsEqualTo(String userId, LectureResponseDto lecture, ProgressStatus status) {
         EducationProgressDto progress = progressService.readEducationInfo(userId);
         assertThat(progress.getIsLectureCompleted()).isEqualTo(status);
+
+        double totalProgress =
+                (status == ProgressStatus.Completed) ? ((double)TestStandard.finalLectureStep / (double)TestStandard.totalStep) :
+                (status == ProgressStatus.InProgress) ? (double)lecture.getStep() / (double)TestStandard.totalStep : 0.0;
         assertThat(progress.getTotalProgress()).isEqualTo(totalProgress);
-        if (status != ProgressStatus.Completed) assertThat(progress.getLastLectureTitle()).isEqualTo(lectureTitle);
+
+        if (status == ProgressStatus.InProgress)
+            assertThat(progress.getLastLectureTitle()).isEqualTo(lecture.getTitle());
+    }
+
+    private void assertThatQuizProgressIsEqualTo(String userId, ProgressStatus status) {
+        ProgressStatus quizStatus = progressService.readEducationInfo(userId).getIsQuizCompleted();
+        assertThat(quizStatus).isEqualTo(status);
+    }
+
+    private void assertThatPostureProgressIsEqualTo(String userId, ProgressStatus status) {
+        EducationProgressDto progress = progressService.readEducationInfo(userId);
+        ProgressStatus postureStatus = progress.getIsPostureCompleted();
+        assertThat(postureStatus).isEqualTo(status);
+
+        if (postureStatus == ProgressStatus.Completed)
+            assertThat(progress.getTotalProgress()).isEqualTo(1.0);
     }
 }

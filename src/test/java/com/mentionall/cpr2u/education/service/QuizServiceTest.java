@@ -36,6 +36,7 @@ public class QuizServiceTest {
         List<QuizDto> quizDtoList = quizService.readRandom5Quiz();
 
         //then
+        // TODO: 매직 넘버 치환
         assertThat(quizDtoList.size()).isEqualTo(5);
 
         Set<String> questionSet = new HashSet();
