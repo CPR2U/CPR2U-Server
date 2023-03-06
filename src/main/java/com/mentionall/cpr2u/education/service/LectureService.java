@@ -15,7 +15,6 @@ import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +32,7 @@ public class LectureService {
         lectureRepository.save(new Lecture(requestDto));
     }
 
-    public LectureProgressDto readLectureProgressList(String userId) {
+    public LectureProgressDto readLectureProgress(String userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION)
         );
@@ -41,14 +40,17 @@ public class LectureService {
                 () -> new CustomException(ResponseCode.EDUCATION_PROGRESS_NOT_FOUND)
         );
 
-        List<Lecture> lectureList = lectureRepository.findAllByType(LectureType.THEORY);
-        Collections.sort(lectureList);
-
-        List<LectureResponseDto> lectureResponseDtoList = lectureList.stream()
+        List<LectureResponseDto> lectureResponseDtoList = lectureRepository.findAllByType(LectureType.THEORY)
+                .stream().sorted()
                 .map(l -> new LectureResponseDto(l))
                 .collect(Collectors.toList());
-
         return new LectureProgressDto(progress, lectureResponseDtoList);
+    }
+
+    public List<LectureResponseDto> readAllTheoryLecture() {
+        return lectureRepository.findAllByType(LectureType.THEORY).stream().sorted()
+                .map(l -> new LectureResponseDto(l))
+                .collect(Collectors.toList());
     }
 
     public List<LectureResponseDto> readPostureLecture() {

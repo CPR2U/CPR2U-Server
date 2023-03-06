@@ -1,7 +1,6 @@
 package com.mentionall.cpr2u.education.domain;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 public enum ProgressStatus {
@@ -10,4 +9,6 @@ public enum ProgressStatus {
     Completed("Completed");
 
     private final String status;
+    public static final int lastLectureStep = 4;
+    public static final int totalStep = 6;
 }

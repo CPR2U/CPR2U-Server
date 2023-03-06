@@ -2,6 +2,7 @@ package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.education.domain.ProgressStatus;
+import com.mentionall.cpr2u.education.domain.TestStandard;
 import com.mentionall.cpr2u.education.dto.EducationProgressDto;
 import com.mentionall.cpr2u.education.dto.LectureRequestDto;
 import com.mentionall.cpr2u.education.dto.LectureResponseDto;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,7 +39,7 @@ public class EducationProgressTest {
     private LectureRepository lectureRepository;
 
     @BeforeEach
-    public void beforeEach() {
+    public void createLectures() {
         lectureRepository.deleteAll();
         lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com", "THEORY"));
         lectureService.createLecture(new LectureRequestDto(2, "강의2", "2입니다.", "https://naver.com", "THEORY"));
@@ -52,49 +52,28 @@ public class EducationProgressTest {
     @Transactional
     public void completeLecture() {
         //given
-        UserSignUpDto signUpDto = new UserSignUpDto("현애", "010-0000-0000");
-        String accessToken = userService.signup(signUpDto).getAccessToken();
-        String userId = jwtTokenProvider.getUserId(accessToken);
+        String userId = getUserId("현애", "010-0000-0000");
 
-        //when lecture course is not started,
-        List<LectureResponseDto> lectureList = lectureService.readLectureProgressList(userId).getLectureList();
+        //when & then
+        assertThatLectureCourseIsNotStarted(userId);
 
-        EducationProgressDto educationProgress = progressService.readEducationInfo(userId);
-        assertThat(educationProgress.getIsLectureCompleted()).isEqualTo(ProgressStatus.NotCompleted);
-        assertThat(educationProgress.getProgressAll()).isEqualTo(0.0);
-
-        //when lecture course is in progress,
-        for (LectureResponseDto lecture : lectureList) {
+        for (LectureResponseDto lecture : lectureService.readAllTheoryLecture()) {
             progressService.completeLecture(userId, lecture.getId());
 
-            int lastStep = lectureService.readLectureProgressList(userId).getLastStep();
-            assertThat(lastStep).isEqualTo(lecture.getStep());
-
-            educationProgress = progressService.readEducationInfo(userId);
-            if (lastStep < 4) {
-                assertThat(educationProgress.getIsLectureCompleted()).isEqualTo(ProgressStatus.InProgress);
-                assertThat(educationProgress.getProgressAll()).isEqualTo((double) lecture.getStep() / 6.0);
-                assertThat(educationProgress.getLastLectureTitle()).isEqualTo(lecture.getTitle());
-            }
+            int currentStep = lectureService.readLectureProgress(userId).getCurrentStep();
+            assertThat(currentStep).isEqualTo(lecture.getStep());
+            if (currentStep < TestStandard.finalLectureStep)
+                assertThatLectureCourseIsInProgress(userId, lecture);
         }
-
-        //when lecture course is completed,
-        assertThat(educationProgress.getIsLectureCompleted()).isEqualTo(ProgressStatus.Completed);
-        assertThat(educationProgress.getProgressAll()).isEqualTo(4.0 / 6.0);
+        assertThatLectureCourseIsCompleted(userId);
     }
 
     @Test
     @Transactional
     public void completeQuiz() {
         //given
-        UserSignUpDto signUpDto = new UserSignUpDto("현애", "010-0000-0000");
-        String accessToken = userService.signup(signUpDto).getAccessToken();
-        String userId = jwtTokenProvider.getUserId(accessToken);
-
-        List<LectureResponseDto> lectureList = lectureService.readLectureProgressList(userId).getLectureList();
-        for (LectureResponseDto lecture : lectureList) {
-            progressService.completeLecture(userId, lecture.getId());
-        }
+        String userId = getUserId("현애", "010-0000-0000");
+        progressService.completeLectureCourse(userId);
 
         //when quiz test is not started,
         ProgressStatus quizStatus = progressService.readEducationInfo(userId).getIsQuizCompleted();
@@ -117,14 +96,8 @@ public class EducationProgressTest {
     @Transactional
     public void completePosture() {
         //given
-        UserSignUpDto signUpDto = new UserSignUpDto("현애", "010-0000-0000");
-        String accessToken = userService.signup(signUpDto).getAccessToken();
-        String userId = jwtTokenProvider.getUserId(accessToken);
-
-        List<LectureResponseDto> lectureList = lectureService.readLectureProgressList(userId).getLectureList();
-        for (LectureResponseDto lecture : lectureList) {
-            progressService.completeLecture(userId, lecture.getId());
-        }
+        String userId = getUserId("현애", "010-0000-0000");
+        progressService.completeLectureCourse(userId);
         progressService.completeQuiz(userId, new ScoreDto(100));
 
         //when a posture test is not started,
@@ -141,7 +114,7 @@ public class EducationProgressTest {
         //when the user succeeds the posture test,
         progressService.completePosture(userId, new ScoreDto(81));
         educationProgress = progressService.readEducationInfo(userId);
-        assertThat(educationProgress.getProgressAll()).isEqualTo(1.0);
+        assertThat(educationProgress.getTotalProgress()).isEqualTo(1.0);
         assertThat(educationProgress.getIsPostureCompleted()).isEqualTo(ProgressStatus.Completed);
     }
 
@@ -151,5 +124,31 @@ public class EducationProgressTest {
 
     public void completePostureWithoutQuizOrLecture() {
         // TODO: 강의 수강 여부가 NOT COMPLETED / IN PROGRESS / COMPLETED인 경우
+    }
+
+    private String getUserId(String nickname, String phoneNumber) {
+        String accessToken = userService.signup(new UserSignUpDto(nickname, phoneNumber)).getAccessToken();
+        return jwtTokenProvider.getUserId(accessToken);
+    }
+
+    private void assertThatLectureCourseIsNotStarted(String userId) {
+        assertThatLectureProgressIsEqualTo(userId, ProgressStatus.NotCompleted, 0.0, "");
+    }
+
+    private void assertThatLectureCourseIsInProgress(String userId, LectureResponseDto lecture) {
+        assertThatLectureProgressIsEqualTo(userId, ProgressStatus.InProgress,
+                (double)lecture.getStep() / (double)TestStandard.totalStep, lecture.getTitle());
+    }
+
+    private void assertThatLectureCourseIsCompleted(String userId) {
+        assertThatLectureProgressIsEqualTo(userId, ProgressStatus.Completed,
+                (double)TestStandard.finalLectureStep / (double)TestStandard.totalStep, "");
+    }
+
+    private void assertThatLectureProgressIsEqualTo(String userId, ProgressStatus status, double totalProgress, String lectureTitle) {
+        EducationProgressDto progress = progressService.readEducationInfo(userId);
+        assertThat(progress.getIsLectureCompleted()).isEqualTo(status);
+        assertThat(progress.getTotalProgress()).isEqualTo(totalProgress);
+        if (status != ProgressStatus.Completed) assertThat(progress.getLastLectureTitle()).isEqualTo(lectureTitle);
     }
 }

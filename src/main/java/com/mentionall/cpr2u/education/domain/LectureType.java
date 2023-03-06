@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum LectureType {
+    NONE("NONE"),
     THEORY("THEORY"),
     POSTURE("POSTURE");
 

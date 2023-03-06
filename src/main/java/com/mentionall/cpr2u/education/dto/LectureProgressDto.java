@@ -11,15 +11,14 @@ import java.util.List;
 @Data
 public class LectureProgressDto {
     @Schema(example = "마지막으로 이수 완료한 강의 섹션")
-
-    @JsonProperty("last_step")
-    private int lastStep;
+    @JsonProperty("current_step")
+    private int currentStep;
 
     @JsonProperty("lecture_list")
     private List<LectureResponseDto> lectureList = new ArrayList();
 
     public LectureProgressDto(EducationProgress progress, List<LectureResponseDto> lectureList) {
-        this.lastStep = (progress.getLecture() == null) ? 0 : progress.getLecture().getStep();
+        this.currentStep = progress.getLastLecture().getStep();
         this.lectureList = lectureList;
     }
 }

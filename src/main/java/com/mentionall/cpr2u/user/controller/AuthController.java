@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -36,10 +35,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ResponseDataTemplate> signup(@RequestBody UserSignUpDto userSignUpDto){
-        log.info("AuthController - /signup : " + userSignUpDto.toString());
-
-        log.info(userSignUpDto.getNickname());
-
         return ResponseDataTemplate.toResponseEntity(
                 ResponseCode.OK,
                 userService.signup(userSignUpDto)

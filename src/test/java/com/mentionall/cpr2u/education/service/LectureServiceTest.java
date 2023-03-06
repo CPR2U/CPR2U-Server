@@ -52,10 +52,10 @@ public class LectureServiceTest {
         String userId = jwtTokenProvider.getUserId(accessToken);
 
         //when
-        LectureProgressDto progressDto = lectureService.readLectureProgressList(userId);
+        LectureProgressDto progressDto = lectureService.readLectureProgress(userId);
 
         //then
-        assertThat(progressDto.getLastStep()).isEqualTo(0);
+        assertThat(progressDto.getCurrentStep()).isEqualTo(0);
         assertThat(progressDto.getLectureList().size()).isEqualTo(4);
 
         int beforeStep = 0;

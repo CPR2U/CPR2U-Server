@@ -1,6 +1,7 @@
 package com.mentionall.cpr2u.education.domain;
 
 import com.mentionall.cpr2u.education.dto.LectureRequestDto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Lecture implements Comparable<Lecture> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,14 +34,14 @@ public class Lecture implements Comparable<Lecture> {
     @Enumerated(EnumType.STRING)
     private LectureType type;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "lecture")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "lastLecture")
     List<EducationProgress> progressList = new ArrayList();
 
     public Lecture(LectureRequestDto requestDto) {
-        this.step = requestDto.getStep();
         this.title = requestDto.getTitle();
-        this.description = requestDto.getDescription();
         this.videoUrl = requestDto.getVideoUrl();
+        this.step = requestDto.getStep();
+        this.description = requestDto.getDescription();
         this.type = LectureType.valueOf(requestDto.getType());
     }
 

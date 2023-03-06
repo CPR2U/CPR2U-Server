@@ -53,7 +53,7 @@ public class  EducationController {
 
         return ResponseDataTemplate.toResponseEntity(
                 ResponseCode.OK,
-                lectureService.readLectureProgressList(userId));
+                lectureService.readLectureProgress(userId));
     }
 
     @Operation(summary = "강의 수강 완료", description = "유저가 마지막으로 완료한 강의를 lectureId 값의 강의로 변경한다.")

@@ -4,8 +4,9 @@ import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.util.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import org.springframework.lang.Nullable;
 import javax.persistence.*;
+import java.util.ArrayList;
 
 @Entity
 @Getter
@@ -20,21 +21,49 @@ public class EducationProgress extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id")
-    private Lecture lecture;
+    private Lecture lastLecture = null;
 
     @Column
-    private int quizScore;
+    private int quizScore = 0;
 
     @Column
-    private int postureScore;
+    private int postureScore = 0;
 
     public EducationProgress(User user) {
         this.user = user;
-        this.lecture = null;
-        this.quizScore = 0;
-        this.postureScore = 0;
+    }
+
+    public Lecture getLastLecture() {
+        if (this.lastLecture == null)
+            return new Lecture(null, "", "", 0, "", LectureType.NONE, new ArrayList());
+        return this.lastLecture;
+    }
+
+    public double getTotalProgress() {
+        int currentProgress = this.getLastLecture().getStep();
+        if (this.quizScore >= TestStandard.quizScore) currentProgress++;
+        if (this.postureScore >= TestStandard.postureScore) currentProgress++;
+
+        return (double)currentProgress / (double)TestStandard.totalStep;
+    }
+
+    public ProgressStatus getLectureProgressStatus() {
+        if (this.getLastLecture().getStep() == 0) return ProgressStatus.NotCompleted;
+        if (this.getLastLecture().getStep() == TestStandard.finalLectureStep) return ProgressStatus.Completed;
+        return ProgressStatus.InProgress;
+    }
+
+    public ProgressStatus getQuizProgressStatus() {
+        if (this.quizScore >= TestStandard.quizScore) return ProgressStatus.Completed;
+        return ProgressStatus.NotCompleted;
+    }
+
+    public ProgressStatus getPostureProgressStatus() {
+        if (this.postureScore >= TestStandard.postureScore) return ProgressStatus.Completed;
+        return ProgressStatus.NotCompleted;
     }
 
     public void updateQuizScore(int score) {
@@ -46,6 +75,6 @@ public class EducationProgress extends Timestamped {
     }
 
     public void updateLecture(Lecture lecture) {
-        this.lecture = lecture;
+        this.lastLecture = lecture;
     }
 }
