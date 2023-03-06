@@ -1,9 +1,12 @@
 package com.mentionall.cpr2u.user.controller;
 
+import com.mentionall.cpr2u.user.dto.UserCodeDto;
 import com.mentionall.cpr2u.user.dto.UserJwtDto;
+import com.mentionall.cpr2u.user.dto.UserLoginDto;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
+import com.mentionall.cpr2u.util.ResponseTemplate;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -40,6 +43,25 @@ public class AuthController {
         return ResponseDataTemplate.toResponseEntity(
                 ResponseCode.OK,
                 userService.signup(userSignUpDto)
+        );
+    }
+
+    @Operation(summary = "로그인",
+            method = "GET",
+            description = "로그인 API"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserCodeDto.class)))),
+            @ApiResponse(responseCode = "404", description = "등록되지 않은 사용자입니다.",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
+    })
+
+    @GetMapping("/login")
+    public ResponseEntity<ResponseDataTemplate> login(){
+        return ResponseDataTemplate.toResponseEntity(
+                ResponseCode.OK,
+                userService.login()
         );
     }
 }
