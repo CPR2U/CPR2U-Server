@@ -6,17 +6,16 @@ import com.mentionall.cpr2u.util.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class User extends Timestamped implements UserDetails {
+public class User extends Timestamped{
 
     @Id
     @GeneratedValue(generator = RandomGenerator.generatorName)
@@ -37,46 +36,18 @@ public class User extends Timestamped implements UserDetails {
     @Enumerated(EnumType.STRING)
     private AngelStatusEnum status;
 
+    @Column(name = "device_token")
+    private String deviceToken;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<UserRole> roles = new ArrayList<>();
+
     public User(UserSignUpDto userSignUpDto) {
         this.nickname = userSignUpDto.getNickName();
         this.phoneNumber = userSignUpDto.getPhoneNumber();
         this.dateOfIssue = null;
+        this.deviceToken = userSignUpDto.getDeviceToken();
         this.status = AngelStatusEnum.UNACQUIRED;
-    }
-
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
+        this.roles.add(UserRole.USER);
     }
 }

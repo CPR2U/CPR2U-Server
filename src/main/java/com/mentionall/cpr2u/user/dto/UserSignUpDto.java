@@ -14,4 +14,8 @@ public class UserSignUpDto {
     @Schema(example = "사용자 전화번호")
     @JsonProperty("phone_number")
     String phoneNumber;
+
+    @Schema(example = "디바이스 토큰")
+    @JsonProperty("device_token")
+    String deviceToken;
 }

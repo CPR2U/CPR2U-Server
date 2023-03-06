@@ -1,6 +1,6 @@
 package com.mentionall.cpr2u.config.security;
 
-import com.mentionall.cpr2u.user.repository.UserRepository;
+import com.mentionall.cpr2u.user.domain.UserRole;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,8 +33,9 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String userPk) {
+    public String createToken(String userPk, List<UserRole> roles) {
         Claims claims = Jwts.claims().setSubject(userPk);
+        claims.put("roles", roles);
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)
@@ -54,11 +55,11 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserEmail(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public String getUserEmail(String token) {
+    public String getUserId(String token) {
         if(validateToken(token))
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
         else return null;
