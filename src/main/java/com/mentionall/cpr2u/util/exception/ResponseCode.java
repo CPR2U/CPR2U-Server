@@ -9,6 +9,10 @@ import org.springframework.http.HttpStatus;
 public enum ResponseCode {
 
     OK(HttpStatus.OK, "성공"),
+
+    FORBIDDEN_NOT_VALID_TOKEN(HttpStatus.FORBIDDEN, "유효하지 않은 토큰입니다."),
+
+    NOT_FOUND_REFRESH_TOKEN(HttpStatus.NOT_FOUND, "DB에 저장되지 않은 토큰입니다."),
     NOT_FOUND_USER_EXCEPTION(HttpStatus.NOT_FOUND, "회원 정보 없음");
 
     private final HttpStatus httpStatus;

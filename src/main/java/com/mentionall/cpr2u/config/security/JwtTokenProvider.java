@@ -23,8 +23,8 @@ public class JwtTokenProvider {
     @Value("${security.secret-key}")
     private String secretKey;
 
-    private long tokenValidTime = 3 * 60 * 60 * 1000L;  // 3시간
-    private long refreshTokenValidTime = 365 * 24 * 60 * 60 * 1000L; //1년
+    private final long tokenValidTime = 1 * 1 * 5 * 1000L;  // 3시간
+    private final long refreshTokenValidTime = 365 * 24 * 60 * 60 * 1000L; //1년
 
     private final UserDetailsService userDetailsService;
 
@@ -66,25 +66,13 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("X-AUTH-TOKEN");
+        return request.getHeader("Authorization");
     }
 
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean validateTokenExceptExpiration(String jwtToken) {
-        try {
-            if(validateToken(jwtToken)) return false;
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-            return claims.getBody().getExpiration().before(new Date());
-        } catch(ExpiredJwtException e) {
-            return true;
         } catch (Exception e) {
             return false;
         }

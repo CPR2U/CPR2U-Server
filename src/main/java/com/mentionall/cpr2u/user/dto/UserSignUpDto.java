@@ -2,20 +2,20 @@ package com.mentionall.cpr2u.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class UserSignUpDto {
 
     @Schema(example = "사용자 이름")
-    @JsonProperty("nick_name")
-    String nickName;
+    @JsonProperty("nickname")
+    String nickname;
 
     @Schema(example = "사용자 전화번호")
     @JsonProperty("phone_number")
     String phoneNumber;
 
-    @Schema(example = "디바이스 토큰")
+    @Schema(example = "device token")
     @JsonProperty("device_token")
     String deviceToken;
 }

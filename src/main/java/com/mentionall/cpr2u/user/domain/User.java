@@ -26,24 +26,24 @@ public class User extends Timestamped{
     @Column
     private String nickname;
 
-    @Column(name = "phone_number")
+    @Column
     private String phoneNumber;
 
-    @Column(name = "date_of_issue")
+    @Column
     private LocalDateTime dateOfIssue;
 
     @Column
     @Enumerated(EnumType.STRING)
     private AngelStatusEnum status;
 
-    @Column(name = "device_token")
+    @Column
     private String deviceToken;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<UserRole> roles = new ArrayList<>();
 
     public User(UserSignUpDto userSignUpDto) {
-        this.nickname = userSignUpDto.getNickName();
+        this.nickname = userSignUpDto.getNickname();
         this.phoneNumber = userSignUpDto.getPhoneNumber();
         this.dateOfIssue = null;
         this.deviceToken = userSignUpDto.getDeviceToken();
