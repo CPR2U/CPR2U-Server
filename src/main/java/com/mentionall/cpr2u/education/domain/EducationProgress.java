@@ -4,7 +4,6 @@ import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.util.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 import javax.persistence.*;
 import java.util.ArrayList;
 
@@ -21,7 +20,6 @@ public class EducationProgress extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id")
     private Lecture lastLecture = null;

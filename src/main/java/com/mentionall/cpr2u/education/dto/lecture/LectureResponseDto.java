@@ -1,13 +1,18 @@
-package com.mentionall.cpr2u.education.dto;
+package com.mentionall.cpr2u.education.dto.lecture;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mentionall.cpr2u.education.domain.Lecture;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LectureRequestDto {
+public class LectureResponseDto {
+
+    @Schema(example = "강의 ID")
+    private Long id;
+
     @Schema(example = "강의 섹션")
     private int step;
 
@@ -20,4 +25,12 @@ public class LectureRequestDto {
     @Schema(example = "강의 영상 URL")
     @JsonProperty("video_url")
     private String videoUrl;
+
+    public LectureResponseDto(Lecture lecture) {
+        this.id = lecture.getId();
+        this.step = lecture.getStep();
+        this.title = lecture.getTitle();
+        this.description = lecture.getDescription();
+        this.videoUrl = lecture.getVideoUrl();
+    }
 }

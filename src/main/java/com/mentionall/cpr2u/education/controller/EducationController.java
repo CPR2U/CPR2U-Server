@@ -1,6 +1,9 @@
 package com.mentionall.cpr2u.education.controller;
 
 import com.mentionall.cpr2u.education.dto.*;
+import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
+import com.mentionall.cpr2u.education.dto.quiz.OXQuizRequestDto;
+import com.mentionall.cpr2u.education.dto.quiz.SelectionQuizRequestDto;
 import com.mentionall.cpr2u.education.service.EducationProgressService;
 import com.mentionall.cpr2u.education.service.LectureService;
 import com.mentionall.cpr2u.education.service.QuizService;
@@ -16,12 +19,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Tag(name = "EducationController", description = "학습 화면 컨트롤러")
+@Slf4j
 @RestController
 @RequestMapping("/education")
 @RequiredArgsConstructor
@@ -72,13 +77,25 @@ public class  EducationController {
 
     @Operation(summary = "퀴즈 질문 조회", description = "5개의 퀴즈 질문과 답변 리스트를 랜덤으로 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = QuizDto.class)))),
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = OXQuizRequestDto.class)))),
     })
     @GetMapping("/quiz")
     public ResponseEntity<ResponseDataTemplate> getQuizList() {
         return ResponseDataTemplate.toResponseEntity(
                 ResponseCode.OK,
                 quizService.readRandom5Quiz());
+    }
+
+    @PostMapping("/quiz/ox")
+    public ResponseEntity<ResponseTemplate> createOxQuiz(@RequestBody OXQuizRequestDto requestDto) {
+        quizService.createOXQuiz(requestDto);
+        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
+    }
+
+    @PostMapping("/quiz/selection")
+    public ResponseEntity<ResponseTemplate> createSelectionQuiz(@RequestBody SelectionQuizRequestDto requestDto) {
+        quizService.createSelectionQuiz(requestDto);
+        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
     }
 
     @Operation(summary = "퀴즈 테스트 완료", description = "유저가 퀴즈 테스트를 통과했음을 저장한다.")

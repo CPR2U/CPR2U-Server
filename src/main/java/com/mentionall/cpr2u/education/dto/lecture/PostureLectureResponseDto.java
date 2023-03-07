@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.education.dto;
+package com.mentionall.cpr2u.education.dto.lecture;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,6 +1,6 @@
 package com.mentionall.cpr2u.education.domain;
 
-import com.mentionall.cpr2u.education.dto.LectureRequestDto;
+import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

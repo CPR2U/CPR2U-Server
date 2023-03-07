@@ -1,46 +1,59 @@
 package com.mentionall.cpr2u.education.service;
 
-import com.mentionall.cpr2u.education.domain.Quiz;
-import com.mentionall.cpr2u.education.dto.QuizDto;
-import com.mentionall.cpr2u.education.repository.QuizRepository;
+import com.mentionall.cpr2u.education.domain.OXQuiz;
+import com.mentionall.cpr2u.education.domain.QuizAnswer;
+import com.mentionall.cpr2u.education.domain.SelectionQuiz;
+import com.mentionall.cpr2u.education.dto.quiz.*;
+import com.mentionall.cpr2u.education.repository.OXQuizRepository;
+import com.mentionall.cpr2u.education.repository.QuizAnswerRepository;
+import com.mentionall.cpr2u.education.repository.SelectionQuizRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class QuizService {
 
-    private final QuizRepository quizRepository;
+    private final OXQuizRepository oxQuizRepository;
+    private final SelectionQuizRepository selectionQuizRepository;
+    private final QuizAnswerRepository answerRepository;
 
-    public void createQuiz(QuizDto requestDto) {
-        Quiz quiz = new Quiz(requestDto);
-        quizRepository.save(quiz);
+    public void createOXQuiz(OXQuizRequestDto requestDto) {
+        oxQuizRepository.save(new OXQuiz(requestDto));
     }
 
-    public void updateQuiz(Long quizId, QuizDto requestDto) {
-        Quiz quiz = quizRepository.findById(quizId).orElseThrow(
-                () -> new CustomException(ResponseCode.QUIZ_NOT_FOUND)
-        );
-        quiz.update(requestDto);
+    @Transactional
+    public void createSelectionQuiz(SelectionQuizRequestDto requestDto) {
+        SelectionQuiz quiz = new SelectionQuiz(requestDto);
+        selectionQuizRepository.save(quiz);
+
+        boolean haveAnswer = false;
+        for (QuizAnswerRequestDto answerDto : requestDto.getAnswerList()) {
+            boolean isAnswer = (answerDto.getIndex() == requestDto.getAnswer_index());
+            if (isAnswer) haveAnswer = true;
+
+            answerRepository.save(new QuizAnswer(answerDto, quiz, isAnswer));
+        }
+
+        if (!haveAnswer) throw new CustomException(ResponseCode.QUIZ_BAD_REQUEST);
     }
 
-    public void deleteQuiz(Long quizId) {
-        Quiz quiz = quizRepository.findById(quizId).orElseThrow(
-                () -> new CustomException(ResponseCode.QUIZ_NOT_FOUND)
-        );
-        quizRepository.delete(quiz);
-    }
+    @Transactional
+    public List<QuizResponseDto> readRandom5Quiz() {
+        List<QuizResponseDto> response = new ArrayList();
+        oxQuizRepository.findRandomLimit3().forEach(q -> response.add(new OXQuizResponseDto(q)));
+        selectionQuizRepository.findRandomLimit2().forEach(q -> response.add(new SelectionQuizResponseDto(q)));
 
-    public List<QuizDto> readRandom5Quiz() {
-        return quizRepository.findRandomLimit5().stream()
-                .map(q -> new QuizDto(q))
-                .collect(Collectors.toList());
+        Collections.shuffle(response);
+        return response;
     }
 }

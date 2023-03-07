@@ -2,10 +2,10 @@ package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.Lecture;
-import com.mentionall.cpr2u.education.dto.LectureRequestDto;
-import com.mentionall.cpr2u.education.dto.LectureResponseDto;
+import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
+import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
 import com.mentionall.cpr2u.education.dto.LectureProgressDto;
-import com.mentionall.cpr2u.education.dto.PostureLectureResponseDto;
+import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
 import com.mentionall.cpr2u.user.domain.User;
