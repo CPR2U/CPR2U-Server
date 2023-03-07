@@ -38,7 +38,7 @@ public class EducationProgress extends Timestamped {
 
     public Lecture getLastLecture() {
         if (this.lastLecture == null)
-            return new Lecture(null, "", "", 0, "", LectureType.NONE, new ArrayList());
+            return new Lecture(0L, "", "", 0, "", new ArrayList());
         return this.lastLecture;
     }
 

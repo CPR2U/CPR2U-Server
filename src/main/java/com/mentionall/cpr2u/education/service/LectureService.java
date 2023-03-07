@@ -2,10 +2,10 @@ package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.Lecture;
-import com.mentionall.cpr2u.education.domain.LectureType;
 import com.mentionall.cpr2u.education.dto.LectureRequestDto;
 import com.mentionall.cpr2u.education.dto.LectureResponseDto;
 import com.mentionall.cpr2u.education.dto.LectureProgressDto;
+import com.mentionall.cpr2u.education.dto.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
 import com.mentionall.cpr2u.user.domain.User;
@@ -13,6 +13,7 @@ import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,9 @@ public class LectureService {
     private final UserRepository userRepository;
     private final LectureRepository lectureRepository;
     private final EducationProgressRepository progressRepository;
+
+    @Value("${lecture.posture-url}")
+    private String postureUrl;
 
     public void createLecture(LectureRequestDto requestDto) {
         if (lectureRepository.existsByStep(requestDto.getStep()))
@@ -40,7 +44,7 @@ public class LectureService {
                 () -> new CustomException(ResponseCode.EDUCATION_PROGRESS_NOT_FOUND)
         );
 
-        List<LectureResponseDto> lectureResponseDtoList = lectureRepository.findAllByType(LectureType.THEORY)
+        List<LectureResponseDto> lectureResponseDtoList = lectureRepository.findAll()
                 .stream().sorted()
                 .map(l -> new LectureResponseDto(l))
                 .collect(Collectors.toList());
@@ -48,14 +52,12 @@ public class LectureService {
     }
 
     public List<LectureResponseDto> readAllTheoryLecture() {
-        return lectureRepository.findAllByType(LectureType.THEORY).stream().sorted()
+        return lectureRepository.findAll().stream().sorted()
                 .map(l -> new LectureResponseDto(l))
                 .collect(Collectors.toList());
     }
 
-    public List<LectureResponseDto> readPostureLecture() {
-        return lectureRepository.findAllByType(LectureType.POSTURE).stream()
-                .map(l -> new LectureResponseDto(l))
-                .collect(Collectors.toList());
+    public PostureLectureResponseDto readPostureLecture() {
+        return new PostureLectureResponseDto(postureUrl);
     }
 }

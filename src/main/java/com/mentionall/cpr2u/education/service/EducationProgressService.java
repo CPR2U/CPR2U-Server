@@ -85,7 +85,7 @@ public class EducationProgressService {
     }
 
     public void completeAllLectureCourse(String userId) {
-        List<Lecture> lectureList = lectureRepository.findAllByType(LectureType.THEORY);
+        List<Lecture> lectureList = lectureRepository.findAll();
         Collections.sort(lectureList);
         lectureList.forEach(lecture -> completeLecture(userId, lecture.getId()));
     }

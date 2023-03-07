@@ -30,10 +30,6 @@ public class Lecture implements Comparable<Lecture> {
     @Column(length = 50)
     private String description;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private LectureType type;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lastLecture")
     List<EducationProgress> progressList = new ArrayList();
 
@@ -42,7 +38,6 @@ public class Lecture implements Comparable<Lecture> {
         this.videoUrl = requestDto.getVideoUrl();
         this.step = requestDto.getStep();
         this.description = requestDto.getDescription();
-        this.type = LectureType.valueOf(requestDto.getType());
     }
 
     @Override

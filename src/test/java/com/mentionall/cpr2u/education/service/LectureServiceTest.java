@@ -5,6 +5,7 @@ import com.mentionall.cpr2u.education.domain.TestStandard;
 import com.mentionall.cpr2u.education.dto.LectureRequestDto;
 import com.mentionall.cpr2u.education.dto.LectureResponseDto;
 import com.mentionall.cpr2u.education.dto.LectureProgressDto;
+import com.mentionall.cpr2u.education.dto.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.service.UserService;
@@ -14,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -37,11 +36,10 @@ public class LectureServiceTest {
     @BeforeEach
     public void beforeEach() {
         lectureRepository.deleteAll();
-        lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com", "THEORY"));
-        lectureService.createLecture(new LectureRequestDto(2, "강의2", "2입니다.", "https://naver.com", "THEORY"));
-        lectureService.createLecture(new LectureRequestDto(3, "강의3", "3입니다.", "https://naver.com", "THEORY"));
-        lectureService.createLecture(new LectureRequestDto(4, "강의4", "4입니다.", "https://naver.com", "THEORY"));
-        lectureService.createLecture(new LectureRequestDto(5, "강의5", "자세 강의입니다.", "https://naver.com", "POSTURE"));
+        lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com"));
+        lectureService.createLecture(new LectureRequestDto(2, "강의2", "2입니다.", "https://naver.com"));
+        lectureService.createLecture(new LectureRequestDto(3, "강의3", "3입니다.", "https://naver.com"));
+        lectureService.createLecture(new LectureRequestDto(4, "강의4", "4입니다.", "https://naver.com"));
     }
 
     @Test
@@ -69,11 +67,9 @@ public class LectureServiceTest {
     @Test
     public void readPostureLecture() {
         //given & when
-        List<LectureResponseDto> lectureList = lectureService.readPostureLecture();
+        PostureLectureResponseDto postureLecture = lectureService.readPostureLecture();
 
         //then
-        // TODO: 매직넘버 치환
-        assertThat(lectureList.size()).isEqualTo(1);
-        assertThat(lectureList.get(0).getStep()).isEqualTo(5);
+        assertThat(postureLecture.getVideoUrl()).isEqualTo("https://www.naver.com");
     }
 }
