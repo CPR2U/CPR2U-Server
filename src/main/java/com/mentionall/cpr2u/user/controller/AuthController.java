@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-@Tag(name = "회원가입/로그인")
+@Tag(name = "AuthController", description = "회원가입/로그인")
 public class AuthController {
     private final UserService userService;
 
