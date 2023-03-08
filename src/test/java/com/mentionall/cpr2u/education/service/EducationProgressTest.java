@@ -51,7 +51,7 @@ public class EducationProgressTest {
     @Transactional
     public void completeLecture() {
         //given
-        String userId = getUserId("현애", "010-0000-0000");
+        String userId = getUserId("현애", "010-0000-0000", "device-token");
 
         //when lecture course is not started,
         assertThatLectureProgressIsEqualTo(userId, null, ProgressStatus.NotCompleted);
@@ -74,7 +74,7 @@ public class EducationProgressTest {
     @Transactional
     public void completeQuiz() {
         //given
-        String userId = getUserId("현애", "010-0000-0000");
+        String userId = getUserId("현애", "010-0000-0000", "device-token");
         progressService.completeAllLectureCourse(userId);
 
         //when quiz test is not started,
@@ -93,7 +93,7 @@ public class EducationProgressTest {
     @Transactional
     public void completePosture() {
         //given
-        String userId = getUserId("현애", "010-0000-0000");
+        String userId = getUserId("현애", "010-0000-0000", "device-token");
         progressService.completeAllLectureCourse(userId);
         progressService.completeQuiz(userId, new ScoreDto(100));
 
@@ -113,7 +113,7 @@ public class EducationProgressTest {
     @Transactional
     public void completeQuizWithoutLecture() {
         //given
-        String userId = getUserId("현애", "010-0000-0000");
+        String userId = getUserId("현애", "010-0000-0000", "device-token");
 
         // when the lecture course is not completed,
         Assertions.assertThrows(CustomException.class, () -> progressService.completeQuiz(userId, new ScoreDto(100)));
@@ -128,7 +128,7 @@ public class EducationProgressTest {
     @Transactional
     public void completePostureWithoutQuizOrLecture() {
         //given
-        String userId = getUserId("현애", "010-0000-0000");
+        String userId = getUserId("현애", "010-0000-0000", "device-token");
 
         // when the lecture course is not completed,
         Assertions.assertThrows(CustomException.class, () -> progressService.completePosture(userId, new ScoreDto(100)));
@@ -143,8 +143,8 @@ public class EducationProgressTest {
         Assertions.assertThrows(CustomException.class, () -> progressService.completePosture(userId, new ScoreDto(100)));
     }
 
-    private String getUserId(String nickname, String phoneNumber) {
-        String accessToken = userService.signup(new UserSignUpDto(nickname, phoneNumber)).getAccessToken();
+    private String getUserId(String nickname, String phoneNumber, String deviceToken) {
+        String accessToken = userService.signup(new UserSignUpDto(nickname, phoneNumber, deviceToken)).getAccessToken();
         return jwtTokenProvider.getUserId(accessToken);
     }
 
