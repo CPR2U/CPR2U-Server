@@ -30,7 +30,7 @@ public class UserService {
         return issueUserToken(user);
     }
 
-    public UserCodeDto getVerificationCode() {
+    public UserCodeDto getVerificationCode(UserDeviceTokenDto userDeviceTokenDto) {
         return new UserCodeDto(String.format("%04.0f", Math.random() * Math.pow(10, 4)));
     }
 

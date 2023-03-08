@@ -50,10 +50,10 @@ public class AuthController {
     })
 
     @GetMapping("/verification")
-    public ResponseEntity<ResponseDataTemplate> login(){
+    public ResponseEntity<ResponseDataTemplate> issueVerificationCode(@RequestBody UserDeviceTokenDto userDeviceTokenDto){
         return ResponseDataTemplate.toResponseEntity(
                 ResponseCode.OK,
-                userService.getVerificationCode()
+                userService.getVerificationCode(userDeviceTokenDto)
         );
     }
 
