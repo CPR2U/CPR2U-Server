@@ -4,6 +4,21 @@ spring:
       matching-strategy: ant_path_matcher
   profiles:
     include: local
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
   config:
     import:
-      - optional:classpath:/value.yml
+        - optional:classpath:/value.yml
+    
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
+        type:
+          descriptor:
+            sql: trace
