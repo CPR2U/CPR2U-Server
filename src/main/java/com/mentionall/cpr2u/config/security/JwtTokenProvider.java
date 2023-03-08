@@ -1,7 +1,10 @@
 package com.mentionall.cpr2u.config.security;
 
 import com.mentionall.cpr2u.user.domain.UserRole;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +17,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -22,7 +26,7 @@ public class JwtTokenProvider {
     @Value("${security.secret-key}")
     private String secretKey;
 
-    private final long tokenValidTime = 1 * 1 * 5 * 1000L;  // 3시간
+    private final long tokenValidTime = 3 * 60 * 60 * 1000L;  // 3시간
     private final long refreshTokenValidTime = 365 * 24 * 60 * 60 * 1000L; //1년
 
     private final UserDetailsService userDetailsService;
