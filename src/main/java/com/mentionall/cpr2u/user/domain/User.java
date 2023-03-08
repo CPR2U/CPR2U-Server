@@ -20,19 +20,19 @@ public class User extends Timestamped{
     @Id
     @GeneratedValue(generator = RandomGenerator.generatorName)
     @GenericGenerator(name = RandomGenerator.generatorName, strategy = "com.mentionall.cpr2u.util.RandomGenerator")
-    @Column
+    @Column(length = 20)
     private String id;
 
-    @Column
+    @Column(length = 20)
     private String nickname;
 
-    @Column
+    @Column(length = 20)
     private String phoneNumber;
 
     @Column
     private LocalDateTime dateOfIssue;
 
-    @Column
+    @Column(length = 10)
     @Enumerated(EnumType.STRING)
     private AngelStatusEnum status;
 

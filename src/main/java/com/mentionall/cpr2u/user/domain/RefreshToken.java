@@ -1,6 +1,5 @@
 package com.mentionall.cpr2u.user.domain;
 
-import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +18,6 @@ public class RefreshToken {
     @Column
     private String refreshToken;
 
-    @NotNull
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
