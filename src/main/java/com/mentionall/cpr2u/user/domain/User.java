@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.user.domain;
 
+import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.util.RandomGenerator;
 import com.mentionall.cpr2u.util.Timestamped;
@@ -35,6 +36,9 @@ public class User extends Timestamped{
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
     private AngelStatusEnum status;
+
+    @OneToOne(mappedBy = "user")
+    private EducationProgress educationProgress;
 
     @Column
     private String deviceToken;
