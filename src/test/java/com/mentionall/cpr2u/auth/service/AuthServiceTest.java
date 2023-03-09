@@ -5,6 +5,8 @@ import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.*;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.UserService;
+import com.mentionall.cpr2u.util.exception.CustomException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -94,5 +96,22 @@ public class AuthServiceTest {
 
         //then
         assertThat(userId).isEqualTo(jwtTokenProvider.getUserId(newUserTokenDto.getAccessToken()));
+    }
+
+    @Test
+    @Transactional
+    public void nicknameCheck() {
+        //given
+        UserSignUpDto userSignUpDto1 = new UserSignUpDto(nickname, phoneNumber, deviceToken);
+        userService.signup(userSignUpDto1);
+
+        //when
+        UserNicknameDto userNicknameDto = new UserNicknameDto(nickname);
+        ;
+
+        //then
+        Assertions.assertThrows(CustomException.class, ()->{
+                    userService.checkNicknameDuplicated(userNicknameDto);
+                });
     }
 }
