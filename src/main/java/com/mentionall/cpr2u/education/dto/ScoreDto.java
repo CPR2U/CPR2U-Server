@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ScoreDto {
-    @Schema(example = "점수")
+    @Schema(example = "점수(1~100)")
     int score;
 
 }

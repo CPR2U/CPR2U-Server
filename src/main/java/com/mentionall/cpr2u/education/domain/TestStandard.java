@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class TestStandard {
-    public static int finalLectureStep = 4;
-    public static int totalStep = 6;
+    public static int finalLectureStep = 1;
+    public static int totalStep = 3;
 
     public static int quizScore = 100;
     public static int postureScore = 80;
