@@ -1,6 +1,5 @@
 package com.mentionall.cpr2u.user.repository;
 
-import com.mentionall.cpr2u.education.domain.OXQuiz;
 import com.mentionall.cpr2u.user.domain.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
