@@ -22,11 +22,12 @@ public class QuizAnswer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
-    private SelectionQuiz quiz;
+    private Quiz quiz;
 
-    public QuizAnswer(QuizAnswerRequestDto requestDto, SelectionQuiz quiz, boolean isAnswer) {
+
+    public QuizAnswer(QuizAnswerRequestDto requestDto, Quiz quiz) {
         this.content = requestDto.getContent();
-        this.isAnswer = isAnswer;
+        this.isAnswer = requestDto.isAnswer();
         this.quiz = quiz;
         quiz.addAnswer(this);
     }
