@@ -1,13 +1,59 @@
 package com.mentionall.cpr2u.user.controller;
 
+import com.mentionall.cpr2u.education.dto.quiz.OXQuizRequestDto;
+import com.mentionall.cpr2u.user.domain.Address;
+import com.mentionall.cpr2u.user.dto.AddressRequestDto;
+import com.mentionall.cpr2u.user.repository.AddressRepository;
+import com.mentionall.cpr2u.user.service.AddressService;
+import com.mentionall.cpr2u.user.service.UserService;
+import com.mentionall.cpr2u.util.ResponseDataTemplate;
+import com.mentionall.cpr2u.util.ResponseTemplate;
+import com.mentionall.cpr2u.util.exception.ResponseCode;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/user")
 @Tag(name = "UserController", description = "회원 정보 관리")
 public class UserController {
+
+    private final UserService userService;
+    private final AddressService addressService;
+
+    @Operation(summary = "주소 리스트 조회", description = "전국 시도와 시군구 주소 리스트를 조회한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Address.class)))),
+    })
+    @GetMapping("/address")
+    public ResponseEntity<ResponseDataTemplate> readAddressList() {
+        return ResponseDataTemplate.toResponseEntity(
+                ResponseCode.OK,
+                addressService.readAll()
+        );
+    }
+
+    @Operation(summary = "사용자 주소 설정", description = "사용자의 주소를 파라미터로 넘어온 ID의 주소로 설정한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "404", description = "해당 ID의 주소 데이터가 없습니다.", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+    })
+    @PostMapping("/address")
+    public ResponseEntity<ResponseTemplate> setAddress(HttpServletRequest request, @RequestBody AddressRequestDto requestDto) {
+        String userId = request.getUserPrincipal().getName();
+        addressService.setAddress(userId, requestDto);
+
+        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
+    }
+
 }

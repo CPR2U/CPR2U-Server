@@ -3,10 +3,12 @@ package com.mentionall.cpr2u.user.service;
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
+import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.DeviceToken;
 import com.mentionall.cpr2u.user.domain.RefreshToken;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.*;
+import com.mentionall.cpr2u.user.repository.AddressRepository;
 import com.mentionall.cpr2u.user.repository.DeviceTokenRepository;
 import com.mentionall.cpr2u.user.repository.RefreshTokenRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
@@ -21,12 +23,11 @@ public class UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final EducationProgressRepository progressRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final DeviceTokenRepository deviceTokenRepository;
 
     public UserTokenDto signup(UserSignUpDto userSignUpDto) {
-
         User user = new User(userSignUpDto);
         userRepository.save(user);
         deviceTokenRepository.save(new DeviceToken(userSignUpDto.getDeviceToken(), user));
@@ -39,7 +40,6 @@ public class UserService {
     }
 
     public UserTokenDto login(UserLoginDto userLoginDto) {
-
         if(userRepository.existsByPhoneNumber(userLoginDto.getPhoneNumber())){
             User user = userRepository.findByPhoneNumber(userLoginDto.getPhoneNumber())
                     .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
@@ -67,7 +67,6 @@ public class UserService {
     }
 
     public UserTokenDto issueUserToken(User user){
-
         String newRefreshToken = jwtTokenProvider.createRefreshToken();
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(new RefreshToken(user));
         refreshToken.setRefreshToken(newRefreshToken);
@@ -79,11 +78,10 @@ public class UserService {
                 newRefreshToken);
     }
 
-    public ResponseCode checkNicknameDuplicated(UserNicknameDto userNicknameDto) {
+    public void checkNicknameDuplicated(UserNicknameDto userNicknameDto) {
         System.out.println(userNicknameDto.getNickname());
         System.out.println(userRepository.existsByNickname(userNicknameDto.getNickname()));
         if(userRepository.existsByNickname(userNicknameDto.getNickname()))
             throw new CustomException(ResponseCode.BAD_REQUEST_NICKNAME_DUPLICATED);
-        return ResponseCode.OK_NICKNAME_CHECK;
     }
 }

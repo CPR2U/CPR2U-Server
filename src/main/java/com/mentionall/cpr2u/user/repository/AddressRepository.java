@@ -1,0 +1,17 @@
+package com.mentionall.cpr2u.user.repository;
+
+import com.mentionall.cpr2u.education.domain.OXQuiz;
+import com.mentionall.cpr2u.user.domain.Address;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface AddressRepository extends JpaRepository<Address, Long> {
+
+    // TODO: Querydsl로 리팩토링
+    @Query(nativeQuery = true, value = "SELECT DISTINCT a.sido FROM Address a")
+    List<String> findAllSido();
+}

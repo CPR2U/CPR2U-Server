@@ -49,6 +49,11 @@ public class User extends Timestamped{
     @ElementCollection(fetch = FetchType.LAZY)
     private List<UserRole> roles = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+
     public User(UserSignUpDto userSignUpDto) {
         this.nickname = userSignUpDto.getNickname();
         this.phoneNumber = userSignUpDto.getPhoneNumber();
@@ -59,5 +64,9 @@ public class User extends Timestamped{
 
     public void setDeviceToken(DeviceToken deviceToken) {
         this.deviceToken = deviceToken;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
