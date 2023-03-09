@@ -59,7 +59,7 @@ public class UserService {
         RefreshToken refreshToken;
         if(jwtTokenProvider.validateToken(userTokenReissueDto.getRefreshToken()))
             refreshToken = refreshTokenRepository.findByRefreshToken(userTokenReissueDto.getRefreshToken())
-                    .orElseThrow(()-> new CustomException(ResponseCode.NOT_FOUND_REFRESH_TOKEN));
+                    .orElseThrow(()-> new CustomException(ResponseCode.FORBIDDEN_TOKEN_NOT_VALID));
         else throw new CustomException(ResponseCode.FORBIDDEN_TOKEN_NOT_VALID);
 
         User user = refreshToken.getUser();
@@ -77,5 +77,13 @@ public class UserService {
                 user.getRoles(),
                 jwtTokenProvider.createToken(user.getId(), user.getRoles()),
                 newRefreshToken);
+    }
+
+    public ResponseCode checkNicknameDuplicated(UserNicknameDto userNicknameDto) {
+        System.out.println(userNicknameDto.getNickname());
+        System.out.println(userRepository.existsByNickname(userNicknameDto.getNickname()));
+        if(userRepository.existsByNickname(userNicknameDto.getNickname()))
+            throw new CustomException(ResponseCode.BAD_REQUEST_NICKNAME_DUPLICATED);
+        return ResponseCode.OK_NICKNAME_CHECK;
     }
 }

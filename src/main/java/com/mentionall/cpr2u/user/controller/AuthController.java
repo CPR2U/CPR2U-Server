@@ -41,7 +41,7 @@ public class AuthController {
     }
 
     @Operation(summary = "로그인 인증번호 발급",
-            method = "GET",
+            method = "POST",
             description = "로그인 인증번호 발급 API"
     )
     @ApiResponses(value = {
@@ -49,7 +49,7 @@ public class AuthController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserCodeDto.class))))
     })
 
-    @GetMapping("/verification")
+    @PostMapping("/verification")
     public ResponseEntity<ResponseDataTemplate> issueVerificationCode(@RequestBody UserDeviceTokenDto userDeviceTokenDto){
         return ResponseDataTemplate.toResponseEntity(
                 ResponseCode.OK,
@@ -76,6 +76,24 @@ public class AuthController {
         );
     }
 
+    @Operation(summary = "닉네임 중복확인",
+            method = "POST",
+            description = "닉네임 중복확인 API"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "사용 가능한 닉네임",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "400", description = "중복된 닉네임",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
+    })
+
+    @PostMapping("/nickname")
+    public ResponseEntity<ResponseTemplate> nicknameCheck(@RequestBody UserNicknameDto userNicknameDto){
+        return ResponseTemplate.toResponseEntity(
+                userService.checkNicknameDuplicated(userNicknameDto)
+        );
+    }
+
     @Operation(summary = "자동로그인",
             method = "POST",
             description = "자동로그인 API"
@@ -83,7 +101,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "자동 로그인 성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserTokenReissueDto.class)))),
-            @ApiResponse(responseCode = "404", description = "유효하지 않은 refresh token",
+            @ApiResponse(responseCode = "403", description = "유효하지 않은 refresh token",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
 
@@ -94,4 +112,6 @@ public class AuthController {
                 userService.reissueToken(userTokenReissueDto)
         );
     }
+
+
 }
