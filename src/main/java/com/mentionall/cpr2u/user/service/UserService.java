@@ -33,7 +33,7 @@ public class UserService {
         return issueUserToken(user);
     }
 
-    public UserCodeDto getVerificationCode(UserDeviceTokenDto userDeviceTokenDto) {
+    public UserCodeDto getVerificationCode(UserPhoneNumberDto userPhoneNumberDto) {
         return new UserCodeDto(String.format("%04.0f", Math.random() * Math.pow(10, 4)));
     }
 
@@ -71,7 +71,6 @@ public class UserService {
         refreshTokenRepository.save(refreshToken);
 
         return new UserTokenDto(
-                user.getRoles(),
                 jwtTokenProvider.createToken(user.getId(), user.getRoles()),
                 newRefreshToken);
     }

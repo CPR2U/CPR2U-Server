@@ -14,11 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class UserTokenDto {
 
-    @Enumerated(EnumType.STRING)
-    @Schema(example = "회원 권한")
-    @JsonProperty("user_roles")
-    List<UserRole> roles;
-
     @Schema(example = "access token")
     @JsonProperty("access_token")
     String accessToken;

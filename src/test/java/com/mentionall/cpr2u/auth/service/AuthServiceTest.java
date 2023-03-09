@@ -69,11 +69,11 @@ public class AuthServiceTest {
     @Transactional
     public void verification(){
         //given
-        UserDeviceTokenDto userDeviceTokenDto = new UserDeviceTokenDto(deviceToken);
+        UserPhoneNumberDto userPhoneNumberDto = new UserPhoneNumberDto(phoneNumber);
 
         for(int i = 0 ; i < 100 ; i ++) {
             //when
-            UserCodeDto userCodeDto = userService.getVerificationCode(userDeviceTokenDto);
+            UserCodeDto userCodeDto = userService.getVerificationCode(userPhoneNumberDto);
 
             //then
             assertThat(userCodeDto.getValidationCode().length()).isEqualTo(4);
