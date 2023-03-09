@@ -20,7 +20,7 @@ public class QuizResponseDto {
     @Schema(example = "퀴즈 질문")
     protected String question;
 
-    @Schema(example = "퀴즈 타입")
+    @Schema(example = "퀴즈 타입(OX/SELECTION)")
     @Enumerated(EnumType.STRING)
     protected QuizType type;
 

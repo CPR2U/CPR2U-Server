@@ -16,7 +16,7 @@ public class QuizRequestDto {
     @Schema(example = "퀴즈 질문")
     private String question;
 
-    @Schema(example = "퀴즈 타입")
+    @Schema(example = "퀴즈 타입(OX/SELECTION)")
     private String type;
 
     @Schema(example = "정답 리스트")

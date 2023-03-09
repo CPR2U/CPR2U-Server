@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuizAnswerRequestDto {
-    @Schema(example = "정답 여부")
+    @Schema(example = "정답 여부(true/false)")
     private boolean isAnswer;
 
     @Schema(example = "후보 정답 내용")

@@ -75,7 +75,7 @@ public class  EducationController {
         return ResponseTemplate.toResponseEntity(ResponseCode.OK);
     }
 
-    @Operation(summary = "퀴즈 질문 조회", description = "5개의 퀴즈 질문과 답변 리스트를 랜덤으로 조회한다.")
+    @Operation(summary = "퀴즈 질문 조회", description = "5개의 퀴즈 질문과 답변을 랜덤으로 조회한다.(리스트)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = QuizResponseDto.class)))),
     })
