@@ -44,7 +44,7 @@ public class QuizService {
             answerRepository.save(new QuizAnswer(answerDto, quiz, isAnswer));
         }
 
-        if (!haveAnswer) throw new CustomException(ResponseCode.QUIZ_BAD_REQUEST);
+        if (!haveAnswer) throw new CustomException(ResponseCode.BAD_REQUEST_QUIZ_WRONG_ANSWER);
     }
 
     @Transactional

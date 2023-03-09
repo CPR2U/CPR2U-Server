@@ -3,9 +3,11 @@ package com.mentionall.cpr2u.user.service;
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
+import com.mentionall.cpr2u.user.domain.DeviceToken;
 import com.mentionall.cpr2u.user.domain.RefreshToken;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.*;
+import com.mentionall.cpr2u.user.repository.DeviceTokenRepository;
 import com.mentionall.cpr2u.user.repository.RefreshTokenRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
@@ -21,11 +23,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final EducationProgressRepository progressRepository;
+    private final DeviceTokenRepository deviceTokenRepository;
 
     public UserTokenDto signup(UserSignUpDto userSignUpDto) {
 
         User user = new User(userSignUpDto);
         userRepository.save(user);
+        deviceTokenRepository.save(new DeviceToken(userSignUpDto.getDeviceToken(), user));
         progressRepository.save(new EducationProgress(user));
         return issueUserToken(user);
     }
@@ -38,10 +42,17 @@ public class UserService {
 
         if(userRepository.existsByPhoneNumber(userLoginDto.getPhoneNumber())){
             User user = userRepository.findByPhoneNumber(userLoginDto.getPhoneNumber())
-                    .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION));
+                    .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
+
+            DeviceToken deviceToken = deviceTokenRepository.findByUserId(user.getId()).orElse(null);
+            deviceToken.setDeviceToken(userLoginDto.getDeviceToken());
+            deviceTokenRepository.save(deviceToken);
+            user.setDeviceToken(deviceToken);
+            userRepository.save(user);
+
             return issueUserToken(user);
         }
-        else throw new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION);
+        throw new CustomException(ResponseCode.NOT_FOUND_USER);
     }
 
     public UserTokenDto reissueToken(UserTokenReissueDto userTokenReissueDto) {
@@ -49,7 +60,7 @@ public class UserService {
         if(jwtTokenProvider.validateToken(userTokenReissueDto.getRefreshToken()))
             refreshToken = refreshTokenRepository.findByRefreshToken(userTokenReissueDto.getRefreshToken())
                     .orElseThrow(()-> new CustomException(ResponseCode.NOT_FOUND_REFRESH_TOKEN));
-        else throw new CustomException(ResponseCode.FORBIDDEN_NOT_VALID_TOKEN);
+        else throw new CustomException(ResponseCode.FORBIDDEN_TOKEN_NOT_VALID);
 
         User user = refreshToken.getUser();
         return issueUserToken(user);
@@ -58,10 +69,8 @@ public class UserService {
     public UserTokenDto issueUserToken(User user){
 
         String newRefreshToken = jwtTokenProvider.createRefreshToken();
-        RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(null);
-        if(refreshToken != null)
-            refreshToken.setRefreshToken(newRefreshToken);
-        else refreshToken = new RefreshToken(newRefreshToken, user);
+        RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(new RefreshToken(user));
+        refreshToken.setRefreshToken(newRefreshToken);
         refreshTokenRepository.save(refreshToken);
 
         return new UserTokenDto(

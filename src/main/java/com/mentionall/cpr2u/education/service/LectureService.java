@@ -31,17 +31,17 @@ public class LectureService {
 
     public void createLecture(LectureRequestDto requestDto) {
         if (lectureRepository.existsByStep(requestDto.getStep()))
-            throw new CustomException(ResponseCode.LECTURE_STEP_DUPLICATED);
+            throw new CustomException(ResponseCode.BAD_REQUEST_LECTURE_DUPLICATED);
 
         lectureRepository.save(new Lecture(requestDto));
     }
 
     public LectureProgressDto readLectureProgress(String userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_USER_EXCEPTION)
+                () -> new CustomException(ResponseCode.NOT_FOUND_USER)
         );
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
-                () -> new CustomException(ResponseCode.EDUCATION_PROGRESS_NOT_FOUND)
+                () -> new CustomException(ResponseCode.NOT_FOUND_EDUCATION_PROGRESS)
         );
 
         List<LectureResponseDto> lectureResponseDtoList = lectureRepository.findAll()

@@ -40,18 +40,24 @@ public class User extends Timestamped{
     @OneToOne(mappedBy = "user")
     private EducationProgress educationProgress;
 
-    @Column
-    private String deviceToken;
+    @OneToOne(mappedBy = "user")
+    private RefreshToken refreshToken;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user")
+    private DeviceToken deviceToken;
+
+    @ElementCollection(fetch = FetchType.LAZY)
     private List<UserRole> roles = new ArrayList<>();
 
     public User(UserSignUpDto userSignUpDto) {
         this.nickname = userSignUpDto.getNickname();
         this.phoneNumber = userSignUpDto.getPhoneNumber();
         this.dateOfIssue = null;
-        this.deviceToken = userSignUpDto.getDeviceToken();
         this.status = AngelStatusEnum.UNACQUIRED;
         this.roles.add(UserRole.USER);
+    }
+
+    public void setDeviceToken(DeviceToken deviceToken) {
+        this.deviceToken = deviceToken;
     }
 }
