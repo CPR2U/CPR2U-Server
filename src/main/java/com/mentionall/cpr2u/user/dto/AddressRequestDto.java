@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.user.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressRequestDto {
+    @Schema(example = "주소지 ID")
     private Long id;
 }
