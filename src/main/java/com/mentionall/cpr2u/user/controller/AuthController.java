@@ -89,9 +89,9 @@ public class AuthController {
 
     @PostMapping("/nickname")
     public ResponseEntity<ResponseTemplate> nicknameCheck(@RequestBody UserNicknameDto userNicknameDto){
-        return ResponseTemplate.toResponseEntity(
-                userService.checkNicknameDuplicated(userNicknameDto)
-        );
+        userService.checkNicknameDuplicated(userNicknameDto);
+
+        return ResponseTemplate.toResponseEntity(ResponseCode.OK_NICKNAME_CHECK);
     }
 
     @Operation(summary = "자동로그인",
