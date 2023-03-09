@@ -67,7 +67,6 @@ public class AddressServiceTest {
         addressRepository.save(new Address("서울특별시", "종로구"));
         addressRepository.save(new Address("서울특별시", "마포구"));
 
-
         //when
         List<AddressResponseDto> response = addressService.readAll();
 

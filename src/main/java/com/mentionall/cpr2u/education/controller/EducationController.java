@@ -52,7 +52,7 @@ public class  EducationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureProgressDto.class)))),
     })
-    @GetMapping("/lecture")
+    @GetMapping("/lectures")
     public ResponseEntity<ResponseDataTemplate> getLectureList(HttpServletRequest request) {
         String userId = request.getUserPrincipal().getName();
 
@@ -65,7 +65,7 @@ public class  EducationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
-    @PostMapping("/lecture/progress/{lectureId}")
+    @PostMapping("/lectures/progress/{lectureId}")
     public ResponseEntity<ResponseTemplate> completeLecture(
             @Parameter(description = "완강한 강의 ID") @PathVariable Long lectureId,
             HttpServletRequest request) {
@@ -79,20 +79,20 @@ public class  EducationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = OXQuizRequestDto.class)))),
     })
-    @GetMapping("/quiz")
+    @GetMapping("/quizzes")
     public ResponseEntity<ResponseDataTemplate> getQuizList() {
         return ResponseDataTemplate.toResponseEntity(
                 ResponseCode.OK,
                 quizService.readRandom5Quiz());
     }
 
-    @PostMapping("/quiz/ox")
+    @PostMapping("/quizzes/ox")
     public ResponseEntity<ResponseTemplate> createOxQuiz(@RequestBody OXQuizRequestDto requestDto) {
         quizService.createOXQuiz(requestDto);
         return ResponseTemplate.toResponseEntity(ResponseCode.OK);
     }
 
-    @PostMapping("/quiz/selection")
+    @PostMapping("/quizzes/selection")
     public ResponseEntity<ResponseTemplate> createSelectionQuiz(@RequestBody SelectionQuizRequestDto requestDto) {
         quizService.createSelectionQuiz(requestDto);
         return ResponseTemplate.toResponseEntity(ResponseCode.OK);
@@ -102,7 +102,7 @@ public class  EducationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
-    @PostMapping("/quiz/progress")
+    @PostMapping("/quizzes/progress")
     public ResponseEntity<ResponseTemplate> completeQuiz(
             HttpServletRequest request,
             @Parameter(description = "유저의 퀴즈 점수") @RequestBody ScoreDto requestDto
@@ -117,7 +117,7 @@ public class  EducationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureResponseDto.class)))),
     })
-    @GetMapping("/posture")
+    @GetMapping("/exercises")
     public ResponseEntity<ResponseDataTemplate> getPostureLecture() {
         return ResponseDataTemplate.toResponseEntity(
                 ResponseCode.OK,
@@ -128,7 +128,7 @@ public class  EducationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
-    @PostMapping("/posture/progress")
+    @PostMapping("/exercises/progress")
     public ResponseEntity<ResponseTemplate> completePosture(
             HttpServletRequest request,
             @Parameter(description = "유저의 자세실습 점수") @RequestBody ScoreDto requestDto) {

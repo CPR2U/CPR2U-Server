@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Tag(name = "UserController", description = "회원 정보 관리")
 public class UserController {
 
