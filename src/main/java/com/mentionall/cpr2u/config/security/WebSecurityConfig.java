@@ -13,9 +13,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/*
- * Spring Security 관련 설정을 하는 Configuration 클래스
- */
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -39,9 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web
                 .ignoring()
                 .antMatchers(
-                        "/h2-console/**"
-                        ,"/favicon.ico"
-                        ,"/swagger-ui.html/"
+                        "/swagger-ui/**", "/v3/api-docs/**"
                 );
     }
 
@@ -52,7 +47,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .anyRequest().permitAll()
+                .antMatchers("/", "/auth/**", "/webjars/**", "/v3/api-docs",
+                        "/swagger-ui/**", "/swagger/**", "/swagger-ui.html", "/swagger-resources/**", "/h2-console"
+                ).permitAll()
+                .and()
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class);

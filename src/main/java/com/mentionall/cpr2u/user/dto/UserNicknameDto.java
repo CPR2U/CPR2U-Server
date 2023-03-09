@@ -9,17 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSignUpDto {
+public class UserNicknameDto {
 
     @Schema(example = "사용자 이름")
     @JsonProperty("nickname")
     String nickname;
 
-    @Schema(example = "사용자 전화번호")
-    @JsonProperty("phone_number")
-    String phoneNumber;
-
-    @Schema(example = "device token")
-    @JsonProperty("device_token")
-    String deviceToken;
 }

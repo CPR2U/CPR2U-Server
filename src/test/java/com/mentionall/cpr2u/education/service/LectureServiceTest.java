@@ -46,7 +46,7 @@ public class LectureServiceTest {
     @Transactional
     public void readLectureProgress() {
         //given
-        UserSignUpDto signUpDto = new UserSignUpDto("현애", "010-0000-0000");
+        UserSignUpDto signUpDto = new UserSignUpDto("현애", "010-0000-0000", "device-token");
         String accessToken = userService.signup(signUpDto).getAccessToken();
         String userId = jwtTokenProvider.getUserId(accessToken);
 

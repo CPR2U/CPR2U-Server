@@ -7,80 +7,57 @@ import com.mentionall.cpr2u.util.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class User extends Timestamped implements UserDetails {
+public class User extends Timestamped{
 
     @Id
     @GeneratedValue(generator = RandomGenerator.generatorName)
     @GenericGenerator(name = RandomGenerator.generatorName, strategy = "com.mentionall.cpr2u.util.RandomGenerator")
-    @Column
+    @Column(length = 20)
     private String id;
 
-    @Column
+    @Column(length = 40)
     private String nickname;
 
-    @Column
+    @Column(length = 20)
     private String phoneNumber;
 
     @Column
     private LocalDateTime dateOfIssue;
 
-    @Column
+    @Column(length = 10)
     @Enumerated(EnumType.STRING)
     private AngelStatusEnum status;
 
     @OneToOne(mappedBy = "user")
     private EducationProgress educationProgress;
 
+    @OneToOne(mappedBy = "user")
+    private RefreshToken refreshToken;
+
+    @OneToOne(mappedBy = "user")
+    private DeviceToken deviceToken;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<UserRole> roles = new ArrayList<>();
+
     public User(UserSignUpDto userSignUpDto) {
         this.nickname = userSignUpDto.getNickname();
         this.phoneNumber = userSignUpDto.getPhoneNumber();
         this.dateOfIssue = null;
         this.status = AngelStatusEnum.UNACQUIRED;
+        this.roles.add(UserRole.USER);
     }
 
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
+    public void setDeviceToken(DeviceToken deviceToken) {
+        this.deviceToken = deviceToken;
     }
 }

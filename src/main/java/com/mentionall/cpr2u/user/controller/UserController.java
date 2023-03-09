@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-@Tag(name = "사용자")
+@Tag(name = "UserController", description = "회원 정보 관리")
 public class UserController {
-
 }
