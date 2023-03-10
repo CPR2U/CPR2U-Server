@@ -49,5 +49,6 @@ public class AddressService {
         );
 
         user.setAddress(address);
+        userRepository.save(user);
     }
 }
