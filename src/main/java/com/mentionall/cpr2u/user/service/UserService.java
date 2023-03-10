@@ -75,10 +75,10 @@ public class UserService {
                 newRefreshToken);
     }
 
-    public void checkNicknameDuplicated(UserNicknameDto userNicknameDto) {
-        System.out.println(userNicknameDto.getNickname());
-        System.out.println(userRepository.existsByNickname(userNicknameDto.getNickname()));
-        if(userRepository.existsByNickname(userNicknameDto.getNickname()))
+    public void checkNicknameDuplicated(String nickname) {
+        System.out.println(nickname);
+        System.out.println(userRepository.existsByNickname(nickname));
+        if(userRepository.existsByNickname(nickname))
             throw new CustomException(ResponseCode.BAD_REQUEST_NICKNAME_DUPLICATED);
     }
 }

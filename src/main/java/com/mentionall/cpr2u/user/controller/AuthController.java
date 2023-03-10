@@ -87,9 +87,9 @@ public class AuthController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
 
-    @PostMapping("/nickname")
-    public ResponseEntity<ResponseTemplate> nicknameCheck(@RequestBody UserNicknameDto userNicknameDto){
-        userService.checkNicknameDuplicated(userNicknameDto);
+    @GetMapping("/nickname")
+    public ResponseEntity<ResponseTemplate> nicknameCheck(@RequestParam("nickname") String nickname){
+        userService.checkNicknameDuplicated(nickname);
 
         return ResponseTemplate.toResponseEntity(ResponseCode.OK_NICKNAME_CHECK);
     }

@@ -105,11 +105,11 @@ public class AuthServiceTest {
         userService.signup(userSignUpDto);
 
         //when
-        UserNicknameDto userNicknameDto = new UserNicknameDto(nickname);
+        String newNickname = nickname;
 
         //then
         Assertions.assertThrows(CustomException.class, ()->{
-                    userService.checkNicknameDuplicated(userNicknameDto);
-                });
+                    userService.checkNicknameDuplicated(newNickname);
+        });
     }
 }
