@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.auth.service;
+package com.mentionall.cpr2u.user.service;
 
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.user.domain.Address;
@@ -8,14 +8,11 @@ import com.mentionall.cpr2u.user.dto.AddressResponseDto;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.AddressRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
-import com.mentionall.cpr2u.user.service.AddressService;
-import com.mentionall.cpr2u.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
