@@ -2,8 +2,8 @@ package com.mentionall.cpr2u.education.controller;
 
 import com.mentionall.cpr2u.education.dto.*;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
-import com.mentionall.cpr2u.education.dto.quiz.OXQuizRequestDto;
-import com.mentionall.cpr2u.education.dto.quiz.SelectionQuizRequestDto;
+import com.mentionall.cpr2u.education.dto.quiz.QuizRequestDto;
+import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.service.EducationProgressService;
 import com.mentionall.cpr2u.education.service.LectureService;
 import com.mentionall.cpr2u.education.service.QuizService;
@@ -75,9 +75,9 @@ public class  EducationController {
         return ResponseTemplate.toResponseEntity(ResponseCode.OK);
     }
 
-    @Operation(summary = "퀴즈 질문 조회", description = "5개의 퀴즈 질문과 답변 리스트를 랜덤으로 조회한다.")
+    @Operation(summary = "퀴즈 질문 조회", description = "5개의 퀴즈 질문과 답변을 랜덤으로 조회한다.(리스트)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = OXQuizRequestDto.class)))),
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = QuizResponseDto.class)))),
     })
     @GetMapping("/quizzes")
     public ResponseEntity<ResponseDataTemplate> getQuizList() {
@@ -86,15 +86,9 @@ public class  EducationController {
                 quizService.readRandom5Quiz());
     }
 
-    @PostMapping("/quizzes/ox")
-    public ResponseEntity<ResponseTemplate> createOxQuiz(@RequestBody OXQuizRequestDto requestDto) {
-        quizService.createOXQuiz(requestDto);
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
-    }
-
-    @PostMapping("/quizzes/selection")
-    public ResponseEntity<ResponseTemplate> createSelectionQuiz(@RequestBody SelectionQuizRequestDto requestDto) {
-        quizService.createSelectionQuiz(requestDto);
+    @PostMapping("/quizzes")
+    public ResponseEntity<ResponseTemplate> createQuiz(@RequestBody QuizRequestDto requestDto) {
+        quizService.createQuiz(requestDto);
         return ResponseTemplate.toResponseEntity(ResponseCode.OK);
     }
 

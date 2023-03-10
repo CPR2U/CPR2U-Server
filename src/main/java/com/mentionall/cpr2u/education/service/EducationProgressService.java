@@ -37,7 +37,7 @@ public class EducationProgressService {
         progress.updateQuizScore(requestDto.getScore());
 
         if (requestDto.getScore() < TestStandard.quizScore)
-            throw new CustomException(ResponseCode.BAD_REQUEST_QUIZ_FAIL);
+            throw new CustomException(ResponseCode.OK_QUIZ_FAIL);
     }
 
     public void completePosture(String userId, ScoreDto requestDto) {
@@ -56,7 +56,7 @@ public class EducationProgressService {
         progress.updatePostureScore(requestDto.getScore());
 
         if (progress.getPostureScore() < TestStandard.postureScore)
-            throw new CustomException(ResponseCode.BAD_REQUEST_POSTURE_FAIL);
+            throw new CustomException(ResponseCode.OK_POSTURE_FAIL);
     }
 
     public EducationProgressDto readEducationInfo(String userId) {

@@ -37,9 +37,6 @@ public class LectureServiceTest {
     public void beforeEach() {
         lectureRepository.deleteAll();
         lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com"));
-        lectureService.createLecture(new LectureRequestDto(2, "강의2", "2입니다.", "https://naver.com"));
-        lectureService.createLecture(new LectureRequestDto(3, "강의3", "3입니다.", "https://naver.com"));
-        lectureService.createLecture(new LectureRequestDto(4, "강의4", "4입니다.", "https://naver.com"));
     }
 
     @Test

@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LectureRequestDto {
-    @Schema(example = "강의 섹션")
+    @Schema(example = "강의 섹션(0~4)")
     private int step;
 
     @Schema(example = "강의 제목")

@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 public class LectureProgressDto {
-    @Schema(example = "마지막으로 이수 완료한 강의 섹션")
+    @Schema(example = "마지막으로 이수 완료한 강의 섹션(1~4)")
     @JsonProperty("current_step")
     private int currentStep;
 
