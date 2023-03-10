@@ -41,7 +41,7 @@ public class AddressService {
     }
 
     public void setAddress(String userId, AddressRequestDto requestDto) {
-        Address address = addressRepository.findById(requestDto.getId()).orElseThrow(
+        Address address = addressRepository.findById(requestDto.getAddressId()).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_ADDRESS)
         );
         User user = userRepository.findById(userId).orElseThrow(

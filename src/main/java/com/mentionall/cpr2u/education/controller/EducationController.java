@@ -86,18 +86,6 @@ public class  EducationController {
                 quizService.readRandom5Quiz());
     }
 
-    @PostMapping("/quizzes/ox")
-    public ResponseEntity<ResponseTemplate> createOxQuiz(@RequestBody OXQuizRequestDto requestDto) {
-        quizService.createOXQuiz(requestDto);
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
-    }
-
-    @PostMapping("/quizzes/selection")
-    public ResponseEntity<ResponseTemplate> createSelectionQuiz(@RequestBody SelectionQuizRequestDto requestDto) {
-        quizService.createSelectionQuiz(requestDto);
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
-    }
-
     @Operation(summary = "퀴즈 테스트 완료", description = "유저가 퀴즈 테스트를 통과했음을 저장한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
