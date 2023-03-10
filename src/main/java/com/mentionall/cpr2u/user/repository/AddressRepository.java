@@ -11,6 +11,6 @@ import java.util.List;
 public interface AddressRepository extends JpaRepository<Address, Long> {
 
     // TODO: Querydsl로 리팩토링
-    @Query(nativeQuery = true, value = "SELECT DISTINCT a.sido FROM Address a")
+    @Query("SELECT DISTINCT a.sido FROM Address a")
     List<String> findAllSido();
 }
