@@ -13,7 +13,7 @@ public class LectureResponseDto {
     @Schema(example = "강의 ID")
     private Long id;
 
-    @Schema(example = "강의 섹션")
+    @Schema(example = "강의 섹션(1~4)")
     private int step;
 
     @Schema(example = "강의 제목")

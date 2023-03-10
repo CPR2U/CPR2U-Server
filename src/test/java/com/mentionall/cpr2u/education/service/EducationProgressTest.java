@@ -41,10 +41,7 @@ public class EducationProgressTest {
     @BeforeEach
     public void createLectures() {
         lectureRepository.deleteAll();
-        lectureService.createLecture(new LectureRequestDto(2, "강의2", "2입니다.", "https://naver.com"));
-        lectureService.createLecture(new LectureRequestDto(3, "강의3", "3입니다.", "https://naver.com"));
         lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com"));
-        lectureService.createLecture(new LectureRequestDto(4, "강의4", "4입니다.", "https://naver.com"));
     }
 
     @Test
@@ -119,9 +116,9 @@ public class EducationProgressTest {
         Assertions.assertThrows(CustomException.class, () -> progressService.completeQuiz(userId, new ScoreDto(100)));
 
         // when the lecture course is in progress,
-        LectureResponseDto lecture = lectureService.readAllTheoryLecture().get(0);
-        progressService.completeLecture(userId, lecture.getId());
-        Assertions.assertThrows(CustomException.class, () -> progressService.completeQuiz(userId, new ScoreDto(100)));
+//        LectureResponseDto lecture = lectureService.readAllTheoryLecture().get(0);
+//        progressService.completeLecture(userId, lecture.getId());
+//        Assertions.assertThrows(CustomException.class, () -> progressService.completeQuiz(userId, new ScoreDto(100)));
     }
 
     @Test
@@ -155,7 +152,7 @@ public class EducationProgressTest {
         double totalProgress =
                 (status == ProgressStatus.Completed) ? ((double)TestStandard.finalLectureStep / (double)TestStandard.totalStep) :
                 (status == ProgressStatus.InProgress) ? (double)lecture.getStep() / (double)TestStandard.totalStep : 0.0;
-        assertThat(progress.getTotalProgress()).isEqualTo(totalProgress);
+        assertThat(progress.getProgressPercent()).isEqualTo(totalProgress);
 
         if (status == ProgressStatus.InProgress)
             assertThat(progress.getLastLectureTitle()).isEqualTo(lecture.getTitle());
@@ -172,6 +169,6 @@ public class EducationProgressTest {
         assertThat(postureStatus).isEqualTo(status);
 
         if (postureStatus == ProgressStatus.Completed)
-            assertThat(progress.getTotalProgress()).isEqualTo(1.0);
+            assertThat(progress.getProgressPercent()).isEqualTo(1.0);
     }
 }

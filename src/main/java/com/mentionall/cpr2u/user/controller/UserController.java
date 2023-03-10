@@ -1,6 +1,5 @@
 package com.mentionall.cpr2u.user.controller;
 
-import com.mentionall.cpr2u.education.dto.quiz.OXQuizRequestDto;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.dto.AddressRequestDto;
 import com.mentionall.cpr2u.user.dto.AddressResponseDto;
