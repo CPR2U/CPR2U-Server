@@ -3,6 +3,7 @@ package com.mentionall.cpr2u.education.service;
 import com.mentionall.cpr2u.education.dto.quiz.QuizAnswerRequestDto;
 import com.mentionall.cpr2u.education.dto.quiz.QuizRequestDto;
 import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,7 @@ public class QuizServiceTest {
 
     @Test
     @Transactional
+    @DisplayName("5개의 퀴즈를 무작위 조회")
     public void readRandom5Quiz() {
         //given
         create7OXQuiz();

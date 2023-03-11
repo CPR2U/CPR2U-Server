@@ -13,6 +13,7 @@ import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,6 +47,7 @@ public class EducationProgressTest {
 
     @Test
     @Transactional
+    @DisplayName("강의 이수 완료")
     public void completeLecture() {
         //given
         String userId = getUserId("현애", "010-0000-0000", "device-token");
@@ -69,6 +71,7 @@ public class EducationProgressTest {
 
     @Test
     @Transactional
+    @DisplayName("퀴즈 테스트 통과")
     public void completeQuiz() {
         //given
         String userId = getUserId("현애", "010-0000-0000", "device-token");
@@ -88,6 +91,7 @@ public class EducationProgressTest {
 
     @Test
     @Transactional
+    @DisplayName("자세실습 테스트 통과")
     public void completePosture() {
         //given
         String userId = getUserId("현애", "010-0000-0000", "device-token");
@@ -108,6 +112,7 @@ public class EducationProgressTest {
 
     @Test
     @Transactional
+    @DisplayName("강의를 듣지 않으면 퀴즈 테스트 불통과")
     public void completeQuizWithoutLecture() {
         //given
         String userId = getUserId("현애", "010-0000-0000", "device-token");
@@ -123,6 +128,7 @@ public class EducationProgressTest {
 
     @Test
     @Transactional
+    @DisplayName("강의/퀴즈를 마무리하지 않으면 자세 실습 불통과")
     public void completePostureWithoutQuizOrLecture() {
         //given
         String userId = getUserId("현애", "010-0000-0000", "device-token");
@@ -147,7 +153,7 @@ public class EducationProgressTest {
 
     private void assertThatLectureProgressIsEqualTo(String userId, LectureResponseDto lecture, ProgressStatus status) {
         EducationProgressDto progress = progressService.readEducationInfo(userId);
-        assertThat(progress.getIsLectureCompleted()).isEqualTo(status);
+        assertThat(progress.getIsLectureCompleted()).isEqualTo(status.ordinal());
 
         double totalProgress =
                 (status == ProgressStatus.Completed) ? ((double)TestStandard.finalLectureStep / (double)TestStandard.totalStep) :
@@ -159,16 +165,16 @@ public class EducationProgressTest {
     }
 
     private void assertThatQuizProgressIsEqualTo(String userId, ProgressStatus status) {
-        ProgressStatus quizStatus = progressService.readEducationInfo(userId).getIsQuizCompleted();
-        assertThat(quizStatus).isEqualTo(status);
+        int quizStatus = progressService.readEducationInfo(userId).getIsQuizCompleted();
+        assertThat(quizStatus).isEqualTo(status.ordinal());
     }
 
     private void assertThatPostureProgressIsEqualTo(String userId, ProgressStatus status) {
         EducationProgressDto progress = progressService.readEducationInfo(userId);
-        ProgressStatus postureStatus = progress.getIsPostureCompleted();
-        assertThat(postureStatus).isEqualTo(status);
+        int postureStatus = progress.getIsPostureCompleted();
+        assertThat(postureStatus).isEqualTo(status.ordinal());
 
-        if (postureStatus == ProgressStatus.Completed)
+        if (postureStatus == ProgressStatus.Completed.ordinal())
             assertThat(progress.getProgressPercent()).isEqualTo(1.0);
     }
 }

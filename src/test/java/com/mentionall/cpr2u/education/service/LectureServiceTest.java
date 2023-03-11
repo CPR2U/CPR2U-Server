@@ -10,6 +10,7 @@ import com.mentionall.cpr2u.education.repository.LectureRepository;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,6 +42,7 @@ public class LectureServiceTest {
 
     @Test
     @Transactional
+    @DisplayName("사용자의 강의 진도 조회")
     public void readLectureProgress() {
         //given
         UserSignUpDto signUpDto = new UserSignUpDto("현애", "010-0000-0000", "device-token");
@@ -62,6 +64,7 @@ public class LectureServiceTest {
     }
 
     @Test
+    @DisplayName("자세실습 강의 조회")
     public void readPostureLecture() {
         //given & when
         PostureLectureResponseDto postureLecture = lectureService.readPostureLecture();
