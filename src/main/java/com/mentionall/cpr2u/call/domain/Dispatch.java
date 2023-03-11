@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.call.domain;
 
+import com.mentionall.cpr2u.call.dto.DispatchRequestDto;
 import com.mentionall.cpr2u.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,7 @@ public class Dispatch {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private DispatchStatus statuc;
+    private DispatchStatus status;
 
     @CreatedDate
     private LocalDateTime dispatchedAt;
@@ -33,6 +34,18 @@ public class Dispatch {
     @Column
     private LocalDateTime arrivedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cpr_call")
+    private CPRCall cprCall;
 
 
+    public Dispatch(User user, CPRCall cprCall) {
+        this.dispatcher = user;
+        this.cprCall = cprCall;
+        this.status = DispatchStatus.IN_PROGRESS;
+    }
+
+    public void arrive() {
+        this.status = DispatchStatus.ARRIVED;
+    }
 }

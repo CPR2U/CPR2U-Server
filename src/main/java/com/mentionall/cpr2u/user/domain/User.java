@@ -1,6 +1,7 @@
 package com.mentionall.cpr2u.user.domain;
 
 import com.mentionall.cpr2u.call.domain.Dispatch;
+import com.mentionall.cpr2u.call.domain.Report;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.util.RandomGenerator;
@@ -61,6 +62,9 @@ public class User extends Timestamped{
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dispatcher")
     List<Dispatch> dispatchList = new ArrayList();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reporter")
+    List<Report> reportList = new ArrayList();
 
 
     public User(UserSignUpDto userSignUpDto) {

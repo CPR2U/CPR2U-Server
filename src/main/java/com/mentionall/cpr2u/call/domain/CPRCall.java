@@ -8,6 +8,8 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -43,4 +45,17 @@ public class CPRCall {
     @Enumerated(EnumType.STRING)
     CallStatus status;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cprCall")
+    List<Dispatch> dispatchList = new ArrayList();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cprCall")
+    List<Report> reportList = new ArrayList();
+
+    //TODO: /dispatch 테스트용 임시 생성자(발견 시 삭제 요망)
+    public CPRCall(String fullAddress, double latitude, double longitude) {
+        this.fullAddress = fullAddress;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.status = CallStatus.IN_PROGRESS;
+    }
 }
