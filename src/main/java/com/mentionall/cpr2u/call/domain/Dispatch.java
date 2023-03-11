@@ -2,6 +2,7 @@ package com.mentionall.cpr2u.call.domain;
 
 import com.mentionall.cpr2u.call.dto.DispatchRequestDto;
 import com.mentionall.cpr2u.user.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -40,6 +41,12 @@ public class Dispatch {
 
 
     public Dispatch(User user, CPRCall cprCall) {
+        this.dispatcher = user;
+        this.cprCall = cprCall;
+        this.status = DispatchStatus.IN_PROGRESS;
+    }
+
+    public Dispatch(Long id, User user, CPRCall cprCall) {
         this.dispatcher = user;
         this.cprCall = cprCall;
         this.status = DispatchStatus.IN_PROGRESS;

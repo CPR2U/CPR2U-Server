@@ -2,6 +2,7 @@ package com.mentionall.cpr2u.call.domain;
 
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -51,11 +52,11 @@ public class CPRCall {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cprCall")
     List<Report> reportList = new ArrayList();
 
-    //TODO: /dispatch 테스트용 임시 생성자(발견 시 삭제 요망)
-    public CPRCall(String fullAddress, double latitude, double longitude) {
+    // TODO: /dispatch 테스트용 생성자(발견 시 삭제 요망)
+    public CPRCall(Long id, String fullAddress, double latitude, double longitude) {
+        this.id = id;
         this.fullAddress = fullAddress;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.status = CallStatus.IN_PROGRESS;
     }
 }
