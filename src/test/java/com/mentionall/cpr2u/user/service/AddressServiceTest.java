@@ -8,6 +8,7 @@ import com.mentionall.cpr2u.user.dto.AddressResponseDto;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.AddressRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,6 +39,7 @@ public class AddressServiceTest {
 
 
     @Test
+    @DisplayName("사용자의 주소지 설정")
     @Transactional
     public void setAddress() {
         //given
@@ -56,6 +58,7 @@ public class AddressServiceTest {
     }
 
     @Test
+    @DisplayName("전체 주소지 리스트 조회")
     @Transactional
     public void readAll() {
         //given

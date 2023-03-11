@@ -6,6 +6,7 @@ import com.mentionall.cpr2u.user.dto.*;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +33,7 @@ public class AuthServiceTest {
 
     @Test
     @Transactional
+    @DisplayName("회원 가입")
     public void signup() {
         //given
         UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
@@ -48,6 +50,7 @@ public class AuthServiceTest {
 
     @Test
     @Transactional
+    @DisplayName("로그인")
     public void login() {
         //given
         UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
@@ -66,6 +69,7 @@ public class AuthServiceTest {
 
     @Test
     @Transactional
+    @DisplayName("전화번호 인증코드 생성")
     public void verification(){
         //given
         UserPhoneNumberDto userPhoneNumberDto = new UserPhoneNumberDto(phoneNumber);
@@ -81,6 +85,7 @@ public class AuthServiceTest {
 
     @Test
     @Transactional
+    @DisplayName("토큰 재발급")
     public void autoLogin() {
         //given
         UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
@@ -99,6 +104,7 @@ public class AuthServiceTest {
 
     @Test
     @Transactional
+    @DisplayName("닉네임 중복 체크")
     public void nicknameCheck() {
         //given
         UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
