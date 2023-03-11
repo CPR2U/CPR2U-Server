@@ -18,7 +18,7 @@ public enum ResponseCode {
     BAD_REQUEST_EDUCATION_PERMISSION_DENIED(HttpStatus.BAD_REQUEST, "이전 진도를 모두 완료해야 수강할 수 있습니다."),
     FORBIDDEN_TOKEN_NOT_VALID(HttpStatus.FORBIDDEN, "유효하지 않은 토큰입니다."),
     
-    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "회원 정보 없음"),
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "회원 정보가 없습니다."),
     NOT_FOUND_QUIZ(HttpStatus.NOT_FOUND, "해당 ID의 퀴즈를 찾을 수 없습니다."),
 
     NOT_FOUND_LECTURE(HttpStatus.INTERNAL_SERVER_ERROR, "해당 강의를 찾을 수 없습니다."),

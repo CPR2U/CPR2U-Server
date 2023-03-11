@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.auth.service;
+package com.mentionall.cpr2u.user.service;
 
 import org.springframework.boot.test.context.SpringBootTest;
 

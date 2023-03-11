@@ -2,6 +2,8 @@ package com.mentionall.cpr2u.user.controller;
 
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.dto.AddressRequestDto;
+import com.mentionall.cpr2u.user.dto.AddressResponseDto;
+import com.mentionall.cpr2u.user.repository.AddressRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
 import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
@@ -26,12 +28,11 @@ import javax.servlet.http.HttpServletRequest;
 @Tag(name = "UserController", description = "회원 정보 관리")
 public class UserController {
 
-    private final UserService userService;
     private final AddressService addressService;
 
     @Operation(summary = "주소 리스트 조회", description = "전국 시도와 시군구 주소 리스트를 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Address.class)))),
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = AddressResponseDto.class)))),
     })
     @GetMapping("/address")
     public ResponseEntity<ResponseDataTemplate> readAddressList() {
