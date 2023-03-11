@@ -1,10 +1,9 @@
-package com.mentionall.cpr2u.auth.service;
+package com.mentionall.cpr2u.user.service;
 
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.*;
 import com.mentionall.cpr2u.user.repository.UserRepository;
-import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class AuthServiceTest {
@@ -69,11 +68,11 @@ public class AuthServiceTest {
     @Transactional
     public void verification(){
         //given
-        UserDeviceTokenDto userDeviceTokenDto = new UserDeviceTokenDto(deviceToken);
+        UserPhoneNumberDto userPhoneNumberDto = new UserPhoneNumberDto(phoneNumber);
 
         for(int i = 0 ; i < 100 ; i ++) {
             //when
-            UserCodeDto userCodeDto = userService.getVerificationCode(userDeviceTokenDto);
+            UserCodeDto userCodeDto = userService.getVerificationCode(userPhoneNumberDto);
 
             //then
             assertThat(userCodeDto.getValidationCode().length()).isEqualTo(4);
@@ -102,16 +101,15 @@ public class AuthServiceTest {
     @Transactional
     public void nicknameCheck() {
         //given
-        UserSignUpDto userSignUpDto1 = new UserSignUpDto(nickname, phoneNumber, deviceToken);
-        userService.signup(userSignUpDto1);
+        UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
+        userService.signup(userSignUpDto);
 
         //when
-        UserNicknameDto userNicknameDto = new UserNicknameDto(nickname);
-        ;
+        String newNickname = nickname;
 
         //then
         Assertions.assertThrows(CustomException.class, ()->{
-                    userService.checkNicknameDuplicated(userNicknameDto);
-                });
+                    userService.checkNicknameDuplicated(newNickname);
+        });
     }
 }

@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Call {
+@Table(name = "cpr_call")
+public class CPRCall {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

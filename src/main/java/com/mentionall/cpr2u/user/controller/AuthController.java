@@ -50,10 +50,10 @@ public class AuthController {
     })
 
     @PostMapping("/verification")
-    public ResponseEntity<ResponseDataTemplate> issueVerificationCode(@RequestBody UserDeviceTokenDto userDeviceTokenDto){
+    public ResponseEntity<ResponseDataTemplate> issueVerificationCode(@RequestBody UserPhoneNumberDto userPhoneNumberDto){
         return ResponseDataTemplate.toResponseEntity(
                 ResponseCode.OK,
-                userService.getVerificationCode(userDeviceTokenDto)
+                userService.getVerificationCode(userPhoneNumberDto)
         );
     }
 
@@ -87,9 +87,9 @@ public class AuthController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
 
-    @PostMapping("/nickname")
-    public ResponseEntity<ResponseTemplate> nicknameCheck(@RequestBody UserNicknameDto userNicknameDto){
-        userService.checkNicknameDuplicated(userNicknameDto);
+    @GetMapping("/nickname")
+    public ResponseEntity<ResponseTemplate> nicknameCheck(@RequestParam("nickname") String nickname){
+        userService.checkNicknameDuplicated(nickname);
 
         return ResponseTemplate.toResponseEntity(ResponseCode.OK_NICKNAME_CHECK);
     }
@@ -100,11 +100,10 @@ public class AuthController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "자동 로그인 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserTokenReissueDto.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserTokenDto.class)))),
             @ApiResponse(responseCode = "403", description = "유효하지 않은 refresh token",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
-
     @PostMapping("/auto-login")
     public ResponseEntity<ResponseDataTemplate> autoLogin(@RequestBody UserTokenReissueDto userTokenReissueDto){
         return ResponseDataTemplate.toResponseEntity(

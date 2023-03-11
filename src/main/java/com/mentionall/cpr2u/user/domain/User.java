@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +28,11 @@ public class User extends Timestamped{
     @Column(length = 20)
     private String id;
 
+    @NotNull
     @Column(length = 40)
     private String nickname;
 
+    @NotNull
     @Column(length = 20)
     private String phoneNumber;
 

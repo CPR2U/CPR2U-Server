@@ -6,21 +6,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SelectionQuizRequestDto {
+public class QuizRequestDto {
 
     @Schema(example = "퀴즈 질문")
     private String question;
 
-    @Schema(example = "퀴즈 정답 번호")
-    private int answer_index;
+    @Schema(example = "퀴즈 타입(OX/SELECTION)")
+    private String type;
 
-    @Schema(example = "정답 후보 리스트")
+    @Schema(example = "정답 리스트")
     @JsonProperty(value = "answer_list")
     List<QuizAnswerRequestDto> answerList;
 }
