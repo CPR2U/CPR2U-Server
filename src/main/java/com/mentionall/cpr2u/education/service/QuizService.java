@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,8 +39,11 @@ public class QuizService {
 
     @Transactional
     public List<QuizResponseDto> readRandom5Quiz() {
-        return quizRepository.findRandomLimit5().stream()
-                .map(q -> new QuizResponseDto(q))
-                .collect(Collectors.toList());
+        List<Quiz> quizList = quizRepository.findRandomLimit5();
+        List<QuizResponseDto> response = new ArrayList<>();
+        for (int i = 0; i < quizList.size(); i++) {
+            response.add(new QuizResponseDto(i+1, quizList.get(i)));
+        }
+        return response;
     }
 }

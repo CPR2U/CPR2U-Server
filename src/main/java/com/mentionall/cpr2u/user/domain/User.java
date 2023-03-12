@@ -1,10 +1,12 @@
 package com.mentionall.cpr2u.user.domain;
 
 import com.mentionall.cpr2u.call.domain.Dispatch;
+import com.mentionall.cpr2u.call.domain.Report;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.util.RandomGenerator;
 import com.mentionall.cpr2u.util.Timestamped;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -20,6 +22,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class User extends Timestamped{
 
     @Id
@@ -62,6 +65,18 @@ public class User extends Timestamped{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dispatcher")
     List<Dispatch> dispatchList = new ArrayList();
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reporter")
+    List<Report> reportList = new ArrayList();
+
+
+    public User(String id, UserSignUpDto userSignUpDto) {
+        this.id = id;
+        this.nickname = userSignUpDto.getNickname();
+        this.phoneNumber = userSignUpDto.getPhoneNumber();
+        this.dateOfIssue = null;
+        this.status = AngelStatusEnum.UNACQUIRED;
+        this.roles.add(UserRole.USER);
+    }
 
     public User(UserSignUpDto userSignUpDto) {
         this.nickname = userSignUpDto.getNickname();

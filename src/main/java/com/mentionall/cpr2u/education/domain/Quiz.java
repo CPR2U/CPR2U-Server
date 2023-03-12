@@ -23,12 +23,16 @@ public class Quiz {
     @Enumerated(EnumType.STRING)
     private QuizType type;
 
+    @Column
+    private String reason;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "quiz")
     List<QuizAnswer> answerList = new ArrayList();
 
     public Quiz(QuizRequestDto requestDto) {
         this.question = requestDto.getQuestion();
         this.type = QuizType.valueOf(requestDto.getType());
+        this.reason = requestDto.getReason();
     }
 
     public void addAnswer(QuizAnswer answer) {
