@@ -25,4 +25,13 @@ public class CPRCallController {
 
     private final CprCallService CPRCallService;
 
+    @Operation(summary = "홈 화면", description = "현재 근처에서 진행중인 CPR 요청이 있는지 확인한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DispatchResponseDto.class))))
+    })
+    @GetMapping
+    public ResponseEntity<ResponseDataTemplate> getNowCallStatusNearUser(HttpServletRequest request) {
+        var userId = request.getUserPrincipal().getName();
+        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, CPRCallService.getCallNearUser(userId));
+    }
 }
