@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Table(name = "cpr_call")
-public class CPRCall {
+public class CprCall {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +44,7 @@ public class CPRCall {
 
     @Column
     @Enumerated(EnumType.STRING)
-    CallStatus status;
+    CprCallStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cprCall")
     List<Dispatch> dispatchList = new ArrayList();
@@ -53,7 +53,7 @@ public class CPRCall {
     List<Report> reportList = new ArrayList();
 
     // TODO: /dispatch 테스트용 생성자(발견 시 삭제 요망)
-    public CPRCall(Long id, String fullAddress, double latitude, double longitude) {
+    public CprCall(Long id, String fullAddress, double latitude, double longitude) {
         this.id = id;
         this.fullAddress = fullAddress;
         this.latitude = latitude;

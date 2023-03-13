@@ -1,6 +1,6 @@
 package com.mentionall.cpr2u.call.service;
 
-import com.mentionall.cpr2u.call.domain.CPRCall;
+import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.DispatchStatus;
 import com.mentionall.cpr2u.call.domain.Report;
@@ -51,7 +51,7 @@ public class DispatchServiceTest {
         User user = new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token"));
         userRepository.save(user);
 
-        CPRCall cprCall = new CPRCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55);
+        CprCall cprCall = new CprCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55);
         callRepository.save(cprCall);
 
         //when
@@ -74,7 +74,7 @@ public class DispatchServiceTest {
         User user = new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token"));
         userRepository.save(user);
 
-        CPRCall cprCall = new CPRCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55);
+        CprCall cprCall = new CprCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55);
         callRepository.save(cprCall);
 
         //when
@@ -93,7 +93,7 @@ public class DispatchServiceTest {
         User user = new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token"));
         userRepository.save(user);
 
-        CPRCall cprCall = new CPRCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55);
+        CprCall cprCall = new CprCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55);
         callRepository.save(cprCall);
 
         //when

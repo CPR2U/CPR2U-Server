@@ -1,6 +1,6 @@
 package com.mentionall.cpr2u.call.service;
 
-import com.mentionall.cpr2u.call.domain.CPRCall;
+import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.Report;
 import com.mentionall.cpr2u.call.dto.DispatchRequestDto;
@@ -30,7 +30,7 @@ public class DispatchService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(NOT_FOUND_USER)
         );
-        CPRCall cprCall = cprCallRepository.findById(requestDto.getCprCallId()).orElseThrow(
+        CprCall cprCall = cprCallRepository.findById(requestDto.getCprCallId()).orElseThrow(
                 () -> new CustomException(NOT_FOUND_CPRCALL)
         );
 

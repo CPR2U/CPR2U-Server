@@ -32,11 +32,11 @@ public class User extends Timestamped{
     private String id;
 
     @NotNull
-    @Column(length = 40)
+    @Column(length = 40, unique = true)
     private String nickname;
 
     @NotNull
-    @Column(length = 20)
+    @Column(length = 20, unique = true)
     private String phoneNumber;
 
     @Column
