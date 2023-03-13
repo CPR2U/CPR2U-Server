@@ -59,4 +59,13 @@ public class CprCallService {
         CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallOccurDto);
         return new CprCallIdDto(cprCall.getId());
     }
+
+    public void endCall(Long callId) {
+        CprCall cprCall = cprCallRepository.findById(callId).orElseThrow(
+                () -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL)
+        );
+        //TODO FCM 붙이기
+        cprCall.endSituationCprCall();
+        cprCallRepository.save(cprCall);
+    }
 }

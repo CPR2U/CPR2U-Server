@@ -3,7 +3,6 @@ package com.mentionall.cpr2u.call.controller;
 import com.mentionall.cpr2u.call.dto.CprCallIdDto;
 import com.mentionall.cpr2u.call.dto.CprCallNearUserDto;
 import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
-import com.mentionall.cpr2u.call.dto.DispatchResponseDto;
 import com.mentionall.cpr2u.call.service.CprCallService;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
@@ -25,9 +24,9 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/call")
 @RequiredArgsConstructor
 @RestController
-public class CPRCallController {
+public class CprCallController {
 
-    private final CprCallService CPRCallService;
+    private final CprCallService cprCallService;
 
     @Operation(summary = "홈 화면", description = "현재 근처에서 진행중인 CPR 요청이 있는지 확인한다.")
     @ApiResponses(value = {
@@ -37,16 +36,27 @@ public class CPRCallController {
     @GetMapping
     public ResponseEntity<ResponseDataTemplate> getNowCallStatusNearUser(HttpServletRequest request) {
         var userId = request.getUserPrincipal().getName();
-        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, CPRCallService.getCallNearUser(userId));
+        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, cprCallService.getCallNearUser(userId));
     }
 
     @Operation(summary = "호출하기", description = "사건 발생 지역의 CPR Angel들을 호출한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CprCallIdDto.class))))
     })
-    @GetMapping
+    @PostMapping
     public ResponseEntity<ResponseDataTemplate> makeCall(CprCallOccurDto cprCallOccurDto, HttpServletRequest request) {
         var userId = request.getUserPrincipal().getName();
-        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, CPRCallService.makeCall(cprCallOccurDto, userId));
+        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, cprCallService.makeCall(cprCallOccurDto, userId));
+    }
+
+    @Operation(summary = "호출 상황 종료", description = "호출을 중단한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "404", description = "해당 ID의 호출 데이터가 없습니다.", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+    })
+    @PostMapping("/end/{call_id}")
+    public ResponseEntity<ResponseTemplate> endCall(@PathVariable(name="call_id") Long callId) {
+        cprCallService.endCall(callId);
+        return ResponseTemplate.toResponseEntity(ResponseCode.OK_CPR_CALL_END_SITUDATION);
     }
 }

@@ -60,6 +60,11 @@ public class CprCall {
         this.calledAt = calledAt;
         this.latitude = cprCallOccurDto.getLatitude();
         this.longitude = cprCallOccurDto.getLongitude();
+        this.status = CprCallStatus.IN_PROGRESS;
+    }
+
+    public void endSituationCprCall(){
+        this.status = CprCallStatus.END_SITUATION;
     }
 
 }

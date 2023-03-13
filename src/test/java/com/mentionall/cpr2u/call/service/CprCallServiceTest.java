@@ -77,7 +77,7 @@ class CprCallServiceTest {
         User dispatcher = getUser(2);
 
         //when
-        Long callId = cprCallService.makeCall(caller.getId(), "fullAddress",LocalDateTime.now(),37.56559872345163, 126.9779734762639);
+        Long callId = cprCallService.makeCall(new CprCallOccurDto("fullAddress",37.56559872345163, 126.9779734762639), caller.getId()).getCallId();
         DispatchResponseDto dispatchInfo = dispatchService.dispatch(dispatcher.getId(), new DispatchRequestDto(callId));
         cprCallService.endCall(callId);
 
