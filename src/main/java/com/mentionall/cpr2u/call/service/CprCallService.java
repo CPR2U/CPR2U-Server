@@ -1,9 +1,13 @@
 package com.mentionall.cpr2u.call.service;
 
+import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.CprCallStatus;
 import com.mentionall.cpr2u.call.dto.CprCallDto;
+import com.mentionall.cpr2u.call.dto.CprCallIdDto;
 import com.mentionall.cpr2u.call.dto.CprCallNearUserDto;
+import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
+import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.UserRepository;
@@ -12,6 +16,7 @@ import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,5 +48,15 @@ public class CprCallService {
                 cprCallDtoList.size() > 0 ? true : false,
                 cprCallDtoList
         );
+    }
+
+    public CprCallIdDto makeCall(CprCallOccurDto cprCallOccurDto, String userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.NOT_FOUND_USER)
+        );
+        Address callAddress = null;
+        //TODO Address 찾아오기
+        CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallOccurDto);
+        return new CprCallIdDto(cprCall.getId());
     }
 }

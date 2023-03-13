@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.call.domain;
 
+import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
 import lombok.AllArgsConstructor;
@@ -52,11 +53,13 @@ public class CprCall {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cprCall")
     List<Report> reportList = new ArrayList();
 
-    // TODO: /dispatch 테스트용 생성자(발견 시 삭제 요망)
-    public CprCall(Long id, String fullAddress, double latitude, double longitude) {
-        this.id = id;
+    public CprCall(User user, Address address, LocalDateTime calledAt, CprCallOccurDto cprCallOccurDto) {
+        this.caller = user;
+        this.address = address;
         this.fullAddress = fullAddress;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.calledAt = calledAt;
+        this.latitude = cprCallOccurDto.getLatitude();
+        this.longitude = cprCallOccurDto.getLongitude();
     }
+
 }

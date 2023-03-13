@@ -5,6 +5,7 @@ import com.mentionall.cpr2u.call.domain.CprCallStatus;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.DispatchStatus;
 import com.mentionall.cpr2u.call.dto.CprCallNearUserDto;
+import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
 import com.mentionall.cpr2u.call.dto.DispatchRequestDto;
 import com.mentionall.cpr2u.call.dto.DispatchResponseDto;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
@@ -36,11 +37,12 @@ class CprCallServiceTest {
         User cprAngelUser = getUser(1);
         User cprAngelUserButNoPatient = getUser(2);
         User yetAngelUser = getUser(3);
-        CprCall cprCall1 = new CprCall(cprAngelUser.getAddress(),"fullAddress",LocalDateTime.now(),37.56559872345163, 126.9779734762639);
-        CprCall cprCall2 = new CprCall(cprAngelUser.getAddress(),"fullAddress",LocalDateTime.now(),37.56549899694667, 126.97488345790383);
-        CprCall cprCall3 = new CprCall(cprAngelUser.getAddress(),"fullAddress",LocalDateTime.now(),37.56520212814079, 126.9771473198163);
-        CprCall cprCall4 = new CprCall(yetAngelUser.getAddress(),"fullAddress",LocalDateTime.now(),37.56520212814079, 126.9771473198163);
-        CprCall cprCall5 = new CprCall(yetAngelUser.getAddress(),"fullAddress",LocalDateTime.now(),37.56520212814079, 126.9771473198163);
+        User caller = getUser(4);
+        CprCall cprCall1 = new CprCall(caller, cprAngelUser.getAddress(),LocalDateTime.now(),new CprCallOccurDto("fullAddress",37.56559872345163, 126.9779734762639));
+        CprCall cprCall4 = new CprCall(caller, yetAngelUser.getAddress(),LocalDateTime.now(),new CprCallOccurDto("fullAddress",37.56520212814079, 126.9771473198163));
+        CprCall cprCall2 = new CprCall(caller, cprAngelUser.getAddress(),LocalDateTime.now(),new CprCallOccurDto("fullAddress",37.56549899694667, 126.97488345790383));
+        CprCall cprCall3 = new CprCall(caller, cprAngelUser.getAddress(),LocalDateTime.now(),new CprCallOccurDto("fullAddress",37.56520212814079, 126.9771473198163));
+        CprCall cprCall5 = new CprCall(caller, yetAngelUser.getAddress(),LocalDateTime.now(),new CprCallOccurDto("fullAddress",37.56520212814079, 126.9771473198163));
 
         //when
         CprCallNearUserDto callNearUserDtoForUser1 = cprCallService.getCallNearUser(cprAngelUser.getId());
@@ -60,7 +62,7 @@ class CprCallServiceTest {
         User user = getUser(1);
 
         //when
-        Long callId = cprCallRepository.makeCall(user.getId(), "fullAddress",LocalDateTime.now(),37.56559872345163, 126.9779734762639);
+        Long callId = cprCallService.makeCall(new CprCallOccurDto("fullAddress",37.56559872345163, 126.9779734762639), user.getId()).getCallId();
 
         //then
         CprCall cprCall = cprCallRepository.findById(callId).orElse(null);
