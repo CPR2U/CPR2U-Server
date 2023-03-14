@@ -98,11 +98,21 @@ class CprCallServiceTest {
         User user = getUser(1);
 
         //when
-        Long callId = cprCallService.makeCall(new CprCallOccurDto("fullAddress", 37.56559872345163, 126.9779734762639), user.getId()).getCallId();
+        Long callId1 = cprCallService.makeCall(new CprCallOccurDto("서울 종로구 종로 104", 37.56559872345163, 126.9779734762639), user.getId()).getCallId();
+        Long callId2 = cprCallService.makeCall(new CprCallOccurDto("서울 중구 세종대로 지하 2", 37.56559872345163, 126.9779734762639), user.getId()).getCallId();
+        Long callId3 = cprCallService.makeCall(new CprCallOccurDto("세종특별자치시 한누리대로 2130 (우)30151", 37.56559872345163, 126.9779734762639), user.getId()).getCallId();
+        Long callId4 = cprCallService.makeCall(new CprCallOccurDto("경남 창원시 진해구 평안동 10", 37.56559872345163, 126.9779734762639), user.getId()).getCallId();
 
         //then
-        CprCall cprCall = cprCallRepository.findById(callId).orElse(null);
-        assertThat(cprCall.getStatus()).isEqualTo(CprCallStatus.IN_PROGRESS);
+        CprCall cprCall1 = cprCallRepository.findById(callId1).orElse(null);
+        CprCall cprCall2 = cprCallRepository.findById(callId2).orElse(null);
+        CprCall cprCall3 = cprCallRepository.findById(callId3).orElse(null);
+        CprCall cprCall4 = cprCallRepository.findById(callId4).orElse(null);
+        assertThat(cprCall1.getAddress().getId()).isEqualTo(1L);
+        assertThat(cprCall2.getAddress().getId()).isEqualTo(2L);
+        assertThat(cprCall3.getAddress().getId()).isEqualTo(75L);
+        assertThat(cprCall4.getAddress().getId()).isEqualTo(231L);
+        assertThat(cprCall1.getStatus()).isEqualTo(CprCallStatus.IN_PROGRESS);
 
     }
 
@@ -124,6 +134,15 @@ class CprCallServiceTest {
         Dispatch dispatch = dispatchRepository.findById(dispatchInfo.getDispatchId()).orElse(null);
         assertThat(dispatch.getStatus()).isEqualTo(DispatchStatus.END_SITUATION);
 
+    }
+
+    @Test
+    public void printSQL(){
+        List<Address> addressList = addressRepository.findAll();
+        for(Address address : addressList){
+            System.out.println("INSERT INTO address(id, sido, sigugun) " +
+                    "VALUES(" + address.getId() + ",'" + address.getSido() + "','" + address.getSigugun() +"');");
+        }
     }
 
     public User getUser(int number) {

@@ -1,7 +1,6 @@
 package com.mentionall.cpr2u.call.service;
 
 import com.mentionall.cpr2u.call.domain.CprCall;
-import com.mentionall.cpr2u.call.domain.CprCallStatus;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.DispatchStatus;
 import com.mentionall.cpr2u.call.dto.CprCallDto;
@@ -13,6 +12,7 @@ import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
 import com.mentionall.cpr2u.user.domain.User;
+import com.mentionall.cpr2u.user.repository.AddressRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
@@ -30,6 +30,7 @@ public class CprCallService {
     private final UserRepository userRepository;
     private final CprCallRepository cprCallRepository;
     private final DispatchRepository dispatchRepository;
+    private final AddressRepository addressRepository;
 
     public CprCallNearUserDto getCallNearUser(String userId) {
         User user = userRepository.findById(userId).orElseThrow(
@@ -49,7 +50,7 @@ public class CprCallService {
         List<CprCallDto> cprCallDtoList = cprCallRepository.findAllCallInProcessByAddress(user.getAddress().getId());
         return new CprCallNearUserDto(
                 userAngelStatus,
-                cprCallDtoList.size() > 0 ? true : false,
+                cprCallDtoList.size() > 0,
                 cprCallDtoList
         );
     }
@@ -58,8 +59,7 @@ public class CprCallService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_USER)
         );
-        Address callAddress = null;
-        //TODO Address 찾아오기
+        Address callAddress = addressRepository.findByFullAddress(cprCallOccurDto.getFullAddress().split(" "));
         CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallOccurDto);
         cprCallRepository.save(cprCall);
         return new CprCallIdDto(cprCall.getId());
