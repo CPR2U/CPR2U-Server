@@ -59,10 +59,7 @@ public class EducationProgressService {
             throw new CustomException(ResponseCode.OK_POSTURE_FAIL);
     }
 
-    public EducationProgressDto readEducationInfo(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_USER)
-        );
+    public EducationProgressDto readEducationInfo(User user) {
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_EDUCATION_PROGRESS)
         );
@@ -70,10 +67,7 @@ public class EducationProgressService {
         return new EducationProgressDto(progress, user);
     }
 
-    public void completeLecture(String userId, Long lectureId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_USER)
-        );
+    public void completeLecture(User user, Long lectureId) {
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_EDUCATION_PROGRESS)
         );

@@ -32,10 +32,7 @@ public class CprCallService {
     private final DispatchRepository dispatchRepository;
     private final AddressRepository addressRepository;
 
-    public CprCallNearUserDto getCallNearUser(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_USER)
-        );
+    public CprCallNearUserDto getCallNearUser(User user) {
         AngelStatusEnum userAngelStatus = user.getStatus();
         if(userAngelStatus != AngelStatusEnum.ACQUIRED){
             return new CprCallNearUserDto(
@@ -55,10 +52,7 @@ public class CprCallService {
         );
     }
 
-    public CprCallIdDto makeCall(CprCallOccurDto cprCallOccurDto, String userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_USER)
-        );
+    public CprCallIdDto makeCall(CprCallOccurDto cprCallOccurDto, User user) {
         Address callAddress = addressRepository.findByFullAddress(cprCallOccurDto.getFullAddress().split(" "));
         CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallOccurDto);
         cprCallRepository.save(cprCall);

@@ -26,10 +26,7 @@ public class DispatchService {
     private final UserRepository userRepository;
     private final ReportRepository reportRepository;
 
-    public DispatchResponseDto dispatch(String userId, DispatchRequestDto requestDto) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(NOT_FOUND_USER)
-        );
+    public DispatchResponseDto dispatch(User user, DispatchRequestDto requestDto) {
         CprCall cprCall = cprCallRepository.findById(requestDto.getCprCallId()).orElseThrow(
                 () -> new CustomException(NOT_FOUND_CPRCALL)
         );

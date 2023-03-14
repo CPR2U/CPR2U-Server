@@ -36,10 +36,7 @@ public class LectureService {
         lectureRepository.save(new Lecture(requestDto));
     }
 
-    public LectureProgressDto readLectureProgress(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_USER)
-        );
+    public LectureProgressDto readLectureProgress(User user) {
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_EDUCATION_PROGRESS)
         );

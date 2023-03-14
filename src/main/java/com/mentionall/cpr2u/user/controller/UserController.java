@@ -1,11 +1,10 @@
 package com.mentionall.cpr2u.user.controller;
 
-import com.mentionall.cpr2u.user.domain.Address;
+import com.mentionall.cpr2u.user.domain.PrincipalDetails;
 import com.mentionall.cpr2u.user.dto.AddressRequestDto;
 import com.mentionall.cpr2u.user.dto.AddressResponseDto;
-import com.mentionall.cpr2u.user.repository.AddressRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
-import com.mentionall.cpr2u.user.service.UserService;
+import com.mentionall.cpr2u.util.GetUserDetails;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
@@ -19,8 +18,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,9 +45,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "해당 ID의 주소 데이터가 없습니다.", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
     @PostMapping("/address")
-    public ResponseEntity<ResponseTemplate> setAddress(HttpServletRequest request, @RequestBody AddressRequestDto requestDto) {
-        String userId = request.getUserPrincipal().getName();
-        addressService.setAddress(userId, requestDto);
+    public ResponseEntity<ResponseTemplate> setAddress(@GetUserDetails PrincipalDetails userDetails, @RequestBody AddressRequestDto requestDto) {
+        addressService.setAddress(userDetails.getUser(), requestDto);
 
         return ResponseTemplate.toResponseEntity(ResponseCode.OK);
     }
