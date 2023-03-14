@@ -6,11 +6,13 @@ import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.format.DateTimeFormatter;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CprCallOccurDto {
 
     @Schema(description = "전체 주소")

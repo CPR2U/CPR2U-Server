@@ -54,4 +54,8 @@ public class Dispatch {
         this.status = DispatchStatus.ARRIVED;
         this.arrivedAt = LocalDateTime.now();
     }
+
+    public void setStatus(DispatchStatus status) {
+        this.status = status;
+    }
 }

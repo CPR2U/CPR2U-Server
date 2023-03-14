@@ -2,11 +2,14 @@ package com.mentionall.cpr2u.call.service;
 
 import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.CprCallStatus;
+import com.mentionall.cpr2u.call.domain.Dispatch;
+import com.mentionall.cpr2u.call.domain.DispatchStatus;
 import com.mentionall.cpr2u.call.dto.CprCallDto;
 import com.mentionall.cpr2u.call.dto.CprCallIdDto;
 import com.mentionall.cpr2u.call.dto.CprCallNearUserDto;
 import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
+import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
 import com.mentionall.cpr2u.user.domain.User;
@@ -26,6 +29,7 @@ public class CprCallService {
 
     private final UserRepository userRepository;
     private final CprCallRepository cprCallRepository;
+    private final DispatchRepository dispatchRepository;
 
     public CprCallNearUserDto getCallNearUser(String userId) {
         User user = userRepository.findById(userId).orElseThrow(
@@ -42,7 +46,7 @@ public class CprCallService {
         if(user.getAddress() == null){
             throw new CustomException(ResponseCode.BAD_REQUEST_ADDRESS_NOT_SET);
         }
-        List<CprCallDto> cprCallDtoList = cprCallRepository.findAllByStatusAndAddress(CprCallStatus.IN_PROGRESS, user.getAddress().getId());
+        List<CprCallDto> cprCallDtoList = cprCallRepository.findAllCallInProcessByAddress(user.getAddress().getId());
         return new CprCallNearUserDto(
                 userAngelStatus,
                 cprCallDtoList.size() > 0 ? true : false,
@@ -57,6 +61,7 @@ public class CprCallService {
         Address callAddress = null;
         //TODO Address 찾아오기
         CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallOccurDto);
+        cprCallRepository.save(cprCall);
         return new CprCallIdDto(cprCall.getId());
     }
 
@@ -67,5 +72,11 @@ public class CprCallService {
         //TODO FCM 붙이기
         cprCall.endSituationCprCall();
         cprCallRepository.save(cprCall);
+        List<Dispatch> dispatchList = dispatchRepository.findAllByCprCallId(cprCall.getId());
+        for(Dispatch dispatch : dispatchList){
+            dispatch.setStatus(DispatchStatus.END_SITUATION);
+            dispatchRepository.save(dispatch);
+        }
+
     }
 }

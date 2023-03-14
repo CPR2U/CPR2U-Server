@@ -171,10 +171,6 @@ public class FakeCprCallRepository implements CprCallRepository {
         return null;
     }
 
-    @Override
-    public List<CprCallDto> findAllByStatusAndAddress(CprCallStatus cprCallStatus, Long addressId) {
-        return null;
-    }
 
     @Override
     public Optional<CprCall> findOne(Predicate predicate) {
@@ -218,6 +214,11 @@ public class FakeCprCallRepository implements CprCallRepository {
 
     @Override
     public <S extends CprCall, R> R findBy(Predicate predicate, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
+    }
+
+    @Override
+    public List<CprCallDto> findAllCallInProcessByAddress(Long addressId) {
         return null;
     }
 }

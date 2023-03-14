@@ -55,10 +55,10 @@ public class User extends Timestamped{
     @OneToOne(mappedBy = "user")
     private DeviceToken deviceToken;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<UserRole> roles = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private Address address;
 
@@ -93,4 +93,11 @@ public class User extends Timestamped{
     public void setAddress(Address address) {
         this.address = address;
     }
+
+    public void setUserAngelStatus(AngelStatusEnum angelStatus) {
+        this.status = angelStatus;
+    }
+
+
+
 }

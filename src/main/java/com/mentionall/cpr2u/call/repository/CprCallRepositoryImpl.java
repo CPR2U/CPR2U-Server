@@ -19,10 +19,10 @@ public class CprCallRepositoryImpl implements CprCallDslRepository {
     }
 
     @Override
-    public List<CprCallDto> findAllByStatusAndAddress(CprCallStatus cprCallStatus, Long addressId) {
+    public List<CprCallDto> findAllCallInProcessByAddress(Long addressId) {
         return queryFactory.select(new QCprCallDto(cprCall))
                 .from(cprCall)
-                .where(cprCall.status.eq(cprCallStatus).and(cprCall.address.id.eq(addressId)))
+                .where(cprCall.status.eq(CprCallStatus.IN_PROGRESS).and(cprCall.address.id.eq(addressId)))
                 .fetch();
     }
 }
