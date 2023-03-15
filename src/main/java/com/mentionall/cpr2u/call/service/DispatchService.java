@@ -10,12 +10,12 @@ import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.call.repository.ReportRepository;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
+import static com.mentionall.cpr2u.util.exception.ResponseCode.NOT_FOUND_CPRCALL;
+import static com.mentionall.cpr2u.util.exception.ResponseCode.NOT_FOUND_DISPATCH;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +23,6 @@ public class DispatchService {
 
     private final DispatchRepository dispatchRepository;
     private final CprCallRepository cprCallRepository;
-    private final UserRepository userRepository;
     private final ReportRepository reportRepository;
 
     public DispatchResponseDto dispatch(User user, DispatchRequestDto requestDto) {

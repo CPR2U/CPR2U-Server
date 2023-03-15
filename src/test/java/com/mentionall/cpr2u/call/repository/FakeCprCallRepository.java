@@ -1,7 +1,6 @@
 package com.mentionall.cpr2u.call.repository;
 
 import com.mentionall.cpr2u.call.domain.CprCall;
-import com.mentionall.cpr2u.call.domain.CprCallStatus;
 import com.mentionall.cpr2u.call.dto.CprCallDto;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;

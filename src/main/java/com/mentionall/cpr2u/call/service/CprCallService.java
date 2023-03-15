@@ -13,7 +13,6 @@ import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.AddressRepository;
-import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +25,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CprCallService {
-
-    private final UserRepository userRepository;
     private final CprCallRepository cprCallRepository;
     private final DispatchRepository dispatchRepository;
     private final AddressRepository addressRepository;
