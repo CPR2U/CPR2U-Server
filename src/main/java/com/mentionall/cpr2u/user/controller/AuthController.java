@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -31,11 +33,10 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "회원가입 성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserTokenDto.class))))
     })
-
     @PostMapping("/signup")
     public ResponseEntity<ResponseDataTemplate> signup(@RequestBody UserSignUpDto userSignUpDto){
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK,
+                OK,
                 userService.signup(userSignUpDto)
         );
     }
@@ -48,11 +49,10 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "인증번호 발급 성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserCodeDto.class))))
     })
-
     @PostMapping("/verification")
     public ResponseEntity<ResponseDataTemplate> issueVerificationCode(@RequestBody UserPhoneNumberDto userPhoneNumberDto){
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK,
+                OK,
                 userService.getVerificationCode(userPhoneNumberDto)
         );
     }
@@ -67,15 +67,13 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "회원가입이 필요한 사용자",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
-
     @PostMapping("/login")
     public ResponseEntity<ResponseDataTemplate> verificationUserLogin(@RequestBody UserLoginDto userLoginDto){
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK,
+                OK,
                 userService.login(userLoginDto)
         );
     }
-
     @Operation(summary = "닉네임 중복확인",
             method = "POST",
             description = "닉네임 중복확인 API"
@@ -86,12 +84,11 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "중복된 닉네임",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
-
     @GetMapping("/nickname")
     public ResponseEntity<ResponseTemplate> nicknameCheck(@RequestParam("nickname") String nickname){
         userService.checkNicknameDuplicated(nickname);
 
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK_NICKNAME_CHECK);
+        return ResponseTemplate.toResponseEntity(OK_NICKNAME_CHECK);
     }
 
     @Operation(summary = "자동로그인",
@@ -107,7 +104,7 @@ public class AuthController {
     @PostMapping("/auto-login")
     public ResponseEntity<ResponseDataTemplate> autoLogin(@RequestBody UserTokenReissueDto userTokenReissueDto){
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK,
+                OK,
                 userService.reissueToken(userTokenReissueDto)
         );
     }

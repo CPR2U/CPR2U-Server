@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
+
 @Tag(name = "DispatchController", description = "출동 화면 컨트롤러")
 @RequestMapping("/dispatch")
 @RestController
@@ -30,38 +32,44 @@ public class DispatchController {
 
     @Operation(summary = "CPR 출동", description = "CPR 응급 상황으로 출동한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = DispatchResponseDto.class)))),
-            @ApiResponse(responseCode = "404", description = "해당 ID의 CPR 요청 정보를 찾을 수 없습니다.", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = DispatchResponseDto.class)))),
+            @ApiResponse(responseCode = "404", description = "해당 ID의 CPR 요청 정보를 찾을 수 없습니다.",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
     @PostMapping
     public ResponseEntity<ResponseDataTemplate> dispatch(
             @RequestBody DispatchRequestDto requestDto,
             HttpServletRequest request) {
         var userId = request.getUserPrincipal().getName();
-        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, dispatchService.dispatch(userId, requestDto));
+        return ResponseDataTemplate.toResponseEntity(OK, dispatchService.dispatch(userId, requestDto));
     }
 
     @Operation(summary = "CPR 출동 도착", description = "CPR 응급 상황에 도착했음을 알린다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
-            @ApiResponse(responseCode = "404", description = "해당 ID의 출동 데이터 정보를 찾을 수 없습니다.", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "404", description = "해당 ID의 출동 데이터 정보를 찾을 수 없습니다.",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
     @PostMapping("/arrive/{dispatch_id}")
     public ResponseEntity<ResponseTemplate> arrive(
             @Parameter(description = "출동 데이터 ID") @PathVariable(value = "dispatch_id") Long dispatchId
     ) {
         dispatchService.arrive(dispatchId);
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
+        return ResponseTemplate.toResponseEntity(OK);
     }
 
     @Operation(summary = "잘못된 CPR 응급 상황 신고", description = "CPR 응급 상황이 허위인 경우, 신고한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
-            @ApiResponse(responseCode = "404", description = "해당 ID의 CPR 출동 데이터를 찾을 수 없습니다.", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "404", description = "해당 ID의 CPR 출동 데이터를 찾을 수 없습니다.",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
     @PostMapping("/report")
     public ResponseEntity<ResponseTemplate> report(@RequestBody ReportRequestDto requestDto) {
         dispatchService.report(requestDto);
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
+        return ResponseTemplate.toResponseEntity(OK);
     }
 }

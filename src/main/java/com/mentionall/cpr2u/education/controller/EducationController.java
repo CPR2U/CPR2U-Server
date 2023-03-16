@@ -44,7 +44,7 @@ public class  EducationController {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = EducationProgressDto.class)))),
     })
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<ResponseDataTemplate> getEducationInfo(HttpServletRequest request) {
         String userId = request.getUserPrincipal().getName();
 

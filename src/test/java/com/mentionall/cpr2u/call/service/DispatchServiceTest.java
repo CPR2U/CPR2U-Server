@@ -12,6 +12,8 @@ import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.FakeUserRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
+import com.mentionall.cpr2u.util.exception.CustomException;
+import com.mentionall.cpr2u.util.exception.ResponseCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,17 +44,21 @@ public class DispatchServiceTest {
         this.userRepository = new FakeUserRepository();
         this.reportRepository = new FakeReportRepository();
         this.dispatchService = new DispatchService(dispatchRepository, callRepository, userRepository, reportRepository);
+
+        // 테스트할 객체 추가
+        User user = new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token"));
+        userRepository.save(user);
+
+        CPRCall cprCall = new CPRCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55);
+        callRepository.save(cprCall);
     }
 
     @Test
     @DisplayName("CPR 출동")
     public void dispatch() {
         //given
-        User user = new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token"));
-        userRepository.save(user);
-
-        CPRCall cprCall = new CPRCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55);
-        callRepository.save(cprCall);
+        User user = userRepository.findById("1L").orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
+        CPRCall cprCall = callRepository.findById(1L).orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL));
 
         //when
         DispatchResponseDto response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
@@ -71,11 +77,8 @@ public class DispatchServiceTest {
     @DisplayName("CPR 출동 도착")
     public void arrive() {
         //given
-        User user = new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token"));
-        userRepository.save(user);
-
-        CPRCall cprCall = new CPRCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55);
-        callRepository.save(cprCall);
+        User user = userRepository.findById("1L").orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
+        CPRCall cprCall = callRepository.findById(1L).orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL));
 
         //when
         DispatchResponseDto response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
@@ -90,11 +93,8 @@ public class DispatchServiceTest {
     @DisplayName("출동 신고")
     public void report() {
         //given
-        User user = new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token"));
-        userRepository.save(user);
-
-        CPRCall cprCall = new CPRCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55);
-        callRepository.save(cprCall);
+        User user = userRepository.findById("1L").orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
+        CPRCall cprCall = callRepository.findById(1L).orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL));
 
         //when
         DispatchResponseDto response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
