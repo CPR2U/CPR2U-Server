@@ -3,6 +3,7 @@ package com.mentionall.cpr2u.call.domain;
 import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,6 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "cpr_call")
 public class CprCall {
 

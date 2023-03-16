@@ -1,9 +1,6 @@
 package com.mentionall.cpr2u.call.service;
 
-import com.mentionall.cpr2u.call.domain.CprCall;
-import com.mentionall.cpr2u.call.domain.Dispatch;
-import com.mentionall.cpr2u.call.domain.DispatchStatus;
-import com.mentionall.cpr2u.call.domain.Report;
+import com.mentionall.cpr2u.call.domain.*;
 import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
 import com.mentionall.cpr2u.call.dto.DispatchRequestDto;
 import com.mentionall.cpr2u.call.dto.ReportRequestDto;
@@ -56,8 +53,9 @@ public class DispatchServiceTest {
     public void insertData() {
         User caller = userRepository.save(new User("2L", new UserSignUpDto("호출자", "010-0000-0000", "device_token")));
         Address address = addressRepository.save(new Address(1L, "서울시", "용산구", new ArrayList<>()));
-        callRepository.save(new CprCall(caller, address, LocalDateTime.now(),
-                new CprCallOccurDto("서울시 용산구 어쩌구", 36.44, 46.55)));
+        callRepository.save(new CprCall(1L, caller, address, "서울시 용산구 어쩌구",
+                LocalDateTime.now(), 36.44, 46.55, CprCallStatus.IN_PROGRESS,
+                new ArrayList<>(), new ArrayList<>()));
 
         userRepository.save(new User("1L", new UserSignUpDto("출동자", "010-0000-0000", "device_token")));
     }

@@ -1,9 +1,11 @@
 package com.mentionall.cpr2u.education.service;
 
+import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.TestStandard;
 import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
 import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
+import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
@@ -25,12 +27,17 @@ public class LectureServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EducationProgressRepository progressRepository;
+
     @Test
     @Transactional
     @DisplayName("사용자의 강의 진도 조회")
     public void readLectureProgress() {
         //given
         User user = userRepository.save(new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token")));
+        progressRepository.save(new EducationProgress(user));
+
         lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com"));
 
         //when

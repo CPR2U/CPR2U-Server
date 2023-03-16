@@ -1,7 +1,6 @@
 package com.mentionall.cpr2u.user.repository;
 
 import com.mentionall.cpr2u.user.domain.Address;
-import com.mentionall.cpr2u.user.domain.User;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Example;
@@ -20,7 +19,7 @@ public class FakeAddressRepository implements AddressRepository{
     Map<Long, Address> map = new HashMap();
 
     @Override
-    public Address findByFullAddress(String[] addressList) {
+    public Optional<Address> findByFullAddress(String[] addressList) {
         return null;
     }
 

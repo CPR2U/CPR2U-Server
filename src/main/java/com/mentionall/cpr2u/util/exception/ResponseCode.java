@@ -29,7 +29,8 @@ public enum ResponseCode {
     NOT_FOUND_DISPATCH(HttpStatus.NOT_FOUND, "해당 ID의 출동 데이터를 찾을 수 없습니다."),
     NOT_FOUND_LECTURE(HttpStatus.INTERNAL_SERVER_ERROR, "해당 강의를 찾을 수 없습니다."),
     NOT_FOUND_EDUCATION_PROGRESS(HttpStatus.INTERNAL_SERVER_ERROR, "유저의 교육 진도 정보가 조회되지 않습니다."),
-    NOT_FOUND_ADDRESS(HttpStatus.NOT_FOUND, "잘못된 주소 ID입니다." );
+    NOT_FOUND_ADDRESS(HttpStatus.NOT_FOUND, "잘못된 주소 ID입니다." ),
+    NOT_FOUND_FAILED_TO_FIND_ADDRESS(HttpStatus.INTERNAL_SERVER_ERROR, "해당 주소지에 맞는 주소 지역구를 찾을 수 없습니다.");
 
 
     private final HttpStatus httpStatus;

@@ -1,6 +1,7 @@
 package com.mentionall.cpr2u.call.repository;
 
 import com.mentionall.cpr2u.call.domain.CprCall;
+import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.dto.CprCallDto;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class FakeCprCallRepository implements CprCallRepository {
+    Map<Long, Object> map = new HashMap();
     @Override
     public List<CprCallDto> findAllCallInProcessByAddress(Long addressId) {
         return null;
@@ -74,7 +76,8 @@ public class FakeCprCallRepository implements CprCallRepository {
 
     @Override
     public <S extends CprCall> S save(S entity) {
-        return null;
+        map.put(entity.getId(), entity);
+        return entity;
     }
 
     @Override
@@ -84,7 +87,7 @@ public class FakeCprCallRepository implements CprCallRepository {
 
     @Override
     public Optional<CprCall> findById(Long aLong) {
-        return Optional.empty();
+        return Optional.of((CprCall) map.get(aLong));
     }
 
     @Override

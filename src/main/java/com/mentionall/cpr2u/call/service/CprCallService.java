@@ -50,7 +50,8 @@ public class CprCallService {
     }
 
     public CprCallIdDto makeCall(CprCallOccurDto cprCallOccurDto, User user) {
-        Address callAddress = addressRepository.findByFullAddress(cprCallOccurDto.getFullAddress().split(" "));
+        Address callAddress = addressRepository.findByFullAddress(cprCallOccurDto.getFullAddress().split(" "))
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_FAILED_TO_FIND_ADDRESS));
         CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallOccurDto);
         cprCallRepository.save(cprCall);
         return new CprCallIdDto(cprCall.getId());
