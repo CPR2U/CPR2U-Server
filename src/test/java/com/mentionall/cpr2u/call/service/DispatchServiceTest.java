@@ -43,7 +43,7 @@ public class DispatchServiceTest {
         this.callRepository = new FakeCprCallRepository();
         this.userRepository = new FakeUserRepository();
         this.reportRepository = new FakeReportRepository();
-        this.dispatchService = new DispatchService(dispatchRepository, callRepository, userRepository, reportRepository);
+        this.dispatchService = new DispatchService(dispatchRepository, callRepository, reportRepository);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class DispatchServiceTest {
         callRepository.save(cprCall);
 
         //when
-        DispatchResponseDto response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
+        DispatchResponseDto response = dispatchService.dispatch(user, new DispatchRequestDto(cprCall.getId()));
 
         //then
         assertThat(response.getCalledAt()).isEqualTo(cprCall.getCalledAt());
@@ -80,7 +80,7 @@ public class DispatchServiceTest {
         callRepository.save(cprCall);
 
         //when
-        DispatchResponseDto response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
+        DispatchResponseDto response = dispatchService.dispatch(user, new DispatchRequestDto(cprCall.getId()));
         dispatchService.arrive(response.getDispatchId());
 
         //then
@@ -99,7 +99,7 @@ public class DispatchServiceTest {
         callRepository.save(cprCall);
 
         //when
-        DispatchResponseDto response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
+        DispatchResponseDto response = dispatchService.dispatch(user, new DispatchRequestDto(cprCall.getId()));
         dispatchService.report(new ReportRequestDto(response.getDispatchId(), "신고 내용"));
 
         //then
