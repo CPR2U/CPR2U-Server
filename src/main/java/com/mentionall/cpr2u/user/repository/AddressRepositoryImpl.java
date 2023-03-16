@@ -1,7 +1,6 @@
 package com.mentionall.cpr2u.user.repository;
 
 import com.mentionall.cpr2u.user.domain.Address;
-import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -21,21 +20,20 @@ public class AddressRepositoryImpl implements AddressDslRepository {
 
     @Override
     public Address findByFullAddress(String[] addressList) {
-        List<Address> resultAddressList = queryFactory.selectFrom(address)
-                .where(address.sido.contains(addressList[0]))
-                .fetch();
+        JPAQuery<Address> findAddressQuery = queryFactory.selectFrom(address).where(address.sido.contains(addressList[0]));
+        List<Address> findAddressList = findAddressQuery.fetch();
 
-        for(int i = 1 ; resultAddressList.size() != 1  && i <= 2; i ++) {
-            resultAddressList = findAddressByAddressString(address.sigugun, addressList, i).fetch();
+        for(int i = 1 ; findAddressList.size() != 1  && i <= 2; i ++) {
+            String sigugun = addressList[i];
+            findAddressQuery = findBySigugunQuery(findAddressQuery, sigugun);
+            findAddressList = findAddressQuery.fetch();
         }
 
-        return resultAddressList.get(0);
+        return findAddressList.get(0);
 
     }
 
-    private JPAQuery<Address> findAddressByAddressString(StringPath addressDetail, String[] addressList, int x) {
-        return queryFactory.selectFrom(address)
-                .where(addressDetail.contains(addressList[x])
-                        .and(address.sido.contains(addressList[0])));
+    private JPAQuery<Address> findBySigugunQuery(JPAQuery<Address> findAddressQuery, String sigugun) {
+        return findAddressQuery.where(address.sigugun.contains(sigugun));
     }
 }
