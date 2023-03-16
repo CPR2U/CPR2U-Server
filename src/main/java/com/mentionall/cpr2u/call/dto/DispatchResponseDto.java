@@ -1,7 +1,7 @@
 package com.mentionall.cpr2u.call.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mentionall.cpr2u.call.domain.CPRCall;
+import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -29,7 +29,7 @@ public class DispatchResponseDto {
     @Schema(description = "CPR 요청 장소 경도")
     Double  longitude;
 
-    public DispatchResponseDto(CPRCall cprCall, Dispatch dispatch) {
+    public DispatchResponseDto(CprCall cprCall, Dispatch dispatch) {
         this.dispatchId = dispatch.getId();
         this.fullAddress = cprCall.getFullAddress();
         this.calledAt = cprCall.getCalledAt();

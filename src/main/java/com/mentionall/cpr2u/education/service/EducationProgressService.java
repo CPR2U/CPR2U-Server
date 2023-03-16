@@ -1,6 +1,9 @@
 package com.mentionall.cpr2u.education.service;
 
-import com.mentionall.cpr2u.education.domain.*;
+import com.mentionall.cpr2u.education.domain.EducationProgress;
+import com.mentionall.cpr2u.education.domain.Lecture;
+import com.mentionall.cpr2u.education.domain.ProgressStatus;
+import com.mentionall.cpr2u.education.domain.TestStandard;
 import com.mentionall.cpr2u.education.dto.EducationProgressDto;
 import com.mentionall.cpr2u.education.dto.ScoreDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
@@ -59,10 +62,7 @@ public class EducationProgressService {
             throw new CustomException(ResponseCode.OK_POSTURE_FAIL);
     }
 
-    public EducationProgressDto readEducationInfo(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_USER)
-        );
+    public EducationProgressDto readEducationInfo(User user) {
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_EDUCATION_PROGRESS)
         );
@@ -70,10 +70,7 @@ public class EducationProgressService {
         return new EducationProgressDto(progress, user);
     }
 
-    public void completeLecture(String userId, Long lectureId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_USER)
-        );
+    public void completeLecture(User user, Long lectureId) {
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_EDUCATION_PROGRESS)
         );
@@ -87,6 +84,7 @@ public class EducationProgressService {
     public void completeAllLectureCourse(String userId) {
         List<Lecture> lectureList = lectureRepository.findAll();
         Collections.sort(lectureList);
-        lectureList.forEach(lecture -> completeLecture(userId, lecture.getId()));
+        User user = userRepository.findById(userId).orElse(null);
+        lectureList.forEach(lecture -> completeLecture(user, lecture.getId()));
     }
 }

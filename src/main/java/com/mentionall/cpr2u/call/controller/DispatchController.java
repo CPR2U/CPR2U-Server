@@ -4,6 +4,8 @@ import com.mentionall.cpr2u.call.dto.DispatchRequestDto;
 import com.mentionall.cpr2u.call.dto.DispatchResponseDto;
 import com.mentionall.cpr2u.call.dto.ReportRequestDto;
 import com.mentionall.cpr2u.call.service.DispatchService;
+import com.mentionall.cpr2u.user.domain.PrincipalDetails;
+import com.mentionall.cpr2u.util.GetUserDetails;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
@@ -18,8 +20,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Tag(name = "DispatchController", description = "출동 화면 컨트롤러")
 @RequestMapping("/dispatch")
@@ -36,9 +36,8 @@ public class DispatchController {
     @PostMapping
     public ResponseEntity<ResponseDataTemplate> dispatch(
             @RequestBody DispatchRequestDto requestDto,
-            HttpServletRequest request) {
-        var userId = request.getUserPrincipal().getName();
-        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, dispatchService.dispatch(userId, requestDto));
+            @GetUserDetails PrincipalDetails userDetails) {
+        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, dispatchService.dispatch(userDetails.getUser(), requestDto));
     }
 
     @Operation(summary = "CPR 출동 도착", description = "CPR 응급 상황에 도착했음을 알린다.")

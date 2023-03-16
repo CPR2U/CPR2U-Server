@@ -40,12 +40,9 @@ public class AddressService {
         return response;
     }
 
-    public void setAddress(String userId, AddressRequestDto requestDto) {
+    public void setAddress(User user, AddressRequestDto requestDto) {
         Address address = addressRepository.findById(requestDto.getAddressId()).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_ADDRESS)
-        );
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_USER)
         );
 
         user.setAddress(address);

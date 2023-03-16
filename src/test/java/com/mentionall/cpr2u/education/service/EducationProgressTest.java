@@ -8,7 +8,9 @@ import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
 import com.mentionall.cpr2u.education.dto.ScoreDto;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
+import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
+import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import org.junit.jupiter.api.Assertions;
@@ -34,6 +36,9 @@ public class EducationProgressTest {
     private UserService userService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
@@ -51,15 +56,15 @@ public class EducationProgressTest {
     public void completeLecture() {
         //given
         String userId = getUserId("현애", "010-0000-0000", "device-token");
-
+        User user = userRepository.findById(userId).orElse(null);
         //when lecture course is not started,
         assertThatLectureProgressIsEqualTo(userId, null, ProgressStatus.NotCompleted);
 
         //when lecture course is in progress,
         for (LectureResponseDto lecture : lectureService.readAllTheoryLecture()) {
-            progressService.completeLecture(userId, lecture.getId());
+            progressService.completeLecture(user, lecture.getId());
 
-            int currentStep = lectureService.readLectureProgress(userId).getCurrentStep();
+            int currentStep = lectureService.readLectureProgress(user).getCurrentStep();
             assertThat(currentStep).isEqualTo(lecture.getStep());
             if (currentStep < TestStandard.finalLectureStep)
                 assertThatLectureProgressIsEqualTo(userId, lecture, ProgressStatus.InProgress);
@@ -132,13 +137,14 @@ public class EducationProgressTest {
     public void completePostureWithoutQuizOrLecture() {
         //given
         String userId = getUserId("현애", "010-0000-0000", "device-token");
+        User user = userRepository.findById(userId).orElse(null);
 
         // when the lecture course is not completed,
         Assertions.assertThrows(CustomException.class, () -> progressService.completePosture(userId, new ScoreDto(100)));
 
         // when the lecture course is in progress,
         LectureResponseDto lecture = lectureService.readAllTheoryLecture().get(0);
-        progressService.completeLecture(userId, lecture.getId());
+        progressService.completeLecture(user, lecture.getId());
         Assertions.assertThrows(CustomException.class, () -> progressService.completePosture(userId, new ScoreDto(100)));
 
         // when the lecture course is completed, but quiz test is not
@@ -152,7 +158,8 @@ public class EducationProgressTest {
     }
 
     private void assertThatLectureProgressIsEqualTo(String userId, LectureResponseDto lecture, ProgressStatus status) {
-        EducationProgressDto progress = progressService.readEducationInfo(userId);
+        User user = userRepository.findById(userId).orElse(null);
+        EducationProgressDto progress = progressService.readEducationInfo(user);
         assertThat(progress.getIsLectureCompleted()).isEqualTo(status.ordinal());
 
         double totalProgress =
@@ -165,12 +172,14 @@ public class EducationProgressTest {
     }
 
     private void assertThatQuizProgressIsEqualTo(String userId, ProgressStatus status) {
-        int quizStatus = progressService.readEducationInfo(userId).getIsQuizCompleted();
+        User user = userRepository.findById(userId).orElse(null);
+        int quizStatus = progressService.readEducationInfo(user).getIsQuizCompleted();
         assertThat(quizStatus).isEqualTo(status.ordinal());
     }
 
     private void assertThatPostureProgressIsEqualTo(String userId, ProgressStatus status) {
-        EducationProgressDto progress = progressService.readEducationInfo(userId);
+        User user = userRepository.findById(userId).orElse(null);
+        EducationProgressDto progress = progressService.readEducationInfo(user);
         int postureStatus = progress.getIsPostureCompleted();
         assertThat(postureStatus).isEqualTo(status.ordinal());
 
