@@ -7,6 +7,7 @@ import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.service.EducationProgressService;
 import com.mentionall.cpr2u.education.service.LectureService;
 import com.mentionall.cpr2u.education.service.QuizService;
+import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
+
 @Tag(name = "EducationController", description = "학습 화면 컨트롤러")
 @Slf4j
 @RestController
@@ -34,36 +37,40 @@ public class  EducationController {
     private final EducationProgressService progressService;
     private final LectureService lectureService;
     private final QuizService quizService;
+    private final UserService userService;
 
     @Operation(summary = "유저의 학습 화면 정보 조회", description = "유저의 엔젤 자격과 현재 학습 진도 정보를 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = EducationProgressDto.class)))),
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = EducationProgressDto.class)))),
     })
     @GetMapping()
     public ResponseEntity<ResponseDataTemplate> getEducationInfo(HttpServletRequest request) {
         String userId = request.getUserPrincipal().getName();
 
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK,
+                OK,
                 progressService.readEducationInfo(userId));
     }
 
     @Operation(summary = "유저의 강의 리스트 조회", description = "강의 리스트와 유저의 현재 강의 진도를 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureProgressDto.class)))),
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureProgressDto.class)))),
     })
     @GetMapping("/lectures")
     public ResponseEntity<ResponseDataTemplate> getLectureList(HttpServletRequest request) {
         String userId = request.getUserPrincipal().getName();
 
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK,
+                OK,
                 lectureService.readLectureProgress(userId));
     }
 
     @Operation(summary = "강의 수강 완료", description = "유저가 마지막으로 완료한 강의를 lectureId 값의 강의로 변경한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
     @PostMapping("/lectures/progress/{lectureId}")
     public ResponseEntity<ResponseTemplate> completeLecture(
@@ -72,23 +79,25 @@ public class  EducationController {
         String userId = request.getUserPrincipal().getName();
         progressService.completeLecture(userId, lectureId);
 
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
+        return ResponseTemplate.toResponseEntity(OK);
     }
 
     @Operation(summary = "퀴즈 질문 조회", description = "5개의 퀴즈 질문과 답변을 랜덤으로 조회한다.(리스트)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = QuizResponseDto.class)))),
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = QuizResponseDto.class)))),
     })
     @GetMapping("/quizzes")
     public ResponseEntity<ResponseDataTemplate> getQuizList() {
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK,
+                OK,
                 quizService.readRandom5Quiz());
     }
 
     @Operation(summary = "퀴즈 테스트 완료", description = "유저가 퀴즈 테스트를 통과했음을 저장한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
     @PostMapping("/quizzes/progress")
     public ResponseEntity<ResponseTemplate> completeQuiz(
@@ -98,23 +107,25 @@ public class  EducationController {
         String userId = request.getUserPrincipal().getName();
         progressService.completeQuiz(userId, requestDto);
 
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
+        return ResponseTemplate.toResponseEntity(OK);
     }
 
     @Operation(summary = "자세실습 강의 조회", description = "자세실습 강의 영상 URL를 조회한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureResponseDto.class)))),
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureResponseDto.class)))),
     })
     @GetMapping("/exercises")
     public ResponseEntity<ResponseDataTemplate> getPostureLecture() {
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK,
+                OK,
                 lectureService.readPostureLecture());
     }
 
     @Operation(summary = "자세실습 테스트 완료", description = "유저가 자세실습 테스트를 통과했음을 저장한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
     @PostMapping("/exercises/progress")
     public ResponseEntity<ResponseTemplate> completePosture(
@@ -122,8 +133,9 @@ public class  EducationController {
             @Parameter(description = "유저의 자세실습 점수") @RequestBody ScoreDto requestDto) {
         String userId = request.getUserPrincipal().getName();
         progressService.completePosture(userId, requestDto);
+        userService.certificate(userId);
 
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
+        return ResponseTemplate.toResponseEntity(OK_CERTIFICATED);
     }
 
 

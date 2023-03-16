@@ -11,6 +11,7 @@ public enum ResponseCode {
     OK_NICKNAME_CHECK(HttpStatus.OK, "사용 가능한 닉네임 입니다."),
     OK_QUIZ_FAIL(HttpStatus.OK, "점수가 낮아 퀴즈 테스트를 실패했습니다."),
     OK_POSTURE_FAIL(HttpStatus.OK, "점수가 낮아 자세실습 테스트를 실패했습니다."),
+    OK_CERTIFICATED(HttpStatus.OK, "CPR 엔젤 수료증을 받았습니다."),
 
     BAD_REQUEST_NICKNAME_DUPLICATED(HttpStatus.BAD_REQUEST, "중복된 닉네임 입니다."),
     BAD_REQUEST_LECTURE_DUPLICATED(HttpStatus.BAD_REQUEST, "중북되는 섹션의 강의가 존재합니다."),
