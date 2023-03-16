@@ -2,12 +2,13 @@ package com.mentionall.cpr2u.education.controller;
 
 import com.mentionall.cpr2u.education.dto.*;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
-import com.mentionall.cpr2u.education.dto.quiz.QuizRequestDto;
 import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.service.EducationProgressService;
 import com.mentionall.cpr2u.education.service.LectureService;
 import com.mentionall.cpr2u.education.service.QuizService;
+import com.mentionall.cpr2u.user.domain.PrincipalDetails;
 import com.mentionall.cpr2u.user.service.UserService;
+import com.mentionall.cpr2u.util.GetUserDetails;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
@@ -44,13 +45,12 @@ public class  EducationController {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = EducationProgressDto.class)))),
     })
-    @GetMapping
-    public ResponseEntity<ResponseDataTemplate> getEducationInfo(HttpServletRequest request) {
-        String userId = request.getUserPrincipal().getName();
+    @GetMapping()
+    public ResponseEntity<ResponseDataTemplate> getEducationInfo(@GetUserDetails PrincipalDetails userDetails) {
 
         return ResponseDataTemplate.toResponseEntity(
-                OK,
-                progressService.readEducationInfo(userId));
+                ResponseCode.OK,
+                progressService.readEducationInfo(userDetails.getUser()));
     }
 
     @Operation(summary = "유저의 강의 리스트 조회", description = "강의 리스트와 유저의 현재 강의 진도를 조회한다.")
@@ -59,12 +59,11 @@ public class  EducationController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureProgressDto.class)))),
     })
     @GetMapping("/lectures")
-    public ResponseEntity<ResponseDataTemplate> getLectureList(HttpServletRequest request) {
-        String userId = request.getUserPrincipal().getName();
+    public ResponseEntity<ResponseDataTemplate> getLectureList(@GetUserDetails PrincipalDetails userDetails) {
 
         return ResponseDataTemplate.toResponseEntity(
-                OK,
-                lectureService.readLectureProgress(userId));
+                ResponseCode.OK,
+                lectureService.readLectureProgress(userDetails.getUser()));
     }
 
     @Operation(summary = "강의 수강 완료", description = "유저가 마지막으로 완료한 강의를 lectureId 값의 강의로 변경한다.")
@@ -75,9 +74,8 @@ public class  EducationController {
     @PostMapping("/lectures/progress/{lectureId}")
     public ResponseEntity<ResponseTemplate> completeLecture(
             @Parameter(description = "완강한 강의 ID") @PathVariable Long lectureId,
-            HttpServletRequest request) {
-        String userId = request.getUserPrincipal().getName();
-        progressService.completeLecture(userId, lectureId);
+            @GetUserDetails PrincipalDetails userDetails) {
+        progressService.completeLecture(userDetails.getUser(), lectureId);
 
         return ResponseTemplate.toResponseEntity(OK);
     }

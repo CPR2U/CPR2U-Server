@@ -44,11 +44,14 @@ public class UserService {
             User user = userRepository.findByPhoneNumber(userLoginDto.getPhoneNumber())
                     .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
 
-            DeviceToken deviceToken = deviceTokenRepository.findByUserId(user.getId()).orElse(null);
-            deviceToken.setDeviceToken(userLoginDto.getDeviceToken());
-            deviceTokenRepository.save(deviceToken);
-            user.setDeviceToken(deviceToken);
-            userRepository.save(user);
+            DeviceToken deviceToken = deviceTokenRepository.findByUserId(user.getId())
+                    .orElse(new DeviceToken(userLoginDto.getDeviceToken(), user));
+            if(!deviceToken.getDeviceToken().equals(userLoginDto.getDeviceToken())) {
+                deviceToken.setDeviceToken(userLoginDto.getDeviceToken());
+                deviceTokenRepository.save(deviceToken);
+                user.setDeviceToken(deviceToken);
+                userRepository.save(user);
+            }
 
             return issueUserToken(user);
         }
@@ -88,6 +91,6 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_USER)
         );
-        user.certificate();
+        user.acquireCertification();
     }
 }

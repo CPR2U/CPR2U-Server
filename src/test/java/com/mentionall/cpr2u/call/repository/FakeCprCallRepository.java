@@ -1,6 +1,9 @@
 package com.mentionall.cpr2u.call.repository;
 
-import com.mentionall.cpr2u.call.domain.CPRCall;
+import com.mentionall.cpr2u.call.domain.CprCall;
+import com.mentionall.cpr2u.call.dto.CprCallDto;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,25 +17,28 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class FakeCprCallRepository implements CprCallRepository {
-    Map<Long, Object> map = new HashMap();
-
     @Override
-    public List<CPRCall> findAll() {
+    public List<CprCallDto> findAllCallInProcessByAddress(Long addressId) {
         return null;
     }
 
     @Override
-    public List<CPRCall> findAll(Sort sort) {
+    public List<CprCall> findAll() {
         return null;
     }
 
     @Override
-    public Page<CPRCall> findAll(Pageable pageable) {
+    public List<CprCall> findAll(Sort sort) {
         return null;
     }
 
     @Override
-    public List<CPRCall> findAllById(Iterable<Long> longs) {
+    public Page<CprCall> findAll(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<CprCall> findAllById(Iterable<Long> longs) {
         return null;
     }
 
@@ -47,7 +53,7 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
-    public void delete(CPRCall entity) {
+    public void delete(CprCall entity) {
 
     }
 
@@ -57,7 +63,7 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
-    public void deleteAll(Iterable<? extends CPRCall> entities) {
+    public void deleteAll(Iterable<? extends CprCall> entities) {
 
     }
 
@@ -67,19 +73,18 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
-    public <S extends CPRCall> S save(S entity) {
-        map.put(entity.getId(), entity);
-        return entity;
-    }
-
-    @Override
-    public <S extends CPRCall> List<S> saveAll(Iterable<S> entities) {
+    public <S extends CprCall> S save(S entity) {
         return null;
     }
 
     @Override
-    public Optional<CPRCall> findById(Long aLong) {
-        return Optional.of((CPRCall) map.get(aLong));
+    public <S extends CprCall> List<S> saveAll(Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public Optional<CprCall> findById(Long aLong) {
+        return Optional.empty();
     }
 
     @Override
@@ -93,17 +98,12 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
-    public <S extends CPRCall> S saveAndFlush(S entity) {
+    public <S extends CprCall> List<S> saveAllAndFlush(Iterable<S> entities) {
         return null;
     }
 
     @Override
-    public <S extends CPRCall> List<S> saveAllAndFlush(Iterable<S> entities) {
-        return null;
-    }
-
-    @Override
-    public void deleteAllInBatch(Iterable<CPRCall> entities) {
+    public void deleteAllInBatch(Iterable<CprCall> entities) {
 
     }
 
@@ -118,52 +118,102 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
-    public CPRCall getOne(Long aLong) {
+    public CprCall getOne(Long aLong) {
         return null;
     }
 
     @Override
-    public CPRCall getById(Long aLong) {
+    public CprCall getById(Long aLong) {
         return null;
     }
 
     @Override
-    public CPRCall getReferenceById(Long aLong) {
+    public CprCall getReferenceById(Long aLong) {
         return null;
     }
 
     @Override
-    public <S extends CPRCall> Optional<S> findOne(Example<S> example) {
+    public <S extends CprCall> Optional<S> findOne(Example<S> example) {
         return Optional.empty();
     }
 
     @Override
-    public <S extends CPRCall> List<S> findAll(Example<S> example) {
+    public <S extends CprCall> List<S> findAll(Example<S> example) {
         return null;
     }
 
     @Override
-    public <S extends CPRCall> List<S> findAll(Example<S> example, Sort sort) {
+    public <S extends CprCall> List<S> findAll(Example<S> example, Sort sort) {
         return null;
     }
 
     @Override
-    public <S extends CPRCall> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S extends CprCall> Page<S> findAll(Example<S> example, Pageable pageable) {
         return null;
     }
 
     @Override
-    public <S extends CPRCall> long count(Example<S> example) {
+    public <S extends CprCall> long count(Example<S> example) {
         return 0;
     }
 
     @Override
-    public <S extends CPRCall> boolean exists(Example<S> example) {
+    public <S extends CprCall> boolean exists(Example<S> example) {
         return false;
     }
 
     @Override
-    public <S extends CPRCall, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+    public <S extends CprCall, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
+    }
+
+    @Override
+    public <S extends CprCall> S saveAndFlush(S entity) {
+        return null;
+    }
+
+    @Override
+    public Optional<CprCall> findOne(Predicate predicate) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Iterable<CprCall> findAll(Predicate predicate) {
+        return null;
+    }
+
+    @Override
+    public Iterable<CprCall> findAll(Predicate predicate, Sort sort) {
+        return null;
+    }
+
+    @Override
+    public Iterable<CprCall> findAll(Predicate predicate, OrderSpecifier<?>... orders) {
+        return null;
+    }
+
+    @Override
+    public Iterable<CprCall> findAll(OrderSpecifier<?>... orders) {
+        return null;
+    }
+
+    @Override
+    public Page<CprCall> findAll(Predicate predicate, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public long count(Predicate predicate) {
+        return 0;
+    }
+
+    @Override
+    public boolean exists(Predicate predicate) {
+        return false;
+    }
+
+    @Override
+    public <S extends CprCall, R> R findBy(Predicate predicate, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
 }

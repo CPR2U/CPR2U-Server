@@ -3,8 +3,6 @@ package com.mentionall.cpr2u.education.service;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.Lecture;
 import com.mentionall.cpr2u.education.domain.ProgressStatus;
-import com.mentionall.cpr2u.education.domain.TestStandard;
-import com.mentionall.cpr2u.education.dto.EducationProgressDto;
 import com.mentionall.cpr2u.education.dto.ScoreDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.FakeEducationProgressRepository;
@@ -23,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.mentionall.cpr2u.education.domain.ProgressStatus.*;
@@ -50,7 +47,7 @@ public class EducationProgressTest {
     public void insertData() {
         User user = userRepository.save(new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token")));
         progressRepository.save(new EducationProgress(user));
-        lectureRepository.save(new Lecture(1L, "타이틀", "강의 URL", 1, "설명", new ArrayList()));
+        lectureRepository.save(new Lecture(1L, "타이틀", "강의 URL", 1, "설명", new ArrayList<>()));
     }
 
     @Test
@@ -64,7 +61,7 @@ public class EducationProgressTest {
 
         //when lecture course is in progress,
         for (var lecture : lectureRepository.findAll()) {
-            progressService.completeLecture(user.getId(), lecture.getId());
+            progressService.completeLecture(user, lecture.getId());
 
             int currentStep = progressRepository.findByUser(user).get().getLastLecture().getStep();
             boolean isInProgress = currentStep < finalLectureStep;
@@ -146,7 +143,7 @@ public class EducationProgressTest {
     }
 
     private void verifyLectureProgress(User user, Lecture lecture, ProgressStatus status) {
-        var progress = progressService.readEducationInfo(user.getId());
+        var progress = progressService.readEducationInfo(user);
         assertThat(progress.getIsLectureCompleted()).isEqualTo(status.ordinal());
 
         if (status == InProgress) {
@@ -162,12 +159,12 @@ public class EducationProgressTest {
     }
 
     private void verifyQuizProgress(User user, ProgressStatus status) {
-        int quizStatus = progressService.readEducationInfo(user.getId()).getIsQuizCompleted();
+        int quizStatus = progressService.readEducationInfo(user).getIsQuizCompleted();
         assertThat(quizStatus).isEqualTo(status.ordinal());
     }
 
     private void verifyPostureProgress(User user, ProgressStatus status) {
-        var progress = progressService.readEducationInfo(user.getId());
+        var progress = progressService.readEducationInfo(user);
         int postureStatus = progress.getIsPostureCompleted();
         assertThat(postureStatus).isEqualTo(status.ordinal());
 
@@ -178,7 +175,7 @@ public class EducationProgressTest {
     private void completeLectureCourse(User user) {
         var lectureList = lectureRepository.findAll().stream().sorted().collect(Collectors.toList());
         lectureList.forEach(lecture ->
-                progressService.completeLecture(user.getId(), lecture.getId())
+                progressService.completeLecture(user, lecture.getId())
         );
     }
 }

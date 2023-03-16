@@ -1,8 +1,8 @@
 package com.mentionall.cpr2u.call.domain;
 
+import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Table(name = "cpr_call")
-public class CPRCall {
+public class CprCall {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,19 +44,27 @@ public class CPRCall {
 
     @Column
     @Enumerated(EnumType.STRING)
-    CallStatus status;
+    CprCallStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cprCall")
-    List<Dispatch> dispatchList = new ArrayList();
+    List<Dispatch> dispatchList = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cprCall")
-    List<Report> reportList = new ArrayList();
+    List<Report> reportList = new ArrayList<>();
 
-    // TODO: /dispatch 테스트용 생성자(발견 시 삭제 요망)
-    public CPRCall(Long id, String fullAddress, double latitude, double longitude) {
-        this.id = id;
+    public CprCall(User user, Address address, LocalDateTime calledAt, CprCallOccurDto cprCallOccurDto) {
+        this.caller = user;
+        this.address = address;
+        // TODO
         this.fullAddress = fullAddress;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.calledAt = calledAt;
+        this.latitude = cprCallOccurDto.getLatitude();
+        this.longitude = cprCallOccurDto.getLongitude();
+        this.status = CprCallStatus.IN_PROGRESS;
     }
+
+    public void endSituationCprCall(){
+        this.status = CprCallStatus.END_SITUATION;
+    }
+
 }

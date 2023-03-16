@@ -1,16 +1,16 @@
 package com.mentionall.cpr2u.user.repository;
 
-import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.domain.UserRole;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class FakeUserRepository implements UserRepository{

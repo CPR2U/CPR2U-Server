@@ -1,17 +1,12 @@
 package com.mentionall.cpr2u.education.service;
 
-import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.education.domain.TestStandard;
 import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
-import com.mentionall.cpr2u.education.dto.LectureProgressDto;
 import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
-import com.mentionall.cpr2u.education.repository.LectureRepository;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
-import com.mentionall.cpr2u.user.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class LectureServiceTest {
@@ -39,7 +34,7 @@ public class LectureServiceTest {
         lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com"));
 
         //when
-        LectureProgressDto progressDto = lectureService.readLectureProgress(user.getId());
+        var progressDto = lectureService.readLectureProgress(user);
 
         //then
         assertThat(progressDto.getCurrentStep()).isEqualTo(0);

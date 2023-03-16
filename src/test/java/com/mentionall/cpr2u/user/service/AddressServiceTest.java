@@ -48,10 +48,10 @@ public class AddressServiceTest {
         addressRepository.save(address);
 
         //when
-        addressService.setAddress(userId, new AddressRequestDto(address.getId()));
+        User user = userRepository.findById(userId).get();
+        addressService.setAddress(user, new AddressRequestDto(address.getId()));
 
         //then
-        User user = userRepository.findById(userId).orElse(null);
         assertThat(user.getAddress().getId()).isEqualTo(address.getId());
         assertThat(user.getAddress().getSido()).isEqualTo("서울특별시");
         assertThat(user.getAddress().getSigugun()).isEqualTo("용산구");

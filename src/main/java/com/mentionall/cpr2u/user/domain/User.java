@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,11 +30,11 @@ public class User extends Timestamped{
     private String id;
 
     @NotNull
-    @Column(length = 40)
+    @Column(length = 40, unique = true)
     private String nickname;
 
     @NotNull
-    @Column(length = 20)
+    @Column(length = 20, unique = true)
     private String phoneNumber;
 
     @Column
@@ -94,12 +92,12 @@ public class User extends Timestamped{
         this.address = address;
     }
 
-    public void certificate() {
+    public void acquireCertification() {
         this.status = AngelStatusEnum.ACQUIRED;
         this.dateOfIssue = LocalDateTime.now();
     }
 
-    public void expire() {
+    public void expireCertificate() {
         this.status = AngelStatusEnum.EXPIRED;
     }
 }

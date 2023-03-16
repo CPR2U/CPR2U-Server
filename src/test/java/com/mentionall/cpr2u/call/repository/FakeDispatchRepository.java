@@ -166,4 +166,9 @@ public class FakeDispatchRepository implements DispatchRepository {
     public <S extends Dispatch, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
+
+    @Override
+    public List<Dispatch> findAllByCprCallId(Long cprCallId) {
+        return null;
+    }
 }

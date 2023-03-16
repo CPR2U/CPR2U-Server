@@ -2,19 +2,20 @@ package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.education.domain.Quiz;
 import com.mentionall.cpr2u.education.domain.QuizAnswer;
-import com.mentionall.cpr2u.education.dto.quiz.*;
-import com.mentionall.cpr2u.education.repository.QuizRepository;
+import com.mentionall.cpr2u.education.dto.quiz.QuizAnswerRequestDto;
+import com.mentionall.cpr2u.education.dto.quiz.QuizRequestDto;
+import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.repository.QuizAnswerRepository;
+import com.mentionall.cpr2u.education.repository.QuizRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

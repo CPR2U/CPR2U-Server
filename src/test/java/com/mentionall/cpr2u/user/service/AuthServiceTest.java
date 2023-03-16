@@ -42,7 +42,7 @@ public class AuthServiceTest {
         UserTokenDto userTokenDto = userService.signup(userSignUpDto);
 
         //then
-        User user = userRepository.findByPhoneNumber(phoneNumber).orElse(null);
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
         String userId1 = user.getId();
         String userId2 = jwtTokenProvider.getUserId(userTokenDto.getAccessToken());
         assertThat(userId1).isEqualTo(userId2);
@@ -61,7 +61,7 @@ public class AuthServiceTest {
         UserTokenDto userTokenDto = userService.login(userLoginDto);
 
         //then
-        User user = userRepository.findByPhoneNumber(phoneNumber).orElse(null);
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
         String userId1 = user.getId();
         String userId2 = jwtTokenProvider.getUserId(userTokenDto.getAccessToken());
         assertThat(userId1).isEqualTo(userId2);
@@ -114,7 +114,7 @@ public class AuthServiceTest {
         String newNickname = nickname;
 
         //then
-        Assertions.assertThrows(CustomException.class, ()->{
+        Assertions.assertThrows(CustomException.class, () -> {
                     userService.checkNicknameDuplicated(newNickname);
         });
     }

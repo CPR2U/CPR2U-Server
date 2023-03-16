@@ -12,11 +12,15 @@ public enum ResponseCode {
     OK_QUIZ_FAIL(HttpStatus.OK, "점수가 낮아 퀴즈 테스트를 실패했습니다."),
     OK_POSTURE_FAIL(HttpStatus.OK, "점수가 낮아 자세실습 테스트를 실패했습니다."),
     OK_CERTIFICATED(HttpStatus.OK, "CPR 엔젤 수료증을 받았습니다."),
+    OK_CPR_CALL_END_SITUDATION(HttpStatus.OK, "호출이 종료되었습니다."),
+
 
     BAD_REQUEST_NICKNAME_DUPLICATED(HttpStatus.BAD_REQUEST, "중복된 닉네임 입니다."),
     BAD_REQUEST_LECTURE_DUPLICATED(HttpStatus.BAD_REQUEST, "중북되는 섹션의 강의가 존재합니다."),
     BAD_REQUEST_QUIZ_WRONG_ANSWER(HttpStatus.BAD_REQUEST, "해당 퀴즈의 답안 인덱스가 잘못된 값을 갖고 있습니다."),
     BAD_REQUEST_EDUCATION_PERMISSION_DENIED(HttpStatus.BAD_REQUEST, "이전 진도를 모두 완료해야 수강할 수 있습니다."),
+    BAD_REQUEST_ADDRESS_NOT_SET(HttpStatus.BAD_REQUEST, "주소가 아직 설정되지 않았습니다."),
+
     FORBIDDEN_TOKEN_NOT_VALID(HttpStatus.FORBIDDEN, "유효하지 않은 토큰입니다."),
     
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "회원 정보가 없습니다."),
@@ -27,7 +31,7 @@ public enum ResponseCode {
     NOT_FOUND_EDUCATION_PROGRESS(HttpStatus.INTERNAL_SERVER_ERROR, "유저의 교육 진도 정보가 조회되지 않습니다."),
     NOT_FOUND_ADDRESS(HttpStatus.NOT_FOUND, "잘못된 주소 ID입니다." );
 
-    
+
     private final HttpStatus httpStatus;
     private final String detail;
 }
