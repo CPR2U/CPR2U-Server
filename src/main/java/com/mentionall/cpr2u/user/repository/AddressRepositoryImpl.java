@@ -1,6 +1,8 @@
 package com.mentionall.cpr2u.user.repository;
 
 import com.mentionall.cpr2u.user.domain.Address;
+import com.mentionall.cpr2u.util.exception.CustomException;
+import com.mentionall.cpr2u.util.exception.ResponseCode;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -23,12 +25,13 @@ public class AddressRepositoryImpl implements AddressDslRepository {
         JPAQuery<Address> findAddressQuery = queryFactory.selectFrom(address).where(address.sido.contains(addressList[0]));
         List<Address> findAddressList = findAddressQuery.fetch();
 
-        for(int i = 1 ; findAddressList.size() != 1  && i <= 2; i ++) {
+        for(int i = 1 ; findAddressList.size() <= 1  && i <= 2; i ++) {
             String sigugun = addressList[i];
             findAddressQuery = findBySigugunQuery(findAddressQuery, sigugun);
             findAddressList = findAddressQuery.fetch();
         }
-
+        if(findAddressList.size() < 1)
+            throw new CustomException(ResponseCode.NOT_FOUND_ADDRESS);
         return findAddressList.get(0);
 
     }
