@@ -5,7 +5,6 @@ import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.DispatchStatus;
 import com.mentionall.cpr2u.call.domain.Report;
 import com.mentionall.cpr2u.call.dto.DispatchRequestDto;
-import com.mentionall.cpr2u.call.dto.DispatchResponseDto;
 import com.mentionall.cpr2u.call.dto.ReportRequestDto;
 import com.mentionall.cpr2u.call.repository.*;
 import com.mentionall.cpr2u.user.domain.User;
@@ -20,9 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class DispatchServiceTest {
@@ -44,24 +42,23 @@ public class DispatchServiceTest {
         this.userRepository = new FakeUserRepository();
         this.reportRepository = new FakeReportRepository();
         this.dispatchService = new DispatchService(dispatchRepository, callRepository, userRepository, reportRepository);
+   }
 
-        // 테스트할 객체 추가
-        User user = new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token"));
-        userRepository.save(user);
-
-        CPRCall cprCall = new CPRCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55);
-        callRepository.save(cprCall);
+    @BeforeEach
+    public void insertData() {
+        userRepository.save(new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token")));
+        callRepository.save(new CPRCall(1L, "서울시 용산구 청파로 43길 100", 12.44, 36.55));
     }
 
     @Test
     @DisplayName("CPR 출동")
     public void dispatch() {
         //given
-        User user = userRepository.findById("1L").orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
-        CPRCall cprCall = callRepository.findById(1L).orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL));
+        User user = userRepository.findById("1L").get();
+        CPRCall cprCall = callRepository.findById(1L).get();
 
         //when
-        DispatchResponseDto response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
+        var response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
 
         //then
         assertThat(response.getCalledAt()).isEqualTo(cprCall.getCalledAt());
@@ -77,27 +74,27 @@ public class DispatchServiceTest {
     @DisplayName("CPR 출동 도착")
     public void arrive() {
         //given
-        User user = userRepository.findById("1L").orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
-        CPRCall cprCall = callRepository.findById(1L).orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL));
+        User user = userRepository.findById("1L").get();
+        CPRCall cprCall = callRepository.findById(1L).get();
 
         //when
-        DispatchResponseDto response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
+        var response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
         dispatchService.arrive(response.getDispatchId());
 
         //then
-        Optional<Dispatch> dispatchArrived = dispatchRepository.findById(response.getDispatchId());
-        assertThat(dispatchArrived.get().getStatus()).isEqualTo(DispatchStatus.ARRIVED);
+        var dispatchArrived = dispatchRepository.findById(response.getDispatchId()).get();
+        assertThat(dispatchArrived.getStatus()).isEqualTo(DispatchStatus.ARRIVED);
     }
 
     @Test
     @DisplayName("출동 신고")
     public void report() {
         //given
-        User user = userRepository.findById("1L").orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
-        CPRCall cprCall = callRepository.findById(1L).orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL));
+        User user = userRepository.findById("1L").get();
+        CPRCall cprCall = callRepository.findById(1L).get();
 
         //when
-        DispatchResponseDto response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
+        var response = dispatchService.dispatch(user.getId(), new DispatchRequestDto(cprCall.getId()));
         dispatchService.report(new ReportRequestDto(response.getDispatchId(), "신고 내용"));
 
         //then

@@ -14,6 +14,7 @@ import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,7 @@ public class UserService {
         return new UserCodeDto(String.format("%04.0f", Math.random() * Math.pow(10, 4)));
     }
 
+    @Transactional
     public UserTokenDto login(UserLoginDto userLoginDto) {
         if(userRepository.existsByPhoneNumber(userLoginDto.getPhoneNumber())){
             User user = userRepository.findByPhoneNumber(userLoginDto.getPhoneNumber())

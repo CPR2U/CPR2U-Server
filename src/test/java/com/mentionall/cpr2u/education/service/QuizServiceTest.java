@@ -40,7 +40,6 @@ public class QuizServiceTest {
         answerList.add(new QuizAnswerRequestDto(false, "일본"));
         answerList.add(new QuizAnswerRequestDto(false, "호주"));
         quizService.createQuiz(new QuizRequestDto("여기는 어디?","정답 이유", "SELECTION",  answerList));
-        ;
 
         answerList = new ArrayList();
         answerList.add(new QuizAnswerRequestDto(false, "Corea"));
@@ -48,7 +47,6 @@ public class QuizServiceTest {
         answerList.add(new QuizAnswerRequestDto(false, "KKorea"));
         answerList.add(new QuizAnswerRequestDto(false, "CCorea"));
         quizService.createQuiz(new QuizRequestDto("한국은 영어로?", "정답 이유", "SELECTION", answerList));
-        ;
     }
 
     private void create7OXQuiz() {
