@@ -32,7 +32,12 @@ public class QuizService {
 
         boolean haveAnswer = false;
         for (QuizAnswerRequestDto answerDto : requestDto.getAnswerList()) {
-            if (answerDto.isAnswer()) haveAnswer = true;
+            System.out.println(answerDto.getContent());
+            System.out.println(answerDto.isAnswer());
+            if (answerDto.isAnswer()) {
+                System.out.println("확인 여기서 함");
+                haveAnswer = true;
+            }
             answerRepository.save(new QuizAnswer(answerDto, quiz));
         }
         if (!haveAnswer) throw new CustomException(ResponseCode.BAD_REQUEST_QUIZ_WRONG_ANSWER);

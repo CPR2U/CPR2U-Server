@@ -1,8 +1,7 @@
-package com.mentionall.cpr2u.call.repository;
+package com.mentionall.cpr2u.education.repository;
 
-import com.mentionall.cpr2u.call.domain.CprCall;
-import com.mentionall.cpr2u.call.domain.Dispatch;
-import com.mentionall.cpr2u.call.dto.CprCallDto;
+import com.mentionall.cpr2u.education.domain.Lecture;
+import com.mentionall.cpr2u.education.domain.Quiz;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Example;
@@ -17,30 +16,32 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class FakeCprCallRepository implements CprCallRepository {
+public class FakeQuizRepository implements QuizRepository{
+
     Map<Long, Object> map = new HashMap();
+
     @Override
-    public List<CprCallDto> findAllCallInProcessByAddress(Long addressId) {
+    public List<Quiz> findRandomLimit5() {
         return null;
     }
 
     @Override
-    public List<CprCall> findAll() {
+    public List<Quiz> findAll() {
         return null;
     }
 
     @Override
-    public List<CprCall> findAll(Sort sort) {
+    public List<Quiz> findAll(Sort sort) {
         return null;
     }
 
     @Override
-    public Page<CprCall> findAll(Pageable pageable) {
+    public Page<Quiz> findAll(Pageable pageable) {
         return null;
     }
 
     @Override
-    public List<CprCall> findAllById(Iterable<Long> longs) {
+    public List<Quiz> findAllById(Iterable<Long> longs) {
         return null;
     }
 
@@ -55,7 +56,7 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
-    public void delete(CprCall entity) {
+    public void delete(Quiz entity) {
 
     }
 
@@ -65,7 +66,7 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
-    public void deleteAll(Iterable<? extends CprCall> entities) {
+    public void deleteAll(Iterable<? extends Quiz> entities) {
 
     }
 
@@ -75,19 +76,19 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
-    public <S extends CprCall> S save(S entity) {
+    public <S extends Quiz> S save(S entity) {
         map.put(entity.getId(), entity);
         return entity;
     }
 
     @Override
-    public <S extends CprCall> List<S> saveAll(Iterable<S> entities) {
+    public <S extends Quiz> List<S> saveAll(Iterable<S> entities) {
         return null;
     }
 
     @Override
-    public Optional<CprCall> findById(Long aLong) {
-        return Optional.of((CprCall) map.get(aLong));
+    public Optional<Quiz> findById(Long aLong) {
+        return Optional.of((Quiz) map.get(aLong));
     }
 
     @Override
@@ -101,12 +102,17 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
-    public <S extends CprCall> List<S> saveAllAndFlush(Iterable<S> entities) {
+    public <S extends Quiz> S saveAndFlush(S entity) {
         return null;
     }
 
     @Override
-    public void deleteAllInBatch(Iterable<CprCall> entities) {
+    public <S extends Quiz> List<S> saveAllAndFlush(Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public void deleteAllInBatch(Iterable<Quiz> entities) {
 
     }
 
@@ -121,87 +127,82 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
-    public CprCall getOne(Long aLong) {
+    public Quiz getOne(Long aLong) {
         return null;
     }
 
     @Override
-    public CprCall getById(Long aLong) {
+    public Quiz getById(Long aLong) {
         return null;
     }
 
     @Override
-    public CprCall getReferenceById(Long aLong) {
+    public Quiz getReferenceById(Long aLong) {
         return null;
     }
 
     @Override
-    public <S extends CprCall> Optional<S> findOne(Example<S> example) {
+    public <S extends Quiz> Optional<S> findOne(Example<S> example) {
         return Optional.empty();
     }
 
     @Override
-    public <S extends CprCall> List<S> findAll(Example<S> example) {
+    public <S extends Quiz> List<S> findAll(Example<S> example) {
         return null;
     }
 
     @Override
-    public <S extends CprCall> List<S> findAll(Example<S> example, Sort sort) {
+    public <S extends Quiz> List<S> findAll(Example<S> example, Sort sort) {
         return null;
     }
 
     @Override
-    public <S extends CprCall> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S extends Quiz> Page<S> findAll(Example<S> example, Pageable pageable) {
         return null;
     }
 
     @Override
-    public <S extends CprCall> long count(Example<S> example) {
+    public <S extends Quiz> long count(Example<S> example) {
         return 0;
     }
 
     @Override
-    public <S extends CprCall> boolean exists(Example<S> example) {
+    public <S extends Quiz> boolean exists(Example<S> example) {
         return false;
     }
 
     @Override
-    public <S extends CprCall, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+    public <S extends Quiz, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
 
     @Override
-    public <S extends CprCall> S saveAndFlush(S entity) {
-        return null;
-    }
-
-    @Override
-    public Optional<CprCall> findOne(Predicate predicate) {
+    public Optional<Quiz> findOne(Predicate predicate) {
         return Optional.empty();
     }
 
     @Override
-    public Iterable<CprCall> findAll(Predicate predicate) {
+    public Iterable<Quiz> findAll(Predicate predicate) {
         return null;
     }
 
     @Override
-    public Iterable<CprCall> findAll(Predicate predicate, Sort sort) {
+    public Iterable<Quiz> findAll(Predicate predicate, Sort sort) {
         return null;
     }
 
     @Override
-    public Iterable<CprCall> findAll(Predicate predicate, OrderSpecifier<?>... orders) {
+    public Iterable<Quiz> findAll(Predicate predicate, OrderSpecifier<?>... orders) {
         return null;
     }
 
     @Override
-    public Iterable<CprCall> findAll(OrderSpecifier<?>... orders) {
+    public Iterable<Quiz> findAll(OrderSpecifier<?>... orders) {
         return null;
     }
 
     @Override
-    public Page<CprCall> findAll(Predicate predicate, Pageable pageable) {
+    public Page<Quiz> findAll(Predicate predicate, Pageable pageable) {
         return null;
     }
 
@@ -216,7 +217,7 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
-    public <S extends CprCall, R> R findBy(Predicate predicate, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+    public <S extends Quiz, R> R findBy(Predicate predicate, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
 }
