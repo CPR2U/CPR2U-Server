@@ -2,6 +2,8 @@ package com.mentionall.cpr2u.education.repository;
 
 import com.mentionall.cpr2u.education.domain.Lecture;
 import com.mentionall.cpr2u.education.domain.Quiz;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -171,6 +173,51 @@ public class FakeQuizRepository implements QuizRepository{
 
     @Override
     public <S extends Quiz, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
+    }
+
+    @Override
+    public Optional<Quiz> findOne(Predicate predicate) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Iterable<Quiz> findAll(Predicate predicate) {
+        return null;
+    }
+
+    @Override
+    public Iterable<Quiz> findAll(Predicate predicate, Sort sort) {
+        return null;
+    }
+
+    @Override
+    public Iterable<Quiz> findAll(Predicate predicate, OrderSpecifier<?>... orders) {
+        return null;
+    }
+
+    @Override
+    public Iterable<Quiz> findAll(OrderSpecifier<?>... orders) {
+        return null;
+    }
+
+    @Override
+    public Page<Quiz> findAll(Predicate predicate, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public long count(Predicate predicate) {
+        return 0;
+    }
+
+    @Override
+    public boolean exists(Predicate predicate) {
+        return false;
+    }
+
+    @Override
+    public <S extends Quiz, R> R findBy(Predicate predicate, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
 }
