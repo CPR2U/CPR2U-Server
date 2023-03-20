@@ -92,10 +92,12 @@ public class User extends Timestamped{
         this.address = address;
     }
 
-    public void setUserAngelStatus(AngelStatusEnum angelStatus) {
-        this.status = angelStatus;
+    public void acquireCertification() {
+        this.status = AngelStatusEnum.ACQUIRED;
+        this.dateOfIssue = LocalDateTime.now();
     }
 
-
-
+    public void expireCertificate() {
+        this.status = AngelStatusEnum.EXPIRED;
+    }
 }

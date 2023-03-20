@@ -19,6 +19,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
+import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -34,7 +38,7 @@ public class UserController {
     @GetMapping("/address")
     public ResponseEntity<ResponseDataTemplate> readAddressList() {
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK,
+                OK,
                 addressService.readAll()
         );
     }
@@ -48,7 +52,7 @@ public class UserController {
     public ResponseEntity<ResponseTemplate> setAddress(@GetUserDetails PrincipalDetails userDetails, @RequestBody AddressRequestDto requestDto) {
         addressService.setAddress(userDetails.getUser(), requestDto);
 
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
+        return ResponseTemplate.toResponseEntity(OK);
     }
 
 }
