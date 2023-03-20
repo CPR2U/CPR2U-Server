@@ -80,11 +80,4 @@ public class EducationProgressService {
 
         progress.updateLecture(lecture);
     }
-
-    public void completeAllLectureCourse(String userId) {
-        List<Lecture> lectureList = lectureRepository.findAll();
-        Collections.sort(lectureList);
-        User user = userRepository.findById(userId).orElse(null);
-        lectureList.forEach(lecture -> completeLecture(user, lecture.getId()));
-    }
 }

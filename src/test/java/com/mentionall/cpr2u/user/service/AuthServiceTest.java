@@ -114,7 +114,7 @@ public class AuthServiceTest {
         String newNickname = nickname;
 
         //then
-        Assertions.assertThrows(CustomException.class, ()->{
+        Assertions.assertThrows(CustomException.class, () -> {
                     userService.checkNicknameDuplicated(newNickname);
         });
     }

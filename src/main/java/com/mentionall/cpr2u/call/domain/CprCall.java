@@ -16,6 +16,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "cpr_call")
 public class CprCall {
 
@@ -48,14 +49,15 @@ public class CprCall {
     CprCallStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cprCall")
-    List<Dispatch> dispatchList = new ArrayList();
+    List<Dispatch> dispatchList = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cprCall")
-    List<Report> reportList = new ArrayList();
+    List<Report> reportList = new ArrayList<>();
 
     public CprCall(User user, Address address, LocalDateTime calledAt, CprCallOccurDto cprCallOccurDto) {
         this.caller = user;
         this.address = address;
+        // TODO
         this.fullAddress = fullAddress;
         this.calledAt = calledAt;
         this.latitude = cprCallOccurDto.getLatitude();

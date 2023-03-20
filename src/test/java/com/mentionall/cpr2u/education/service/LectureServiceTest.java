@@ -1,15 +1,14 @@
 package com.mentionall.cpr2u.education.service;
 
-import com.mentionall.cpr2u.config.security.JwtTokenProvider;
+import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.TestStandard;
 import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
-import com.mentionall.cpr2u.education.dto.LectureProgressDto;
 import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
-import com.mentionall.cpr2u.education.repository.LectureRepository;
+import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
+import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
-import com.mentionall.cpr2u.user.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
+import com.mentionall.cpr2u.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class LectureServiceTest {
@@ -26,31 +25,23 @@ public class LectureServiceTest {
     private LectureService lectureService;
 
     @Autowired
-    private LectureRepository lectureRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @BeforeEach
-    public void beforeEach() {
-        lectureRepository.deleteAll();
-        lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com"));
-    }
+    private EducationProgressRepository progressRepository;
 
     @Test
     @Transactional
     @DisplayName("사용자의 강의 진도 조회")
     public void readLectureProgress() {
         //given
-        UserSignUpDto signUpDto = new UserSignUpDto("현애", "010-0000-0000", "device-token");
-        String accessToken = userService.signup(signUpDto).getAccessToken();
-        String userId = jwtTokenProvider.getUserId(accessToken);
+        User user = userRepository.save(new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token")));
+        progressRepository.save(new EducationProgress(user));
+
+        lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com"));
 
         //when
-        LectureProgressDto progressDto = lectureService.readLectureProgress(userId);
+        var progressDto = lectureService.readLectureProgress(user);
 
         //then
         assertThat(progressDto.getCurrentStep()).isEqualTo(0);

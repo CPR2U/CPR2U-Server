@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static com.mentionall.cpr2u.user.domain.QAddress.address;
 
@@ -21,18 +22,17 @@ public class AddressRepositoryImpl implements AddressDslRepository {
     }
 
     @Override
-    public Address findByFullAddress(String[] addressList) {
+    public Optional<Address> findByFullAddress(String[] addressList) {
         JPAQuery<Address> findAddressQuery = queryFactory.selectFrom(address).where(address.sido.contains(addressList[0]));
         List<Address> findAddressList = findAddressQuery.fetch();
 
-        for(int i = 1 ; findAddressList.size() <= 1  && i <= 2; i ++) {
+        for(int i = 1 ; findAddressList.size() > 1  && i <= 2; i ++) {
             String sigugun = addressList[i];
             findAddressQuery = findBySigugunQuery(findAddressQuery, sigugun);
             findAddressList = findAddressQuery.fetch();
         }
-        if(findAddressList.size() < 1)
-            throw new CustomException(ResponseCode.NOT_FOUND_ADDRESS);
-        return findAddressList.get(0);
+        if (findAddressList.isEmpty()) throw new CustomException(ResponseCode.NOT_FOUND_ADDRESS);
+        return Optional.of(findAddressList.get(0));
 
     }
 
