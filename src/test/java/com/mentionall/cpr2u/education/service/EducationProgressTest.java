@@ -84,11 +84,11 @@ public class EducationProgressTest {
 
         //when the user fails the quiz test,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completeQuiz(user.getId(), new ScoreDto(50)));
+                () -> progressService.completeQuiz(user, new ScoreDto(50)));
         verifyQuizProgress(user, NotCompleted);
 
         //when the user succeeds the quiz test,
-        progressService.completeQuiz(user.getId(), new ScoreDto(100));
+        progressService.completeQuiz(user, new ScoreDto(100));
         verifyQuizProgress(user, Completed);
     }
 
@@ -98,18 +98,18 @@ public class EducationProgressTest {
         //given
         User user = userRepository.findById("1L").get();
         completeLectureCourse(user);
-        progressService.completeQuiz(user.getId(), new ScoreDto(100));
+        progressService.completeQuiz(user, new ScoreDto(100));
 
         //when a posture test is not started,
         verifyPostureProgress(user, NotCompleted);
 
         //when the user fails the posture test,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user.getId(), new ScoreDto(79)));
+                () -> progressService.completePosture(user, new ScoreDto(79)));
         verifyPostureProgress(user, NotCompleted);
 
         //when the user succeeds the posture test,
-        progressService.completePosture(user.getId(), new ScoreDto(81));
+        progressService.completePosture(user, new ScoreDto(81));
         verifyPostureProgress(user, Completed);
     }
 
@@ -122,7 +122,7 @@ public class EducationProgressTest {
 
         // when the lecture course is not completed,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completeQuiz(user.getId(), new ScoreDto(100))
+                () -> progressService.completeQuiz(user, new ScoreDto(100))
         );
     }
 
@@ -134,12 +134,12 @@ public class EducationProgressTest {
 
         // when the lecture course is not completed,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user.getId(), new ScoreDto(100)));
+                () -> progressService.completePosture(user, new ScoreDto(100)));
 
         // when the lecture course is completed, but quiz test is not
         completeLectureCourse(user);
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user.getId(), new ScoreDto(100)));
+                () -> progressService.completePosture(user, new ScoreDto(100)));
     }
 
     private void verifyLectureProgress(User user, Lecture lecture, ProgressStatus status) {

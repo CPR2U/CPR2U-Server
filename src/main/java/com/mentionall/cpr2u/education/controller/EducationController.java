@@ -25,8 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
 
 @Tag(name = "EducationController", description = "학습 화면 컨트롤러")
@@ -99,11 +97,10 @@ public class  EducationController {
     })
     @PostMapping("/quizzes/progress")
     public ResponseEntity<ResponseTemplate> completeQuiz(
-            HttpServletRequest request,
-            @Parameter(description = "유저의 퀴즈 점수") @RequestBody ScoreDto requestDto
+            @Parameter(description = "유저의 퀴즈 점수") @RequestBody ScoreDto requestDto,
+            @GetUserDetails PrincipalDetails userDetails
             ) {
-        String userId = request.getUserPrincipal().getName();
-        progressService.completeQuiz(userId, requestDto);
+        progressService.completeQuiz(userDetails.getUser(), requestDto);
 
         return ResponseTemplate.toResponseEntity(OK);
     }
@@ -127,11 +124,10 @@ public class  EducationController {
     })
     @PostMapping("/exercises/progress")
     public ResponseEntity<ResponseTemplate> completePosture(
-            HttpServletRequest request,
+            @GetUserDetails PrincipalDetails userDetails,
             @Parameter(description = "유저의 자세실습 점수") @RequestBody ScoreDto requestDto) {
-        String userId = request.getUserPrincipal().getName();
-        progressService.completePosture(userId, requestDto);
-        userService.certificate(userId);
+        progressService.completePosture(userDetails.getUser(), requestDto);
+        userService.certificate(userDetails.getUser());
 
         return ResponseTemplate.toResponseEntity(OK_CERTIFICATED);
     }

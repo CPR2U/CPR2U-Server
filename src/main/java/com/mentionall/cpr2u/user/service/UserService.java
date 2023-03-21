@@ -87,10 +87,7 @@ public class UserService {
             throw new CustomException(ResponseCode.BAD_REQUEST_NICKNAME_DUPLICATED);
     }
 
-    public void certificate(String userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_USER)
-        );
+    public void certificate(User user) {
         user.acquireCertification();
     }
 }
