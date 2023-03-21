@@ -47,14 +47,14 @@ jobs:
     - name: Checkout 2
       uses: actions/checkout@v3
     
-    - name: Touch application.properties
-      run: touch ./src/main/resources/application.properties
+    - name: Touch application.yml
+      run: touch ./src/main/resources/application.yml
       
-    - name: Write application.properties
-      run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+    - name: Write application.yml
+      run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
       
-    - name: Read application.properties
-      run: cat ./src/main/resources/application.properties
+    - name: Read application.yml
+      run: cat ./src/main/resources/application.yml
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
