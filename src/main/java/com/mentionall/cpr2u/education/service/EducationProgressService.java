@@ -55,8 +55,8 @@ public class EducationProgressService {
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_LECTURE)
         );
-
         progress.updateLecture(lecture);
+        progressRepository.save(progress);
     }
 
     private EducationProgress getEducationProgressByUser(User user) {
