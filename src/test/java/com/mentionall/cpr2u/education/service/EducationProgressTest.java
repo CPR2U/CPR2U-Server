@@ -3,11 +3,13 @@ package com.mentionall.cpr2u.education.service;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.Lecture;
 import com.mentionall.cpr2u.education.domain.ProgressStatus;
+import com.mentionall.cpr2u.education.dto.EducationProgressDto;
 import com.mentionall.cpr2u.education.dto.ScoreDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.FakeEducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.FakeLectureRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
+import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.FakeUserRepository;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -40,13 +43,27 @@ public class EducationProgressTest {
         userRepository = new FakeUserRepository();
         lectureRepository = new FakeLectureRepository();
         progressRepository = new FakeEducationProgressRepository();
-        progressService = new EducationProgressService(userRepository, progressRepository, lectureRepository);
+        progressService = new EducationProgressService(progressRepository, lectureRepository);
     }
 
     @BeforeEach
     public void insertData() {
-        User user = userRepository.save(new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token")));
-        progressRepository.save(new EducationProgress(user));
+
+        LocalDate after3Days = LocalDate.now().plusDays(3);
+        LocalDate after90Days = LocalDate.now().plusDays(90);
+        LocalDate after91Days = LocalDate.now().plusDays(91);
+
+        User user1 = userRepository.save(new User("1L", new UserSignUpDto("현애", "010-0000-0000", "device_token")));
+        User user2 = userRepository.save(new User("2L", "예진", "010-1111-1111", after3Days.atStartOfDay(), AngelStatusEnum.ACQUIRED, null, null, null, null, null, null, null));
+        User user3 = userRepository.save(new User("3L", "정현", "010-2222-2222", after90Days.atStartOfDay(), AngelStatusEnum.ACQUIRED, null, null, null, null, null, null, null));
+        User user4 = userRepository.save(new User("4L", "채영", "010-3333-3333", after91Days.atStartOfDay(), AngelStatusEnum.ACQUIRED, null, null, null, null, null, null, null));
+
+
+        EducationProgress educationProgress1 = progressRepository.save(new EducationProgress(1L, user1, null, 0, 0));
+        EducationProgress educationProgress2 = progressRepository.save(new EducationProgress(2L, user2, null, 0, 0));
+        EducationProgress educationProgress3 = progressRepository.save(new EducationProgress(3L, user3, null, 0, 0));
+        EducationProgress educationProgress4 = progressRepository.save(new EducationProgress(4L, user4, null, 0, 0));
+
         lectureRepository.save(new Lecture(1L, "타이틀", "강의 URL", 1, "설명", new ArrayList<>()));
     }
 
@@ -84,11 +101,11 @@ public class EducationProgressTest {
 
         //when the user fails the quiz test,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completeQuiz(user.getId(), new ScoreDto(50)));
+                () -> progressService.completeQuiz(user, new ScoreDto(50)));
         verifyQuizProgress(user, NotCompleted);
 
         //when the user succeeds the quiz test,
-        progressService.completeQuiz(user.getId(), new ScoreDto(100));
+        progressService.completeQuiz(user, new ScoreDto(100));
         verifyQuizProgress(user, Completed);
     }
 
@@ -98,18 +115,18 @@ public class EducationProgressTest {
         //given
         User user = userRepository.findById("1L").get();
         completeLectureCourse(user);
-        progressService.completeQuiz(user.getId(), new ScoreDto(100));
+        progressService.completeQuiz(user, new ScoreDto(100));
 
         //when a posture test is not started,
         verifyPostureProgress(user, NotCompleted);
 
         //when the user fails the posture test,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user.getId(), new ScoreDto(79)));
+                () -> progressService.completePosture(user, new ScoreDto(79)));
         verifyPostureProgress(user, NotCompleted);
 
         //when the user succeeds the posture test,
-        progressService.completePosture(user.getId(), new ScoreDto(81));
+        progressService.completePosture(user, new ScoreDto(81));
         verifyPostureProgress(user, Completed);
     }
 
@@ -122,7 +139,7 @@ public class EducationProgressTest {
 
         // when the lecture course is not completed,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completeQuiz(user.getId(), new ScoreDto(100))
+                () -> progressService.completeQuiz(user, new ScoreDto(100))
         );
     }
 
@@ -134,12 +151,41 @@ public class EducationProgressTest {
 
         // when the lecture course is not completed,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user.getId(), new ScoreDto(100)));
+                () -> progressService.completePosture(user, new ScoreDto(100)));
 
         // when the lecture course is completed, but quiz test is not
         completeLectureCourse(user);
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user.getId(), new ScoreDto(100)));
+                () -> progressService.completePosture(user, new ScoreDto(100)));
+    }
+
+    @Test
+    @DisplayName("엔젤 유효기간 D-DAY 값 확인")
+    public void checkAngelStatusDDay() {
+
+        //get
+        User user1 = userRepository.findById("1L").get();
+        user1.acquireCertification();
+        User user2 = userRepository.findById("2L").get();
+        User user3 = userRepository.findById("3L").get();
+        User user4 = userRepository.findById("4L").get();
+
+        EducationProgress educationProgress1 = progressRepository.findByUser(user1).get();
+        EducationProgress educationProgress2 = progressRepository.findByUser(user2).get();
+        EducationProgress educationProgress3 = progressRepository.findByUser(user3).get();
+        EducationProgress educationProgress4 = progressRepository.findByUser(user4).get();
+
+        //when
+        EducationProgressDto acquireAngelToday = new EducationProgressDto(educationProgress1, user1);
+        EducationProgressDto acquireAngelAfter3Day = new EducationProgressDto(educationProgress2, user2);
+        EducationProgressDto acquireAngelAfter90Day = new EducationProgressDto(educationProgress3, user3);
+        EducationProgressDto acquireAngelAfter91Day = new EducationProgressDto(educationProgress4, user4);
+
+        //then
+        assertThat(acquireAngelToday.getDaysLeftUntilExpiration()).isEqualTo(90);
+        assertThat(acquireAngelAfter3Day.getDaysLeftUntilExpiration()).isEqualTo(87);
+        assertThat(acquireAngelAfter90Day.getDaysLeftUntilExpiration()).isEqualTo(0);
+        assertThat(acquireAngelAfter91Day.getDaysLeftUntilExpiration()).isEqualTo(null);
     }
 
     private void verifyLectureProgress(User user, Lecture lecture, ProgressStatus status) {
