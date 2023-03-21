@@ -103,7 +103,7 @@ public class  EducationController {
     })
     @PostMapping("/quizzes/progress")
     public ResponseEntity<ResponseTemplate> completeQuiz(
-            @Parameter(description = "유저의 퀴즈 점수") @RequestBody ScoreDto requestDto,
+            @Parameter(description = "유저의 퀴즈 점수(1 ~ 100)") @RequestBody ScoreDto requestDto,
             @GetUserDetails PrincipalDetails userDetails
             ) {
         progressService.completeQuiz(userDetails.getUser(), requestDto);
