@@ -38,7 +38,13 @@ public class  EducationController {
     private final QuizService quizService;
     private final UserService userService;
 
-    @Operation(summary = "유저의 학습 화면 정보 조회", description = "유저의 엔젤 자격과 현재 학습 진도 정보를 조회한다.")
+    @Operation(summary = "유저의 학습 화면 정보 조회",
+            description = "유저의 엔젤 자격과 현재 학습 진도 정보를 조회한다.\n" +
+                    "angel_status : 사용자의 엔젤 상태(0: 수료 / 1: 만료 / 2: 미수료)\n" +
+                    "progress_percent : 사용자의 총 학습 완수율(0.0 ~ 1.0 사이 Double 값)\n" +
+                    "is_lecture_completed : 사용자의 완강 여부(0: 미완 / 2: 완료)\n" +
+                    "is_quiz_completed : 사용자의 퀴즈 완료 여부(0: 미완 / 2: 완료)\n" +
+                    "is_posture_completed : 사용자의 자세 실습 완료 여부(0: 미완 / 2: 완료)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = EducationProgressDto.class)))),

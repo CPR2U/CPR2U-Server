@@ -9,19 +9,14 @@ import com.mentionall.cpr2u.education.dto.ScoreDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class EducationProgressService {
-    private final UserRepository userRepository;
     private final EducationProgressRepository progressRepository;
     private final LectureRepository lectureRepository;
 
@@ -65,10 +60,9 @@ public class EducationProgressService {
     }
 
     private EducationProgress getEducationProgressByUser(User user) {
-        EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
+        return progressRepository.findByUser(user).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_EDUCATION_PROGRESS)
         );
-        return progress;
     }
 
 }
