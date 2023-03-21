@@ -59,6 +59,10 @@ sourceSets {
 	}
 }
 
+bootJar {
+	archieveName = 'app'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
