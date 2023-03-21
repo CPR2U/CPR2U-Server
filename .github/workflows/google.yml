@@ -63,7 +63,7 @@ jobs:
 #      run: ./gradlew test
       
     - name: Build with Gradle
-      run: ./gradlew clean build -x test
+      run: ./gradlew bootJar
 
     - name: Checkout 3
       uses: actions/checkout@v3
