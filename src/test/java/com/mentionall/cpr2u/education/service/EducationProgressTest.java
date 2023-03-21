@@ -49,9 +49,9 @@ public class EducationProgressTest {
     @BeforeEach
     public void insertData() {
 
-        LocalDate after3Days = LocalDate.now().plusDays(3);
-        LocalDate after90Days = LocalDate.now().plusDays(90);
-        LocalDate after91Days = LocalDate.now().plusDays(91);
+        LocalDate after3Days = LocalDate.now().minusDays(3);
+        LocalDate after90Days = LocalDate.now().minusDays(90);
+        LocalDate after91Days = LocalDate.now().minusDays(91);
 
         User user1 = userRepository.save(new User("1L", new UserSignUpDto("현애", "010-0000-0000", "device_token")));
         User user2 = userRepository.save(new User("2L", "예진", "010-1111-1111", after3Days.atStartOfDay(), AngelStatusEnum.ACQUIRED, null, null, null, null, null, null, null));
