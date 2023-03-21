@@ -103,11 +103,10 @@ public class  EducationController {
     })
     @PostMapping("/quizzes/progress")
     public ResponseEntity<ResponseTemplate> completeQuiz(
-            @Parameter(description = "유저의 퀴즈 점수(1 ~ 100)") @RequestBody ScoreDto requestDto,
-            @GetUserDetails PrincipalDetails userDetails
-            ) {
+            @Parameter(description = "유저의 점수") @RequestBody ScoreDto requestDto,
+            @GetUserDetails PrincipalDetails userDetails) {
+        System.out.println("점수 : "  + requestDto.getScore());
         progressService.completeQuiz(userDetails.getUser(), requestDto);
-
         return ResponseTemplate.toResponseEntity(OK);
     }
 
@@ -131,7 +130,7 @@ public class  EducationController {
     @PostMapping("/exercises/progress")
     public ResponseEntity<ResponseTemplate> completePosture(
             @GetUserDetails PrincipalDetails userDetails,
-            @Parameter(description = "유저의 자세실습 점수") @RequestBody ScoreDto requestDto) {
+            @Parameter(description = "유저의 점수") @RequestBody ScoreDto requestDto) {
         progressService.completePosture(userDetails.getUser(), requestDto);
         userService.certificate(userDetails.getUser());
 
