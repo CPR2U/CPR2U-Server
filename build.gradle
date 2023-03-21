@@ -60,7 +60,7 @@ sourceSets {
 }
 
 bootJar {
-	archieveName = 'app'
+	archiveFileName = 'app.jar'
 }
 
 tasks.named('test') {
