@@ -2,6 +2,7 @@ package com.mentionall.cpr2u.education.controller;
 
 import com.mentionall.cpr2u.education.dto.*;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
+import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.service.EducationProgressService;
 import com.mentionall.cpr2u.education.service.LectureService;
@@ -96,16 +97,17 @@ public class  EducationController {
                 quizService.readRandom5Quiz());
     }
 
-    @Operation(summary = "퀴즈 테스트 완료", description = "유저가 퀴즈 테스트를 통과했음을 저장한다.")
+    @Operation(summary = "퀴즈 테스트 완료", description = "유저의 퀴즈 테스트 결과를 저장한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "400", description = "이전 진도를 모두 완료해야 수강할 수 있습니다.",
+                content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
     @PostMapping("/quizzes/progress")
     public ResponseEntity<ResponseTemplate> completeQuiz(
             @Parameter(description = "유저의 점수") @RequestBody ScoreDto requestDto,
             @GetUserDetails PrincipalDetails userDetails) {
-        System.out.println("점수 : "  + requestDto.getScore());
         progressService.completeQuiz(userDetails.getUser(), requestDto);
         return ResponseTemplate.toResponseEntity(OK);
     }
@@ -113,7 +115,7 @@ public class  EducationController {
     @Operation(summary = "자세실습 강의 조회", description = "자세실습 강의 영상 URL를 조회한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureResponseDto.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostureLectureResponseDto.class)))),
     })
     @GetMapping("/exercises")
     public ResponseEntity<ResponseDataTemplate> getPostureLecture() {
