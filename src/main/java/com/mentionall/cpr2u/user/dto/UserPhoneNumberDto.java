@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserPhoneNumberDto {
 
-    @Schema(example = "전화번호")
+    @Schema(example = "사용자 전화번호")
     @JsonProperty("phone_number")
     String phoneNumber;
 

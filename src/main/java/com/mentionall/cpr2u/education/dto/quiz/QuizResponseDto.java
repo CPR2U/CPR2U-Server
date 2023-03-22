@@ -25,6 +25,10 @@ public class QuizResponseDto {
     @Schema(example = "퀴즈 정답 ID")
     private Long answer;
 
+    @Schema(example = "퀴즈 정답 ID")
+    @JsonProperty(value = "answer_content")
+    private String answerContent;
+
     @Schema(example = "정답 이유")
     private String reason;
 
@@ -40,8 +44,11 @@ public class QuizResponseDto {
 
         for (int i = 0; i < quiz.getAnswerList().size(); i++) {
             QuizAnswer answer = quiz.getAnswerList().get(i);
-            if (answer.isAnswer()) this.answer = answer.getId();
-            answerList.add(new QuizAnswerResponseDto(answer));
+            if (answer.isAnswer()) {
+                this.answer = answer.getId();
+                this.answerContent = answer.getContent();
+            }
+            this.answerList.add(new QuizAnswerResponseDto(answer));
         }
     }
 }
