@@ -27,6 +27,7 @@ public class EducationProgressService {
             throw new CustomException(ResponseCode.BAD_REQUEST_EDUCATION_PERMISSION_DENIED);
 
         progress.updateQuizScore(requestDto.getScore());
+        progressRepository.save(progress);
 
         if (requestDto.getScore() < TestStandard.quizScore)
             throw new CustomException(ResponseCode.OK_QUIZ_FAIL);
@@ -40,6 +41,7 @@ public class EducationProgressService {
             throw new CustomException(ResponseCode.BAD_REQUEST_EDUCATION_PERMISSION_DENIED);
 
         progress.updatePostureScore(requestDto.getScore());
+        progressRepository.save(progress);
 
         if (progress.getPostureScore() < TestStandard.postureScore)
             throw new CustomException(ResponseCode.OK_POSTURE_FAIL);
