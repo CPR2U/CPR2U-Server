@@ -39,10 +39,10 @@ jobs:
     - name: Touch application.yml
       run: touch ./src/main/resources/application-local.properties
       
-    - name: Write application.yml
+    - name: Echo application.yml
       run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-local.properties
 
-    - name: Read application.yml
+    - name: Cat application.yml
       run: cat ./src/main/resources/application-local.properties
         
     - name: Grant execute permission for gradlew
