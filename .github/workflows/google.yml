@@ -63,14 +63,11 @@ jobs:
 #      run: ./gradlew test
       
     - name: Build with Gradle
-      run: ./gradlew bootJar
+      run: ./gradlew bootJar && ls -la ./build/libs/
 
     - name: Checkout 3
       uses: actions/checkout@v3
-    
-    - name: Confirm .jar file
-      run: ls build/libs/
-
+      
     # Configure Workload Identity Federation and generate an access token.
     # - id: 'auth'
     #   name: 'Authenticate to Google Cloud'
