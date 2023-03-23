@@ -2,6 +2,7 @@ package com.mentionall.cpr2u.education.controller;
 
 import com.mentionall.cpr2u.education.dto.*;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
+import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.service.EducationProgressService;
 import com.mentionall.cpr2u.education.service.LectureService;
@@ -25,8 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
 
 @Tag(name = "EducationController", description = "학습 화면 컨트롤러")
@@ -40,7 +39,13 @@ public class  EducationController {
     private final QuizService quizService;
     private final UserService userService;
 
-    @Operation(summary = "유저의 학습 화면 정보 조회", description = "유저의 엔젤 자격과 현재 학습 진도 정보를 조회한다.")
+    @Operation(summary = "유저의 학습 화면 정보 조회",
+            description = "유저의 엔젤 자격과 현재 학습 진도 정보를 조회한다.\n" +
+                    "angel_status : 사용자의 엔젤 상태(0: 수료 / 1: 만료 / 2: 미수료)\n" +
+                    "progress_percent : 사용자의 총 학습 완수율(0.0 ~ 1.0 사이 Double 값)\n" +
+                    "is_lecture_completed : 사용자의 완강 여부(0: 미완 / 2: 완료)\n" +
+                    "is_quiz_completed : 사용자의 퀴즈 완료 여부(0: 미완 / 2: 완료)\n" +
+                    "is_posture_completed : 사용자의 자세 실습 완료 여부(0: 미완 / 2: 완료)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = EducationProgressDto.class)))),
@@ -92,26 +97,25 @@ public class  EducationController {
                 quizService.readRandom5Quiz());
     }
 
-    @Operation(summary = "퀴즈 테스트 완료", description = "유저가 퀴즈 테스트를 통과했음을 저장한다.")
+    @Operation(summary = "퀴즈 테스트 완료", description = "유저의 퀴즈 테스트 결과를 저장한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "400", description = "이전 진도를 모두 완료해야 수강할 수 있습니다.",
+                content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
     @PostMapping("/quizzes/progress")
     public ResponseEntity<ResponseTemplate> completeQuiz(
-            HttpServletRequest request,
-            @Parameter(description = "유저의 퀴즈 점수") @RequestBody ScoreDto requestDto
-            ) {
-        String userId = request.getUserPrincipal().getName();
-        progressService.completeQuiz(userId, requestDto);
-
+            @Parameter(description = "유저의 점수") @RequestBody ScoreDto requestDto,
+            @GetUserDetails PrincipalDetails userDetails) {
+        progressService.completeQuiz(userDetails.getUser(), requestDto);
         return ResponseTemplate.toResponseEntity(OK);
     }
 
     @Operation(summary = "자세실습 강의 조회", description = "자세실습 강의 영상 URL를 조회한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureResponseDto.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostureLectureResponseDto.class)))),
     })
     @GetMapping("/exercises")
     public ResponseEntity<ResponseDataTemplate> getPostureLecture() {
@@ -127,11 +131,10 @@ public class  EducationController {
     })
     @PostMapping("/exercises/progress")
     public ResponseEntity<ResponseTemplate> completePosture(
-            HttpServletRequest request,
-            @Parameter(description = "유저의 자세실습 점수") @RequestBody ScoreDto requestDto) {
-        String userId = request.getUserPrincipal().getName();
-        progressService.completePosture(userId, requestDto);
-        userService.certificate(userId);
+            @GetUserDetails PrincipalDetails userDetails,
+            @Parameter(description = "유저의 점수") @RequestBody ScoreDto requestDto) {
+        progressService.completePosture(userDetails.getUser(), requestDto);
+        userService.certificate(userDetails.getUser());
 
         return ResponseTemplate.toResponseEntity(OK_CERTIFICATED);
     }

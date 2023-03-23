@@ -36,8 +36,6 @@ public class AddressServiceTest {
     @Autowired
     private AddressRepository addressRepository;
 
-
-
     @Test
     @DisplayName("사용자의 주소지 설정")
     @Transactional

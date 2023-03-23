@@ -2,6 +2,7 @@ package com.mentionall.cpr2u.education.domain;
 
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.util.Timestamped;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class EducationProgress extends Timestamped {
 
     @Id
