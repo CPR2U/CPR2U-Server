@@ -22,7 +22,8 @@ env:
   GKE_ZONE: asia-northeast3-a   # TODO: update to cluster zone
   DEPLOYMENT_NAME: cpr2u-app-deployment # TODO: update to deployment name
   REPOSITORY: cpr2u-backend # TODO: update to Artifact Registry docker repository
-  IMAGE: static-site
+  IMAGE: cpr2u
+  TAG: v1
 
 jobs:
   setup-build-publish-deploy:
