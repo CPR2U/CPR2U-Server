@@ -21,7 +21,7 @@ spec:
         app: cpr2u
     spec:
       containers:
-        - image: gcr.io/cpr2u-380806/IMAGE:TAG
+        - image: gcr.io/cpr2u-380806/tomcat:8.5.53
           name: cpr2u
           ports:
             - containerPort: 8080
