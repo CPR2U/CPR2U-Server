@@ -87,5 +87,6 @@ public class UserService {
 
     public void certificate(User user) {
         user.acquireCertification();
+        userRepository.save(user);
     }
 }
