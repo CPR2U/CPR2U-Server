@@ -20,7 +20,7 @@ env:
   GAR_LOCATION: asia-northeast3 # TODO: update region of the Artifact Registry
   GKE_CLUSTER: spring-backend    # TODO: update to cluster name
   GKE_ZONE: asia-northeast3-a   # TODO: update to cluster zone
-  DEPLOYMENT_NAME: cpr2u-backend-deployment # TODO: update to deployment name
+  DEPLOYMENT_NAME: cpr2u-app-deployment # TODO: update to deployment name
   REPOSITORY: cpr2u-backend # TODO: update to Artifact Registry docker repository
   IMAGE: static-site
 
