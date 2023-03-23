@@ -22,6 +22,6 @@ spec:
     spec:
       containers:
         - name: cpr2u
-          image: asia-northeast3-docker.pkg.dev/cpr2u-380806/cpr2u-backend/cpr2u:1.0
+          image: asia-northeast3-docker.pkg.dev/cpr2u-380806/cpr2u-backend/cpr2u:v1
           ports:
             - containerPort: 8080
