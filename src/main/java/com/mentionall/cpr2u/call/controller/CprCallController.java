@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
+
 @Tag(name = "CallController", description = "호출 화면 컨트롤러")
 @RequestMapping("/call")
 @RequiredArgsConstructor
@@ -35,7 +37,7 @@ public class CprCallController {
     })
     @GetMapping
     public ResponseEntity<ResponseDataTemplate> getNowCallStatusNearUser(@GetUserDetails PrincipalDetails userDetails) {
-        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, cprCallService.getCallNearUser(userDetails.getUser()));
+        return ResponseDataTemplate.toResponseEntity(OK, cprCallService.getCallNearUser(userDetails.getUser()));
     }
 
     @Operation(summary = "호출하기", description = "사건 발생 지역의 CPR Angel들을 호출한다.")
@@ -45,7 +47,16 @@ public class CprCallController {
     @PostMapping
     public ResponseEntity<ResponseDataTemplate> makeCall(@RequestBody CprCallOccurDto cprCallOccurDto,
                                                          @GetUserDetails PrincipalDetails userDetails) {
-        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, cprCallService.makeCall(cprCallOccurDto, userDetails.getUser()));
+        return ResponseDataTemplate.toResponseEntity(OK, cprCallService.makeCall(cprCallOccurDto, userDetails.getUser()));
+    }
+
+    @Operation(summary = "실시간 호출 상황 안내", description = "현재 출동 중인 CPR 엔젤이 몇명인지 확인한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CprCallNearUserDto.class))))
+    })
+    @GetMapping("/{call_id}")
+    public ResponseEntity<ResponseDataTemplate> getNumberOfAngelsDispatched(@PathVariable(name = "call_id") Long callId) {
+        return ResponseDataTemplate.toResponseEntity(OK, cprCallService.getNumberOfAngelsDispatched(callId));
     }
 
     @Operation(summary = "호출 상황 종료", description = "호출을 중단한다.")
@@ -56,6 +67,6 @@ public class CprCallController {
     @PostMapping("/end/{call_id}")
     public ResponseEntity<ResponseTemplate> endCall(@PathVariable(name="call_id") Long callId) {
         cprCallService.endCall(callId);
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK_CPR_CALL_END_SITUDATION);
+        return ResponseTemplate.toResponseEntity(OK_CPR_CALL_END_SITUDATION);
     }
 }
