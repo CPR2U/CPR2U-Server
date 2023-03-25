@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.call.controller;
 
+import com.mentionall.cpr2u.call.dto.CprCallGuideResponseDto;
 import com.mentionall.cpr2u.call.dto.CprCallIdDto;
 import com.mentionall.cpr2u.call.dto.CprCallNearUserDto;
 import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
@@ -52,7 +53,8 @@ public class CprCallController {
 
     @Operation(summary = "실시간 호출 상황 안내", description = "현재 출동 중인 CPR 엔젤이 몇명인지 확인한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CprCallNearUserDto.class))))
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CprCallGuideResponseDto.class)))),
+            @ApiResponse(responseCode = "404", description = "해당 ID의 호출 정보를 찾을 수 없음", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
     @GetMapping("/{call_id}")
     public ResponseEntity<ResponseDataTemplate> getNumberOfAngelsDispatched(@PathVariable(name = "call_id") Long callId) {
