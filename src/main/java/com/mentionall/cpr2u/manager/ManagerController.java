@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
+
 @Slf4j
 @RestController
 @RequestMapping("/manage")
@@ -25,7 +27,7 @@ public class ManagerController {
     @PostMapping("/quizzes")
     public ResponseEntity<ResponseTemplate> createQuiz(@RequestBody QuizRequestDto requestDto) {
         quizService.createQuiz(requestDto);
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK);
+        return ResponseTemplate.toResponseEntity(OK);
     }
 
 }
