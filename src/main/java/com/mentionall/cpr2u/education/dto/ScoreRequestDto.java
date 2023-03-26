@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScoreDto {
+public class ScoreRequestDto {
 
     @Schema(example = "점수(1 ~ 100)")
     @JsonProperty

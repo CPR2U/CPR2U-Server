@@ -4,21 +4,20 @@ import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.CprCallStatus;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.DispatchStatus;
-import com.mentionall.cpr2u.call.dto.CprCallNearUserDto;
-import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
+import com.mentionall.cpr2u.call.dto.CprCallNearUserResponseDto;
+import com.mentionall.cpr2u.call.dto.CprCallRequestDto;
 import com.mentionall.cpr2u.call.dto.DispatchRequestDto;
 import com.mentionall.cpr2u.call.dto.DispatchResponseDto;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.UserSignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.AddressRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -77,10 +76,10 @@ class CprCallServiceTest {
 
         User caller = userRepository.findByPhoneNumber("phoneNumber" + 4).get();
 
-        CprCall cprCall1 = new CprCall(caller, cprAngelUser.getAddress(), LocalDateTime.now(), new CprCallOccurDto("fullAddress", 37.56559872345163, 126.9779734762639));
-        CprCall cprCall2 = new CprCall(caller, cprAngelUser.getAddress(), LocalDateTime.now(), new CprCallOccurDto("fullAddress", 37.56520212814079, 126.9771473198163));
-        CprCall cprCall3 = new CprCall(caller, cprAngelUser.getAddress(), LocalDateTime.now(), new CprCallOccurDto("fullAddress", 37.56549899694667, 126.97488345790383));
-        CprCall cprCall4 = new CprCall(caller, cprAngelUser.getAddress(), LocalDateTime.now(), new CprCallOccurDto("fullAddress", 37.56520212814079, 126.9771473198163));
+        CprCall cprCall1 = new CprCall(caller, cprAngelUser.getAddress(), LocalDateTime.now(), new CprCallRequestDto("fullAddress", 37.56559872345163, 126.9779734762639));
+        CprCall cprCall2 = new CprCall(caller, cprAngelUser.getAddress(), LocalDateTime.now(), new CprCallRequestDto("fullAddress", 37.56520212814079, 126.9771473198163));
+        CprCall cprCall3 = new CprCall(caller, cprAngelUser.getAddress(), LocalDateTime.now(), new CprCallRequestDto("fullAddress", 37.56549899694667, 126.97488345790383));
+        CprCall cprCall4 = new CprCall(caller, cprAngelUser.getAddress(), LocalDateTime.now(), new CprCallRequestDto("fullAddress", 37.56520212814079, 126.9771473198163));
 
         cprCallRepository.save(cprCall1);
         cprCallRepository.save(cprCall2);
@@ -90,14 +89,14 @@ class CprCallServiceTest {
         cprCallService.endCall(cprCall3.getId());
 
         //when
-        CprCallNearUserDto callNearUserDtoForUser1 = cprCallService.getCallNearUser(cprAngelUser);
-        CprCallNearUserDto callNearUserDtoForUser2 = cprCallService.getCallNearUser(cprAngelUserButNoPatient);
-        CprCallNearUserDto callNearUserDtoForUser3 = cprCallService.getCallNearUser(yetAngelUser);
+        CprCallNearUserResponseDto callNearUserDtoForUser1 = cprCallService.getCallNearUser(cprAngelUser);
+        CprCallNearUserResponseDto callNearUserDtoForUser2 = cprCallService.getCallNearUser(cprAngelUserButNoPatient);
+        CprCallNearUserResponseDto callNearUserDtoForUser3 = cprCallService.getCallNearUser(yetAngelUser);
 
         //then
-        assertThat(callNearUserDtoForUser1.getCprCallDtoList().size()).isEqualTo(3);
-        assertThat(callNearUserDtoForUser2.getCprCallDtoList().size()).isEqualTo(0);
-        assertThat(callNearUserDtoForUser3.getCprCallDtoList().size()).isEqualTo(0);
+        assertThat(callNearUserDtoForUser1.getCprCallResponseDtoList().size()).isEqualTo(3);
+        assertThat(callNearUserDtoForUser2.getCprCallResponseDtoList().size()).isEqualTo(0);
+        assertThat(callNearUserDtoForUser3.getCprCallResponseDtoList().size()).isEqualTo(0);
 
     }
 
@@ -110,10 +109,10 @@ class CprCallServiceTest {
         User user = userRepository.findByPhoneNumber("phoneNumber" + 1).get();
 
         //when
-        Long callId1 = cprCallService.makeCall(new CprCallOccurDto("서울 종로구 종로 104", 37.56559872345163, 126.9779734762639), user).getCallId();
-        Long callId2 = cprCallService.makeCall(new CprCallOccurDto("서울 중구 세종대로 지하 2", 37.56559872345163, 126.9779734762639), user).getCallId();
-        Long callId3 = cprCallService.makeCall(new CprCallOccurDto("세종특별자치시 한누리대로 2130 (우)30151", 37.56559872345163, 126.9779734762639), user).getCallId();
-        Long callId4 = cprCallService.makeCall(new CprCallOccurDto("경남 창원시 진해구 평안동 10", 37.56559872345163, 126.9779734762639), user).getCallId();
+        Long callId1 = cprCallService.makeCall(new CprCallRequestDto("서울 종로구 종로 104", 37.56559872345163, 126.9779734762639), user).getCallId();
+        Long callId2 = cprCallService.makeCall(new CprCallRequestDto("서울 중구 세종대로 지하 2", 37.56559872345163, 126.9779734762639), user).getCallId();
+        Long callId3 = cprCallService.makeCall(new CprCallRequestDto("세종특별자치시 한누리대로 2130 (우)30151", 37.56559872345163, 126.9779734762639), user).getCallId();
+        Long callId4 = cprCallService.makeCall(new CprCallRequestDto("경남 창원시 진해구 평안동 10", 37.56559872345163, 126.9779734762639), user).getCallId();
 
         //then
         CprCall cprCall1 = cprCallRepository.findById(callId1).get();
@@ -139,7 +138,7 @@ class CprCallServiceTest {
         User dispatcher = userRepository.findByPhoneNumber("phoneNumber" + 2).get();
 
         //when
-        Long callId = cprCallService.makeCall(new CprCallOccurDto("fullAddress", 37.56559872345163, 126.9779734762639), caller).getCallId();
+        Long callId = cprCallService.makeCall(new CprCallRequestDto("fullAddress", 37.56559872345163, 126.9779734762639), caller).getCallId();
         DispatchResponseDto dispatchInfo = dispatchService.dispatch(dispatcher, new DispatchRequestDto(callId));
         cprCallService.endCall(callId);
 
@@ -152,8 +151,8 @@ class CprCallServiceTest {
     }
 
     public User registerUser(int number) {
-        UserSignUpDto userSignUpDto = new UserSignUpDto("nickname" + number, "phoneNumber" + number, "deviceToken");
-        userService.signup(userSignUpDto);
+        UserSignUpRequestDto userSignUpRequestDto = new UserSignUpRequestDto("nickname" + number, "phoneNumber" + number, "deviceToken");
+        userService.signup(userSignUpRequestDto);
         return userRepository.findByPhoneNumber("phoneNumber" + number).get();
     }
 }

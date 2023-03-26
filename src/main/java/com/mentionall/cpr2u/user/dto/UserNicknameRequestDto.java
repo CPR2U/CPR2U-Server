@@ -6,20 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSignUpDto {
+public class UserNicknameRequestDto {
 
     @Schema(example = "사용자 이름")
     @JsonProperty("nickname")
+    @NotBlank(message = "이름이 입력되지 않았습니다.")
     String nickname;
 
-    @Schema(example = "사용자 전화번호")
-    @JsonProperty("phone_number")
-    String phoneNumber;
-
-    @Schema(example = "device token")
-    @JsonProperty("device_token")
-    String deviceToken;
 }

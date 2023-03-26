@@ -1,5 +1,10 @@
 package com.mentionall.cpr2u.user.service;
 
+import com.mentionall.cpr2u.call.domain.CprCall;
+import com.mentionall.cpr2u.call.dto.CprCallResponseDto;
+import com.mentionall.cpr2u.call.dto.DispatchResponseDto;
+import com.mentionall.cpr2u.call.repository.CprCallRepository;
+import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
@@ -13,8 +18,12 @@ import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.awt.print.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -25,29 +34,31 @@ public class UserService {
     private final EducationProgressRepository progressRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final DeviceTokenRepository deviceTokenRepository;
+    private final CprCallRepository callRepository;
+    private final DispatchRepository dispatchRepository;
 
-    public UserTokenDto signup(UserSignUpDto userSignUpDto) {
-        User user = new User(userSignUpDto);
+    public UserTokenResponseDto signup(UserSignUpRequestDto userSignUpRequestDto) {
+        User user = new User(userSignUpRequestDto);
         userRepository.save(user);
-        deviceTokenRepository.save(new DeviceToken(userSignUpDto.getDeviceToken(), user));
+        deviceTokenRepository.save(new DeviceToken(userSignUpRequestDto.getDeviceToken(), user));
         progressRepository.save(new EducationProgress(user));
         return issueUserToken(user);
     }
 
-    public UserCodeDto getVerificationCode(UserPhoneNumberDto userPhoneNumberDto) {
-        return new UserCodeDto(String.format("%04.0f", Math.random() * Math.pow(10, 4)));
+    public UserCodeResponseDto getVerificationCode(UserPhoneNumberRequestDto userPhoneNumberRequestDto) {
+        return new UserCodeResponseDto(String.format("%04.0f", Math.random() * Math.pow(10, 4)));
     }
 
     @Transactional
-    public UserTokenDto login(UserLoginDto userLoginDto) {
-        if(userRepository.existsByPhoneNumber(userLoginDto.getPhoneNumber())){
-            User user = userRepository.findByPhoneNumber(userLoginDto.getPhoneNumber())
+    public UserTokenResponseDto login(UserLoginRequestDto userLoginRequestDto) {
+        if(userRepository.existsByPhoneNumber(userLoginRequestDto.getPhoneNumber())){
+            User user = userRepository.findByPhoneNumber(userLoginRequestDto.getPhoneNumber())
                     .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
 
             DeviceToken deviceToken = deviceTokenRepository.findByUserId(user.getId())
-                    .orElse(new DeviceToken(userLoginDto.getDeviceToken(), user));
-            if(!deviceToken.getDeviceToken().equals(userLoginDto.getDeviceToken())) {
-                deviceToken.setDeviceToken(userLoginDto.getDeviceToken());
+                    .orElse(new DeviceToken(userLoginRequestDto.getDeviceToken(), user));
+            if(!deviceToken.getDeviceToken().equals(userLoginRequestDto.getDeviceToken())) {
+                deviceToken.setDeviceToken(userLoginRequestDto.getDeviceToken());
                 deviceTokenRepository.save(deviceToken);
                 user.setDeviceToken(deviceToken);
                 userRepository.save(user);
@@ -58,10 +69,10 @@ public class UserService {
         throw new CustomException(ResponseCode.NOT_FOUND_USER);
     }
 
-    public UserTokenDto reissueToken(UserTokenReissueDto userTokenReissueDto) {
+    public UserTokenResponseDto reissueToken(UserTokenReissueRequestDto userTokenReissueRequestDto) {
         RefreshToken refreshToken;
-        if(jwtTokenProvider.validateToken(userTokenReissueDto.getRefreshToken()))
-            refreshToken = refreshTokenRepository.findByRefreshToken(userTokenReissueDto.getRefreshToken())
+        if(jwtTokenProvider.validateToken(userTokenReissueRequestDto.getRefreshToken()))
+            refreshToken = refreshTokenRepository.findByRefreshToken(userTokenReissueRequestDto.getRefreshToken())
                     .orElseThrow(()-> new CustomException(ResponseCode.FORBIDDEN_TOKEN_NOT_VALID));
         else throw new CustomException(ResponseCode.FORBIDDEN_TOKEN_NOT_VALID);
 
@@ -69,13 +80,13 @@ public class UserService {
         return issueUserToken(user);
     }
 
-    public UserTokenDto issueUserToken(User user){
+    public UserTokenResponseDto issueUserToken(User user){
         String newRefreshToken = jwtTokenProvider.createRefreshToken();
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(new RefreshToken(user));
         refreshToken.setRefreshToken(newRefreshToken);
         refreshTokenRepository.save(refreshToken);
 
-        return new UserTokenDto(
+        return new UserTokenResponseDto(
                 jwtTokenProvider.createToken(user.getId(), user.getRoles()),
                 newRefreshToken);
     }
@@ -88,5 +99,14 @@ public class UserService {
     public void certificate(User user) {
         user.acquireCertification();
         userRepository.save(user);
+    }
+
+    public Page<CprCallResponseDto> getCprCallList(User caller, PageRequest pageRequest) {
+        Page<CprCall> callPage = callRepository.findAllByCaller(pageRequest, caller);
+    }
+
+    public Page<DispatchResponseDto> getDispatchList(User dispatcher, PageRequest pageRequest) {
+        Page<Dispatch> dispatchPage = dispatchRepository.findAllByDispatcher(pageRequest, dispatcher);
+
     }
 }

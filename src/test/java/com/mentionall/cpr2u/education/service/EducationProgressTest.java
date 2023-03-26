@@ -3,15 +3,15 @@ package com.mentionall.cpr2u.education.service;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.Lecture;
 import com.mentionall.cpr2u.education.domain.ProgressStatus;
-import com.mentionall.cpr2u.education.dto.EducationProgressDto;
-import com.mentionall.cpr2u.education.dto.ScoreDto;
+import com.mentionall.cpr2u.education.dto.EducationProgressResponseDto;
+import com.mentionall.cpr2u.education.dto.ScoreRequestDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.FakeEducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.FakeLectureRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
 import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.UserSignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.FakeUserRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
@@ -53,7 +53,7 @@ public class EducationProgressTest {
         LocalDate after90Days = LocalDate.now().minusDays(90);
         LocalDate after91Days = LocalDate.now().minusDays(91);
 
-        User user1 = userRepository.save(new User("1L", new UserSignUpDto("현애", "010-0000-0000", "device_token")));
+        User user1 = userRepository.save(new User("1L", new UserSignUpRequestDto("현애", "010-0000-0000", "device_token")));
         User user2 = userRepository.save(new User("2L", "예진", "010-1111-1111", after3Days.atStartOfDay(), AngelStatusEnum.ACQUIRED, null, null, null, null, null, null, null));
         User user3 = userRepository.save(new User("3L", "정현", "010-2222-2222", after90Days.atStartOfDay(), AngelStatusEnum.ACQUIRED, null, null, null, null, null, null, null));
         User user4 = userRepository.save(new User("4L", "채영", "010-3333-3333", after91Days.atStartOfDay(), AngelStatusEnum.ACQUIRED, null, null, null, null, null, null, null));
@@ -101,11 +101,11 @@ public class EducationProgressTest {
 
         //when the user fails the quiz test,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completeQuiz(user, new ScoreDto(50)));
+                () -> progressService.completeQuiz(user, new ScoreRequestDto(50)));
         verifyQuizProgress(user, NotCompleted);
 
         //when the user succeeds the quiz test,
-        progressService.completeQuiz(user, new ScoreDto(100));
+        progressService.completeQuiz(user, new ScoreRequestDto(100));
         verifyQuizProgress(user, Completed);
     }
 
@@ -115,18 +115,18 @@ public class EducationProgressTest {
         //given
         User user = userRepository.findById("1L").get();
         completeLectureCourse(user);
-        progressService.completeQuiz(user, new ScoreDto(100));
+        progressService.completeQuiz(user, new ScoreRequestDto(100));
 
         //when a posture test is not started,
         verifyPostureProgress(user, NotCompleted);
 
         //when the user fails the posture test,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user, new ScoreDto(79)));
+                () -> progressService.completePosture(user, new ScoreRequestDto(79)));
         verifyPostureProgress(user, NotCompleted);
 
         //when the user succeeds the posture test,
-        progressService.completePosture(user, new ScoreDto(81));
+        progressService.completePosture(user, new ScoreRequestDto(81));
         verifyPostureProgress(user, Completed);
     }
 
@@ -139,7 +139,7 @@ public class EducationProgressTest {
 
         // when the lecture course is not completed,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completeQuiz(user, new ScoreDto(100))
+                () -> progressService.completeQuiz(user, new ScoreRequestDto(100))
         );
     }
 
@@ -151,12 +151,12 @@ public class EducationProgressTest {
 
         // when the lecture course is not completed,
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user, new ScoreDto(100)));
+                () -> progressService.completePosture(user, new ScoreRequestDto(100)));
 
         // when the lecture course is completed, but quiz test is not
         completeLectureCourse(user);
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user, new ScoreDto(100)));
+                () -> progressService.completePosture(user, new ScoreRequestDto(100)));
     }
 
     @Test
@@ -176,10 +176,10 @@ public class EducationProgressTest {
         EducationProgress educationProgress4 = progressRepository.findByUser(user4).get();
 
         //when
-        EducationProgressDto acquireAngelToday = new EducationProgressDto(educationProgress1, user1);
-        EducationProgressDto acquireAngelAfter3Day = new EducationProgressDto(educationProgress2, user2);
-        EducationProgressDto acquireAngelAfter90Day = new EducationProgressDto(educationProgress3, user3);
-        EducationProgressDto acquireAngelAfter91Day = new EducationProgressDto(educationProgress4, user4);
+        EducationProgressResponseDto acquireAngelToday = new EducationProgressResponseDto(educationProgress1, user1);
+        EducationProgressResponseDto acquireAngelAfter3Day = new EducationProgressResponseDto(educationProgress2, user2);
+        EducationProgressResponseDto acquireAngelAfter90Day = new EducationProgressResponseDto(educationProgress3, user3);
+        EducationProgressResponseDto acquireAngelAfter91Day = new EducationProgressResponseDto(educationProgress4, user4);
 
         //then
         assertThat(acquireAngelToday.getDaysLeftUntilExpiration()).isEqualTo(90);

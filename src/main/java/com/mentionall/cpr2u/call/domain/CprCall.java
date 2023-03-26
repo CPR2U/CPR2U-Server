@@ -1,6 +1,6 @@
 package com.mentionall.cpr2u.call.domain;
 
-import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
+import com.mentionall.cpr2u.call.dto.CprCallRequestDto;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
 import lombok.AllArgsConstructor;
@@ -54,14 +54,14 @@ public class CprCall {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cprCall")
     List<Report> reportList = new ArrayList<>();
 
-    public CprCall(User user, Address address, LocalDateTime calledAt, CprCallOccurDto cprCallOccurDto) {
+    public CprCall(User user, Address address, LocalDateTime calledAt, CprCallRequestDto cprCallRequestDto) {
         this.caller = user;
         this.address = address;
-        // TODO
+        //TODO: fullAddress가 안 들어가고 있음
         this.fullAddress = fullAddress;
         this.calledAt = calledAt;
-        this.latitude = cprCallOccurDto.getLatitude();
-        this.longitude = cprCallOccurDto.getLongitude();
+        this.latitude = cprCallRequestDto.getLatitude();
+        this.longitude = cprCallRequestDto.getLongitude();
         this.status = CprCallStatus.IN_PROGRESS;
     }
 

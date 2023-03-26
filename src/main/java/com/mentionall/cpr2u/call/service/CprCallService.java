@@ -3,10 +3,10 @@ package com.mentionall.cpr2u.call.service;
 import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.DispatchStatus;
-import com.mentionall.cpr2u.call.dto.CprCallDto;
-import com.mentionall.cpr2u.call.dto.CprCallIdDto;
-import com.mentionall.cpr2u.call.dto.CprCallNearUserDto;
-import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
+import com.mentionall.cpr2u.call.dto.CprCallResponseDto;
+import com.mentionall.cpr2u.call.dto.CprCallIdResponseDto;
+import com.mentionall.cpr2u.call.dto.CprCallNearUserResponseDto;
+import com.mentionall.cpr2u.call.dto.CprCallRequestDto;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
@@ -29,10 +29,10 @@ public class CprCallService {
     private final DispatchRepository dispatchRepository;
     private final AddressRepository addressRepository;
 
-    public CprCallNearUserDto getCallNearUser(User user) {
+    public CprCallNearUserResponseDto getCallNearUser(User user) {
         AngelStatusEnum userAngelStatus = user.getStatus();
         if(userAngelStatus != AngelStatusEnum.ACQUIRED){
-            return new CprCallNearUserDto(
+            return new CprCallNearUserResponseDto(
                     userAngelStatus,
                     false,
                     new ArrayList<>()
@@ -41,20 +41,20 @@ public class CprCallService {
         if(user.getAddress() == null){
             throw new CustomException(ResponseCode.BAD_REQUEST_ADDRESS_NOT_SET);
         }
-        List<CprCallDto> cprCallDtoList = cprCallRepository.findAllCallInProcessByAddress(user.getAddress().getId());
-        return new CprCallNearUserDto(
+        List<CprCallResponseDto> cprCallResponseDtoList = cprCallRepository.findAllCallInProcessByAddress(user.getAddress().getId());
+        return new CprCallNearUserResponseDto(
                 userAngelStatus,
-                cprCallDtoList.size() > 0,
-                cprCallDtoList
+                cprCallResponseDtoList.size() > 0,
+                cprCallResponseDtoList
         );
     }
 
-    public CprCallIdDto makeCall(CprCallOccurDto cprCallOccurDto, User user) {
-        Address callAddress = addressRepository.findByFullAddress(cprCallOccurDto.getFullAddress().split(" "))
+    public CprCallIdResponseDto makeCall(CprCallRequestDto cprCallRequestDto, User user) {
+        Address callAddress = addressRepository.findByFullAddress(cprCallRequestDto.getFullAddress().split(" "))
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_FAILED_TO_FIND_ADDRESS));
-        CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallOccurDto);
+        CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallRequestDto);
         cprCallRepository.save(cprCall);
-        return new CprCallIdDto(cprCall.getId());
+        return new CprCallIdResponseDto(cprCall.getId());
     }
 
     public void endCall(Long callId) {

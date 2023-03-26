@@ -7,7 +7,7 @@ import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
 import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.UserSignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ public class LectureServiceTest {
     @DisplayName("사용자의 강의 진도 조회")
     public void readLectureProgress() {
         //given
-        User user = userRepository.save(new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token")));
+        User user = userRepository.save(new User("1L", new UserSignUpRequestDto("현애", "010-9980-6523", "device_token")));
         progressRepository.save(new EducationProgress(user));
 
         lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com"));

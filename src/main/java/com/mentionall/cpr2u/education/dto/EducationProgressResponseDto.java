@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 @Data
-public class EducationProgressDto {
+public class EducationProgressResponseDto {
     @Schema(example = "사용자의 엔젤 상태(0: 수료 / 1: 만료 / 2: 미수료)")
     @JsonProperty("angel_status")
     private int angelStatus;
@@ -44,7 +44,7 @@ public class EducationProgressDto {
     @JsonProperty("days_left_until_expiration")
     private Integer daysLeftUntilExpiration;
 
-    public EducationProgressDto(EducationProgress progress, User user) {
+    public EducationProgressResponseDto(EducationProgress progress, User user) {
         this.angelStatus = user.getStatus().ordinal();
         this.nickname = user.getNickname();
         this.progressPercent = progress.getTotalProgress();

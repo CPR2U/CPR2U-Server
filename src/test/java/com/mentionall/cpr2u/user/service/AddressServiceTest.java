@@ -5,7 +5,7 @@ import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.AddressRequestDto;
 import com.mentionall.cpr2u.user.dto.AddressResponseDto;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.UserSignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.AddressRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -75,7 +75,7 @@ public class AddressServiceTest {
     }
 
     private String getUserId(String nickname, String phoneNumber, String deviceToken) {
-        String accessToken = userService.signup(new UserSignUpDto(nickname, phoneNumber, deviceToken)).getAccessToken();
+        String accessToken = userService.signup(new UserSignUpRequestDto(nickname, phoneNumber, deviceToken)).getAccessToken();
         return jwtTokenProvider.getUserId(accessToken);
     }
 

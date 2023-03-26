@@ -2,7 +2,7 @@ package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.Lecture;
-import com.mentionall.cpr2u.education.dto.LectureProgressDto;
+import com.mentionall.cpr2u.education.dto.LectureListResponseDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
 import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
@@ -34,7 +34,7 @@ public class LectureService {
         lectureRepository.save(new Lecture(requestDto));
     }
 
-    public LectureProgressDto readLectureProgress(User user) {
+    public LectureListResponseDto readLectureProgress(User user) {
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_EDUCATION_PROGRESS)
         );
@@ -43,7 +43,7 @@ public class LectureService {
                 .stream().sorted()
                 .map(l -> new LectureResponseDto(l))
                 .collect(Collectors.toList());
-        return new LectureProgressDto(progress, lectureResponseDtoList);
+        return new LectureListResponseDto(progress, lectureResponseDtoList);
     }
 
     public List<LectureResponseDto> readAllTheoryLecture() {

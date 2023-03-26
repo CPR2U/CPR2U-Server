@@ -3,7 +3,7 @@ package com.mentionall.cpr2u.user.domain;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.Report;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.UserSignUpRequestDto;
 import com.mentionall.cpr2u.util.RandomGenerator;
 import com.mentionall.cpr2u.util.Timestamped;
 import lombok.AllArgsConstructor;
@@ -67,18 +67,18 @@ public class User extends Timestamped{
     List<Report> reportList = new ArrayList();
 
 
-    public User(String id, UserSignUpDto userSignUpDto) {
+    public User(String id, UserSignUpRequestDto userSignUpRequestDto) {
         this.id = id;
-        this.nickname = userSignUpDto.getNickname();
-        this.phoneNumber = userSignUpDto.getPhoneNumber();
+        this.nickname = userSignUpRequestDto.getNickname();
+        this.phoneNumber = userSignUpRequestDto.getPhoneNumber();
         this.dateOfIssue = null;
         this.status = AngelStatusEnum.UNACQUIRED;
         this.roles.add(UserRole.USER);
     }
 
-    public User(UserSignUpDto userSignUpDto) {
-        this.nickname = userSignUpDto.getNickname();
-        this.phoneNumber = userSignUpDto.getPhoneNumber();
+    public User(UserSignUpRequestDto userSignUpRequestDto) {
+        this.nickname = userSignUpRequestDto.getNickname();
+        this.phoneNumber = userSignUpRequestDto.getPhoneNumber();
         this.dateOfIssue = null;
         this.status = AngelStatusEnum.UNACQUIRED;
         this.roles.add(UserRole.USER);

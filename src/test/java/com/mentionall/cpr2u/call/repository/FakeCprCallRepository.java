@@ -1,8 +1,7 @@
 package com.mentionall.cpr2u.call.repository;
 
 import com.mentionall.cpr2u.call.domain.CprCall;
-import com.mentionall.cpr2u.call.domain.Dispatch;
-import com.mentionall.cpr2u.call.dto.CprCallDto;
+import com.mentionall.cpr2u.call.dto.CprCallResponseDto;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Example;
@@ -20,7 +19,7 @@ import java.util.function.Function;
 public class FakeCprCallRepository implements CprCallRepository {
     Map<Long, Object> map = new HashMap();
     @Override
-    public List<CprCallDto> findAllCallInProcessByAddress(Long addressId) {
+    public List<CprCallResponseDto> findAllCallInProcessByAddress(Long addressId) {
         return null;
     }
 

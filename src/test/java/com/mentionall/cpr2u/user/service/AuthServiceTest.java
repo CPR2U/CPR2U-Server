@@ -36,15 +36,15 @@ public class AuthServiceTest {
     @DisplayName("회원 가입")
     public void signup() {
         //given
-        UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
+        UserSignUpRequestDto userSignUpRequestDto = new UserSignUpRequestDto(nickname, phoneNumber, deviceToken);
 
         //when
-        UserTokenDto userTokenDto = userService.signup(userSignUpDto);
+        UserTokenResponseDto userTokenResponseDto = userService.signup(userSignUpRequestDto);
 
         //then
         User user = userRepository.findByPhoneNumber(phoneNumber).get();
         String userId1 = user.getId();
-        String userId2 = jwtTokenProvider.getUserId(userTokenDto.getAccessToken());
+        String userId2 = jwtTokenProvider.getUserId(userTokenResponseDto.getAccessToken());
         assertThat(userId1).isEqualTo(userId2);
     }
 
@@ -53,17 +53,17 @@ public class AuthServiceTest {
     @DisplayName("로그인")
     public void login() {
         //given
-        UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
-        userService.signup(userSignUpDto);
-        UserLoginDto userLoginDto = new UserLoginDto(phoneNumber, deviceToken);
+        UserSignUpRequestDto userSignUpRequestDto = new UserSignUpRequestDto(nickname, phoneNumber, deviceToken);
+        userService.signup(userSignUpRequestDto);
+        UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto(phoneNumber, deviceToken);
 
         //when
-        UserTokenDto userTokenDto = userService.login(userLoginDto);
+        UserTokenResponseDto userTokenResponseDto = userService.login(userLoginRequestDto);
 
         //then
         User user = userRepository.findByPhoneNumber(phoneNumber).get();
         String userId1 = user.getId();
-        String userId2 = jwtTokenProvider.getUserId(userTokenDto.getAccessToken());
+        String userId2 = jwtTokenProvider.getUserId(userTokenResponseDto.getAccessToken());
         assertThat(userId1).isEqualTo(userId2);
     }
 
@@ -72,14 +72,14 @@ public class AuthServiceTest {
     @DisplayName("전화번호 인증코드 생성")
     public void verification(){
         //given
-        UserPhoneNumberDto userPhoneNumberDto = new UserPhoneNumberDto(phoneNumber);
+        UserPhoneNumberRequestDto userPhoneNumberRequestDto = new UserPhoneNumberRequestDto(phoneNumber);
 
         for(int i = 0 ; i < 100 ; i ++) {
             //when
-            UserCodeDto userCodeDto = userService.getVerificationCode(userPhoneNumberDto);
+            UserCodeResponseDto userCodeResponseDto = userService.getVerificationCode(userPhoneNumberRequestDto);
 
             //then
-            assertThat(userCodeDto.getValidationCode().length()).isEqualTo(4);
+            assertThat(userCodeResponseDto.getValidationCode().length()).isEqualTo(4);
         }
     }
 
@@ -88,18 +88,18 @@ public class AuthServiceTest {
     @DisplayName("토큰 재발급")
     public void autoLogin() {
         //given
-        UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
-        userService.signup(userSignUpDto);
-        UserLoginDto userLoginDto = new UserLoginDto(phoneNumber, deviceToken);
-        UserTokenDto userTokenDto = userService.login(userLoginDto);
-        String userId = jwtTokenProvider.getUserId(userTokenDto.getAccessToken());
-        UserTokenReissueDto userTokenReissueDto = new UserTokenReissueDto(userTokenDto.getRefreshToken());
+        UserSignUpRequestDto userSignUpRequestDto = new UserSignUpRequestDto(nickname, phoneNumber, deviceToken);
+        userService.signup(userSignUpRequestDto);
+        UserLoginRequestDto userLoginRequestDto = new UserLoginRequestDto(phoneNumber, deviceToken);
+        UserTokenResponseDto userTokenResponseDto = userService.login(userLoginRequestDto);
+        String userId = jwtTokenProvider.getUserId(userTokenResponseDto.getAccessToken());
+        UserTokenReissueRequestDto userTokenReissueRequestDto = new UserTokenReissueRequestDto(userTokenResponseDto.getRefreshToken());
 
         //when
-        UserTokenDto newUserTokenDto = userService.reissueToken(userTokenReissueDto);
+        UserTokenResponseDto newUserTokenResponseDto = userService.reissueToken(userTokenReissueRequestDto);
 
         //then
-        assertThat(userId).isEqualTo(jwtTokenProvider.getUserId(newUserTokenDto.getAccessToken()));
+        assertThat(userId).isEqualTo(jwtTokenProvider.getUserId(newUserTokenResponseDto.getAccessToken()));
     }
 
     @Test
@@ -107,8 +107,8 @@ public class AuthServiceTest {
     @DisplayName("닉네임 중복 체크")
     public void nicknameCheck() {
         //given
-        UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
-        userService.signup(userSignUpDto);
+        UserSignUpRequestDto userSignUpRequestDto = new UserSignUpRequestDto(nickname, phoneNumber, deviceToken);
+        userService.signup(userSignUpRequestDto);
 
         //when
         String newNickname = nickname;

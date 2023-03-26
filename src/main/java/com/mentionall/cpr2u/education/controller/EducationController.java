@@ -1,7 +1,6 @@
 package com.mentionall.cpr2u.education.controller;
 
 import com.mentionall.cpr2u.education.dto.*;
-import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
 import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.service.EducationProgressService;
@@ -48,7 +47,7 @@ public class  EducationController {
                     "is_posture_completed : 사용자의 자세 실습 완료 여부(0: 미완 / 2: 완료)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = EducationProgressDto.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = EducationProgressResponseDto.class)))),
     })
     @GetMapping()
     public ResponseEntity<ResponseDataTemplate> getEducationInfo(@GetUserDetails PrincipalDetails userDetails) {
@@ -61,7 +60,7 @@ public class  EducationController {
     @Operation(summary = "유저의 강의 리스트 조회", description = "강의 리스트와 유저의 현재 강의 진도를 조회한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureProgressDto.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = LectureListResponseDto.class)))),
     })
     @GetMapping("/lectures")
     public ResponseEntity<ResponseDataTemplate> getLectureList(@GetUserDetails PrincipalDetails userDetails) {
@@ -106,7 +105,7 @@ public class  EducationController {
     })
     @PostMapping("/quizzes/progress")
     public ResponseEntity<ResponseTemplate> completeQuiz(
-            @Parameter(description = "유저의 점수") @RequestBody ScoreDto requestDto,
+            @Parameter(description = "유저의 점수") @RequestBody ScoreRequestDto requestDto,
             @GetUserDetails PrincipalDetails userDetails) {
         progressService.completeQuiz(userDetails.getUser(), requestDto);
         return ResponseTemplate.toResponseEntity(OK);
@@ -132,7 +131,7 @@ public class  EducationController {
     @PostMapping("/exercises/progress")
     public ResponseEntity<ResponseTemplate> completePosture(
             @GetUserDetails PrincipalDetails userDetails,
-            @Parameter(description = "유저의 점수") @RequestBody ScoreDto requestDto) {
+            @Parameter(description = "유저의 점수") @RequestBody ScoreRequestDto requestDto) {
         progressService.completePosture(userDetails.getUser(), requestDto);
         userService.certificate(userDetails.getUser());
 

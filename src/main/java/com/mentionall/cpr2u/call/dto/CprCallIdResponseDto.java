@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CprCallIdDto {
+public class CprCallIdResponseDto {
     @Schema(description = "호출 id")
     @JsonProperty("call_id")
     private Long callId;

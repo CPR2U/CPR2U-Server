@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class LectureProgressDto {
+public class LectureListResponseDto {
     @Schema(example = "마지막으로 이수 완료한 강의 섹션(1~4)")
     @JsonProperty("current_step")
     private int currentStep;
@@ -16,7 +16,7 @@ public class LectureProgressDto {
     @JsonProperty("lecture_list")
     private List<LectureResponseDto> lectureList;
 
-    public LectureProgressDto(EducationProgress progress, List<LectureResponseDto> lectureList) {
+    public LectureListResponseDto(EducationProgress progress, List<LectureResponseDto> lectureList) {
         this.currentStep = progress.getLastLecture().getStep();
         this.lectureList = lectureList;
     }
