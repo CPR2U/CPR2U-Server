@@ -1,8 +1,6 @@
 package com.mentionall.cpr2u.user.repository;
 
 import com.mentionall.cpr2u.user.domain.Address;
-import com.mentionall.cpr2u.util.exception.CustomException;
-import com.mentionall.cpr2u.util.exception.ResponseCode;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
