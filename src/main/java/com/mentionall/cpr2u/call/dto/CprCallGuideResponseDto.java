@@ -13,9 +13,4 @@ public class CprCallGuideResponseDto {
     @Schema(description = "출동한 엔젤의 수")
     @JsonProperty("number_of_angels")
     private int numberOfAngels;
-
-    @Schema(description = "호출 시작 시간")
-    @JsonProperty("call_at")
-    private LocalDateTime calledAt;
-
 }
