@@ -11,7 +11,8 @@ import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
 import com.mentionall.cpr2u.user.domain.DeviceToken;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.AddressRepository;
-import com.mentionall.cpr2u.util.MessageService;
+import com.mentionall.cpr2u.user.repository.DeviceTokenRepository;
+import com.mentionall.cpr2u.util.MessageEnum;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,8 @@ public class CprCallService {
     private final CprCallRepository cprCallRepository;
     private final DispatchRepository dispatchRepository;
     private final AddressRepository addressRepository;
+    private final DeviceTokenRepository deviceTokenRepository;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
-    private final MessageService messageService;
 
     public CprCallNearUserDto getCallNearUser(User user) {
         AngelStatusEnum userAngelStatus = user.getStatus();
@@ -57,7 +58,18 @@ public class CprCallService {
 
         CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallOccurDto);
         cprCallRepository.save(cprCall);
-        //TOD FCM 붙이기
+
+        List<DeviceToken> deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), user.getId());
+        for(DeviceToken deviceToken : deviceTokenToSendPushList){
+            try {
+                firebaseCloudMessageService.sendMessageTo(deviceToken.getToken(),
+                        MessageEnum.CPR_CALL_TITLE.getMessage(),
+                        cprCall.getFullAddress(),
+                        FcmPushTypeEnum.CPR_CALL.ordinal());
+            } catch (IOException e) {
+                throw new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_SEND_FCM);
+            }
+        }
 
         return new CprCallIdDto(cprCall.getId());
     }
@@ -66,7 +78,6 @@ public class CprCallService {
         CprCall cprCall = cprCallRepository.findById(callId).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL)
         );
-        //TODO FCM 붙이기
         cprCall.endSituationCprCall();
         cprCallRepository.save(cprCall);
         List<Dispatch> dispatchList = dispatchRepository.findAllByCprCallId(cprCall.getId());
@@ -83,6 +94,6 @@ public class CprCallService {
         );
 
         List<Dispatch> dispatchList = dispatchRepository.findAllByCprCallId(callId);
-        return new CprCallGuideResponseDto(dispatchList.size(), cprCall.getCalledAt());
+        return new CprCallGuideResponseDto(dispatchList.size());
     }
 }

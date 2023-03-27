@@ -1,17 +1,17 @@
 package com.mentionall.cpr2u.manager;
 
+import com.mentionall.cpr2u.call.dto.FcmPushTypeEnum;
+import com.mentionall.cpr2u.call.service.FirebaseCloudMessageService;
 import com.mentionall.cpr2u.education.dto.quiz.QuizRequestDto;
 import com.mentionall.cpr2u.education.service.QuizService;
 import com.mentionall.cpr2u.util.ResponseTemplate;
-import com.mentionall.cpr2u.util.exception.ResponseCode;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
 
@@ -23,11 +23,12 @@ import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
 public class ManagerController {
 
     private final QuizService quizService;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @PostMapping("/quizzes")
     public ResponseEntity<ResponseTemplate> createQuiz(@RequestBody QuizRequestDto requestDto) {
         quizService.createQuiz(requestDto);
-        return ResponseTemplate.toResponseEntity(OK);
+        return ResponseTemplate.toResponseEntity(OK_SUCCESS);
     }
 
 }
