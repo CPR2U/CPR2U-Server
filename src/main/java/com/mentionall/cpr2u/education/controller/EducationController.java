@@ -127,6 +127,8 @@ public class  EducationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
+            @ApiResponse(responseCode = "400", description = "이전 진도를 모두 완료해야 수강할 수 있습니다.",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
     @PostMapping("/exercises/progress")
     public ResponseEntity<ResponseTemplate> completePosture(

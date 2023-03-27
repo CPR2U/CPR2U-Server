@@ -25,7 +25,6 @@ public enum ResponseCode {
     FORBIDDEN_TOKEN_NOT_VALID(FORBIDDEN, "유효하지 않은 토큰입니다."),
     
     NOT_FOUND_USER(NOT_FOUND, "회원 정보가 없습니다."),
-    NOT_FOUND_QUIZ(NOT_FOUND, "해당 ID의 퀴즈를 찾을 수 없습니다."),
     NOT_FOUND_CPRCALL(NOT_FOUND, "해당 ID의 CPR 요청을 찾을 수 없습니다."),
     NOT_FOUND_DISPATCH(NOT_FOUND, "해당 ID의 출동 데이터를 찾을 수 없습니다."),
     NOT_FOUND_ADDRESS(NOT_FOUND, "잘못된 주소 ID입니다." ),

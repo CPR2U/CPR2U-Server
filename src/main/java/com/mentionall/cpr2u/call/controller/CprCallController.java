@@ -40,7 +40,8 @@ public class CprCallController {
 
     @Operation(summary = "호출하기", description = "사건 발생 지역의 CPR Angel들을 호출한다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CprCallIdDto.class))))
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CprCallIdDto.class)))),
+            @ApiResponse(responseCode = "404", description = "해당 주소지에 맞는 주소 지역구를 찾을 수 없습니다", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CprCallIdDto.class))))
     })
     @PostMapping
     public ResponseEntity<ResponseDataTemplate> makeCall(@RequestBody CprCallOccurDto cprCallOccurDto,
