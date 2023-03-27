@@ -1,7 +1,6 @@
 package com.mentionall.cpr2u.education.controller;
 
 import com.mentionall.cpr2u.education.dto.*;
-import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
 import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.service.EducationProgressService;
@@ -54,7 +53,7 @@ public class  EducationController {
     public ResponseEntity<ResponseDataTemplate> getEducationInfo(@GetUserDetails PrincipalDetails userDetails) {
 
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK,
+                ResponseCode.OK_SUCCESS,
                 progressService.readEducationInfo(userDetails.getUser()));
     }
 
@@ -67,7 +66,7 @@ public class  EducationController {
     public ResponseEntity<ResponseDataTemplate> getLectureList(@GetUserDetails PrincipalDetails userDetails) {
 
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK,
+                ResponseCode.OK_SUCCESS,
                 lectureService.readLectureProgress(userDetails.getUser()));
     }
 
@@ -82,7 +81,7 @@ public class  EducationController {
             @GetUserDetails PrincipalDetails userDetails) {
         progressService.completeLecture(userDetails.getUser(), lectureId);
 
-        return ResponseTemplate.toResponseEntity(OK);
+        return ResponseTemplate.toResponseEntity(OK_SUCCESS);
     }
 
     @Operation(summary = "퀴즈 질문 조회", description = "5개의 퀴즈 질문과 답변을 랜덤으로 조회한다.(리스트)")
@@ -93,7 +92,7 @@ public class  EducationController {
     @GetMapping("/quizzes")
     public ResponseEntity<ResponseDataTemplate> getQuizList() {
         return ResponseDataTemplate.toResponseEntity(
-                OK,
+                OK_SUCCESS,
                 quizService.readRandom5Quiz());
     }
 
@@ -109,7 +108,7 @@ public class  EducationController {
             @Parameter(description = "유저의 점수") @RequestBody ScoreDto requestDto,
             @GetUserDetails PrincipalDetails userDetails) {
         progressService.completeQuiz(userDetails.getUser(), requestDto);
-        return ResponseTemplate.toResponseEntity(OK);
+        return ResponseTemplate.toResponseEntity(OK_SUCCESS);
     }
 
     @Operation(summary = "자세실습 강의 조회", description = "자세실습 강의 영상 URL를 조회한다.")
@@ -120,7 +119,7 @@ public class  EducationController {
     @GetMapping("/exercises")
     public ResponseEntity<ResponseDataTemplate> getPostureLecture() {
         return ResponseDataTemplate.toResponseEntity(
-                OK,
+                OK_SUCCESS,
                 lectureService.readPostureLecture());
     }
 

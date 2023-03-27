@@ -35,7 +35,7 @@ public class CprCallController {
     })
     @GetMapping
     public ResponseEntity<ResponseDataTemplate> getNowCallStatusNearUser(@GetUserDetails PrincipalDetails userDetails) {
-        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, cprCallService.getCallNearUser(userDetails.getUser()));
+        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK_SUCCESS, cprCallService.getCallNearUser(userDetails.getUser()));
     }
 
     @Operation(summary = "호출하기", description = "사건 발생 지역의 CPR Angel들을 호출한다.")
@@ -45,7 +45,7 @@ public class CprCallController {
     @PostMapping
     public ResponseEntity<ResponseDataTemplate> makeCall(@RequestBody CprCallOccurDto cprCallOccurDto,
                                                          @GetUserDetails PrincipalDetails userDetails) {
-        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, cprCallService.makeCall(cprCallOccurDto, userDetails.getUser()));
+        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK_SUCCESS, cprCallService.makeCall(cprCallOccurDto, userDetails.getUser()));
     }
 
     @Operation(summary = "호출 상황 종료", description = "호출을 중단한다.")
@@ -56,6 +56,6 @@ public class CprCallController {
     @PostMapping("/end/{call_id}")
     public ResponseEntity<ResponseTemplate> endCall(@PathVariable(name="call_id") Long callId) {
         cprCallService.endCall(callId);
-        return ResponseTemplate.toResponseEntity(ResponseCode.OK_CPR_CALL_END_SITUDATION);
+        return ResponseTemplate.toResponseEntity(ResponseCode.OK_CPR_CALL_END_SITUATION);
     }
 }

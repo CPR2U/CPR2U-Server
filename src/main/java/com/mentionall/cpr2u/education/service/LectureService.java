@@ -36,7 +36,7 @@ public class LectureService {
 
     public LectureProgressDto readLectureProgress(User user) {
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_EDUCATION_PROGRESS)
+                () -> new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_GET_EDUCATION_PROGRESS)
         );
 
         List<LectureResponseDto> lectureResponseDtoList = lectureRepository.findAll()

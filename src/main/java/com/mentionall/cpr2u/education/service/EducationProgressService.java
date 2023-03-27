@@ -55,7 +55,7 @@ public class EducationProgressService {
     public void completeLecture(User user, Long lectureId) {
         EducationProgress progress = getEducationProgressByUser(user);
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_LECTURE)
+                () -> new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_FIND_LECTURE)
         );
         progress.updateLecture(lecture);
         progressRepository.save(progress);
@@ -63,7 +63,7 @@ public class EducationProgressService {
 
     private EducationProgress getEducationProgressByUser(User user) {
         return progressRepository.findByUser(user).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_FOUND_EDUCATION_PROGRESS)
+                () -> new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_GET_EDUCATION_PROGRESS)
         );
     }
 

@@ -41,7 +41,7 @@ public class DispatchController {
     public ResponseEntity<ResponseDataTemplate> dispatch(
             @RequestBody DispatchRequestDto requestDto,
             @GetUserDetails PrincipalDetails userDetails) {
-        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK, dispatchService.dispatch(userDetails.getUser(), requestDto));
+        return ResponseDataTemplate.toResponseEntity(ResponseCode.OK_SUCCESS, dispatchService.dispatch(userDetails.getUser(), requestDto));
     }
 
     @Operation(summary = "CPR 출동 도착", description = "CPR 응급 상황에 도착했음을 알린다.")
@@ -56,7 +56,7 @@ public class DispatchController {
             @Parameter(description = "출동 데이터 ID") @PathVariable(value = "dispatch_id") Long dispatchId
     ) {
         dispatchService.arrive(dispatchId);
-        return ResponseTemplate.toResponseEntity(OK);
+        return ResponseTemplate.toResponseEntity(OK_SUCCESS);
     }
 
     @Operation(summary = "잘못된 CPR 응급 상황 신고", description = "CPR 응급 상황이 허위인 경우, 신고한다.")
@@ -69,6 +69,6 @@ public class DispatchController {
     @PostMapping("/report")
     public ResponseEntity<ResponseTemplate> report(@RequestBody ReportRequestDto requestDto) {
         dispatchService.report(requestDto);
-        return ResponseTemplate.toResponseEntity(OK);
+        return ResponseTemplate.toResponseEntity(OK_SUCCESS);
     }
 }

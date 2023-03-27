@@ -35,6 +35,7 @@ public class UserService {
     }
 
     public UserCodeDto getVerificationCode(UserPhoneNumberDto userPhoneNumberDto) {
+        //TODO FCM 메세지 전송
         return new UserCodeDto(String.format("%04.0f", Math.random() * Math.pow(10, 4)));
     }
 
@@ -46,8 +47,9 @@ public class UserService {
 
             DeviceToken deviceToken = deviceTokenRepository.findByUserId(user.getId())
                     .orElse(new DeviceToken(userLoginDto.getDeviceToken(), user));
-            if(!deviceToken.getDeviceToken().equals(userLoginDto.getDeviceToken())) {
-                deviceToken.setDeviceToken(userLoginDto.getDeviceToken());
+
+            if(!deviceToken.getToken().equals(userLoginDto.getDeviceToken())) {
+                deviceToken.setToken(userLoginDto.getDeviceToken());
                 deviceTokenRepository.save(deviceToken);
                 user.setDeviceToken(deviceToken);
                 userRepository.save(user);
@@ -61,7 +63,7 @@ public class UserService {
     public UserTokenDto reissueToken(UserTokenReissueDto userTokenReissueDto) {
         RefreshToken refreshToken;
         if(jwtTokenProvider.validateToken(userTokenReissueDto.getRefreshToken()))
-            refreshToken = refreshTokenRepository.findByRefreshToken(userTokenReissueDto.getRefreshToken())
+            refreshToken = refreshTokenRepository.findRefreshTokenByToken(userTokenReissueDto.getRefreshToken())
                     .orElseThrow(()-> new CustomException(ResponseCode.FORBIDDEN_TOKEN_NOT_VALID));
         else throw new CustomException(ResponseCode.FORBIDDEN_TOKEN_NOT_VALID);
 
@@ -72,7 +74,7 @@ public class UserService {
     public UserTokenDto issueUserToken(User user){
         String newRefreshToken = jwtTokenProvider.createRefreshToken();
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(new RefreshToken(user));
-        refreshToken.setRefreshToken(newRefreshToken);
+        refreshToken.setToken(newRefreshToken);
         refreshTokenRepository.save(refreshToken);
 
         return new UserTokenDto(
