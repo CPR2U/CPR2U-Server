@@ -8,30 +8,25 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class RefreshToken {
-
+public class FcmToken {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "refresh_token")
+    @Column(name = "fcm_token")
     private String token;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public RefreshToken(String refreshToken, User user) {
+    public FcmToken(String fcmToken, User user) {
         this.user = user;
-        this.token = refreshToken;
+        this.token = fcmToken;
     }
 
-    public RefreshToken(User user) {
-        this.user = user;
-    }
-
-    public void setToken(String refreshToken) {
-        this.token = refreshToken;
+    public void setToken(String deviceToken) {
+        this.token = deviceToken;
     }
 }

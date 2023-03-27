@@ -14,8 +14,8 @@ public class DeviceToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String deviceToken;
+    @Column(name = "device_token")
+    private String token;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -23,11 +23,11 @@ public class DeviceToken {
 
     public DeviceToken(String deviceToken, User user) {
         this.user = user;
-        this.deviceToken = deviceToken;
+        this.token = deviceToken;
     }
 
-    public void setDeviceToken(String deviceToken) {
-        this.deviceToken = deviceToken;
+    public void setToken(String deviceToken) {
+        this.token = deviceToken;
     }
 
 }
