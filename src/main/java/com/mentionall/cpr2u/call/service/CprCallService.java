@@ -8,10 +8,8 @@ import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
-import com.mentionall.cpr2u.user.domain.DeviceToken;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.AddressRepository;
-import com.mentionall.cpr2u.util.MessageService;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +26,6 @@ public class CprCallService {
     private final CprCallRepository cprCallRepository;
     private final DispatchRepository dispatchRepository;
     private final AddressRepository addressRepository;
-    private final FirebaseCloudMessageService firebaseCloudMessageService;
-    private final MessageService messageService;
 
     public CprCallNearUserDto getCallNearUser(User user) {
         AngelStatusEnum userAngelStatus = user.getStatus();
@@ -83,6 +79,6 @@ public class CprCallService {
         );
 
         List<Dispatch> dispatchList = dispatchRepository.findAllByCprCallId(callId);
-        return new CprCallGuideResponseDto(dispatchList.size(), cprCall.getCalledAt());
+        return new CprCallGuideResponseDto(dispatchList.size());
     }
 }
