@@ -7,7 +7,6 @@ import com.mentionall.cpr2u.user.service.AddressService;
 import com.mentionall.cpr2u.util.GetUserDetails;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
-import com.mentionall.cpr2u.util.exception.ResponseCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,7 +35,7 @@ public class UserController {
     @GetMapping("/address")
     public ResponseEntity<ResponseDataTemplate> readAddressList() {
         return ResponseDataTemplate.toResponseEntity(
-                OK,
+                OK_SUCCESS,
                 addressService.readAll()
         );
     }
@@ -50,7 +49,7 @@ public class UserController {
     public ResponseEntity<ResponseTemplate> setAddress(@GetUserDetails PrincipalDetails userDetails, @RequestBody AddressRequestDto requestDto) {
         addressService.setAddress(userDetails.getUser(), requestDto);
 
-        return ResponseTemplate.toResponseEntity(OK);
+        return ResponseTemplate.toResponseEntity(OK_SUCCESS);
     }
 
 }

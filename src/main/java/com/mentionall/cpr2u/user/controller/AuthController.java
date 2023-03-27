@@ -4,7 +4,6 @@ import com.mentionall.cpr2u.user.dto.*;
 import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
-import com.mentionall.cpr2u.util.exception.ResponseCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,7 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
+import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_SUCCESS;
+import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_NICKNAME_CHECK;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<ResponseDataTemplate> signup(@RequestBody UserSignUpDto userSignUpDto){
         return ResponseDataTemplate.toResponseEntity(
-                OK,
+                OK_SUCCESS,
                 userService.signup(userSignUpDto)
         );
     }
@@ -52,7 +52,7 @@ public class AuthController {
     @PostMapping("/verification")
     public ResponseEntity<ResponseDataTemplate> issueVerificationCode(@RequestBody UserPhoneNumberDto userPhoneNumberDto){
         return ResponseDataTemplate.toResponseEntity(
-                OK,
+                OK_SUCCESS,
                 userService.getVerificationCode(userPhoneNumberDto)
         );
     }
@@ -70,7 +70,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ResponseDataTemplate> verificationUserLogin(@RequestBody UserLoginDto userLoginDto){
         return ResponseDataTemplate.toResponseEntity(
-                OK,
+                OK_SUCCESS,
                 userService.login(userLoginDto)
         );
     }
@@ -104,7 +104,7 @@ public class AuthController {
     @PostMapping("/auto-login")
     public ResponseEntity<ResponseDataTemplate> autoLogin(@RequestBody UserTokenReissueDto userTokenReissueDto){
         return ResponseDataTemplate.toResponseEntity(
-                OK,
+                OK_SUCCESS,
                 userService.reissueToken(userTokenReissueDto)
         );
     }
