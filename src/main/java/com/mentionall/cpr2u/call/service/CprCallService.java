@@ -3,10 +3,7 @@ package com.mentionall.cpr2u.call.service;
 import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.DispatchStatus;
-import com.mentionall.cpr2u.call.dto.CprCallDto;
-import com.mentionall.cpr2u.call.dto.CprCallIdDto;
-import com.mentionall.cpr2u.call.dto.CprCallNearUserDto;
-import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
+import com.mentionall.cpr2u.call.dto.*;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
@@ -78,5 +75,14 @@ public class CprCallService {
             dispatchRepository.save(dispatch);
         }
 
+    }
+
+    public CprCallGuideResponseDto getNumberOfAngelsDispatched(Long callId) {
+        CprCall cprCall = cprCallRepository.findById(callId).orElseThrow(
+                () -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL)
+        );
+
+        List<Dispatch> dispatchList = dispatchRepository.findAllByCprCallId(callId);
+        return new CprCallGuideResponseDto(dispatchList.size(), cprCall.getCalledAt());
     }
 }

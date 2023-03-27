@@ -53,7 +53,7 @@ public class  EducationController {
     public ResponseEntity<ResponseDataTemplate> getEducationInfo(@GetUserDetails PrincipalDetails userDetails) {
 
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK_SUCCESS,
+                OK_SUCCESS,
                 progressService.readEducationInfo(userDetails.getUser()));
     }
 
@@ -66,7 +66,7 @@ public class  EducationController {
     public ResponseEntity<ResponseDataTemplate> getLectureList(@GetUserDetails PrincipalDetails userDetails) {
 
         return ResponseDataTemplate.toResponseEntity(
-                ResponseCode.OK_SUCCESS,
+                OK_SUCCESS,
                 lectureService.readLectureProgress(userDetails.getUser()));
     }
 
