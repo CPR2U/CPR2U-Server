@@ -19,7 +19,7 @@ public class FcmMessage {
     public static class Message {
         private Notification notification;
         private String token;
-        private Map<String, Integer> data;
+        private Map<String, String> data;
     }
 
     @Builder

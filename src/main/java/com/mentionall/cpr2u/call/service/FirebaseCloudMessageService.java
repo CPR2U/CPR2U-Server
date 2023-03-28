@@ -23,7 +23,7 @@ public class FirebaseCloudMessageService {
     private final ObjectMapper objectMapper;
 
 
-public void sendMessageTo(String targetToken, String title, String body, Integer type) throws IOException {
+    public void sendMessageTo(String targetToken, String title, String body, Integer type) throws IOException {
         String message = makeMessage(targetToken, title, body, type);
 
         OkHttpClient client = new OkHttpClient();
@@ -36,7 +36,9 @@ public void sendMessageTo(String targetToken, String title, String body, Integer
                 .addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
                 .build();
 
-        client.newCall(request).execute();
+        Response response = client.newCall(request).execute();
+
+        System.out.println(response);
     }
 
 
@@ -45,8 +47,8 @@ public void sendMessageTo(String targetToken, String title, String body, Integer
                 .message(FcmMessage.Message.builder()
                         .token(targetToken)
                         .data(
-                                new LinkedHashMap<>(){{
-                                    put("type", type);
+                                new LinkedHashMap<>() {{
+                                    put("type", String.valueOf(type));
                                 }}
                         )
                         .notification(FcmMessage.Notification.builder()
