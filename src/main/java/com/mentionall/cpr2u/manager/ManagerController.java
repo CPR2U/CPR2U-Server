@@ -27,7 +27,7 @@ public class ManagerController {
     @PostMapping("/quizzes")
     public ResponseEntity<ResponseTemplate> createQuiz(@RequestBody QuizRequestDto requestDto) {
         quizService.createQuiz(requestDto);
-        return ResponseTemplate.toResponseEntity(OK);
+        return ResponseTemplate.toResponseEntity(OK_SUCCESS);
     }
 
 }

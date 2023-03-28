@@ -29,6 +29,8 @@ public class AddressRepositoryImpl implements AddressDslRepository {
             findAddressQuery = findBySigugunQuery(findAddressQuery, sigugun);
             findAddressList = findAddressQuery.fetch();
         }
+
+        if(findAddressList.size() < 1) return Optional.empty();
         return Optional.of(findAddressList.get(0));
 
     }
