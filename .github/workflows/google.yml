@@ -47,20 +47,15 @@ jobs:
       
     - name: Make Directory firebase
       run: mkdir ./src/main/resources/firebase
-    
-    - name: create-firebase_service_key.json
-      id: create-json
-      uses: jsdaniell/create-json@1.1.2
-      with:
-        name: "firebase_service_key.json"
-        json: ${{ secrets.FIREBASE_SERVICE_KEY }}
-        dir: './src/main/resources/firebase/'
+      
+    - name: Touch firebase_service_key.json
+      run: touch ./src/main/resources/firebase/firebase_service_key.json
+      
+    - name: Echo firebase_service_key.json
+      run: echo "${{ secrets.FIREBASE_SERVICE_KEY }}" > ./src/main/resources/firebase/firebase_service_key.json
 
     - name: Cat firebase_service_key.json
       run: cat ./src/main/resources/firebase/firebase_service_key.json
-      
-    - name: check directory
-      run: ls -alR ./src/main/resources
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
@@ -81,7 +76,6 @@ jobs:
     # helper for authentication
     - run: |-
         gcloud --quiet auth configure-docker
-
     # Get the GKE credentials so we can deploy to the cluster
     - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
       with:
