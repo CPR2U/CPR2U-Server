@@ -50,9 +50,13 @@ jobs:
       
     - name: Touch firebase_service_key.json
       run: touch ./src/main/resources/firebase/firebase_service_key.json
-      
-    - name: Echo firebase_service_key.json
-      run: echo "${{ secrets.FIREBASE_SERVICE_KEY }}" > ./src/main/resources/firebase/firebase_service_key.json
+    
+    - name: create-firebase_service_key.json
+      id: create-json
+      uses: jsdaniell/create-json@1.1.2
+      with:
+        name: "firebase_service_key.json"
+        json: ${{ secrets.FIREBASE_SERVICE_KEY }}
 
     - name: Cat firebase_service_key.json
       run: cat ./src/main/resources/firebase/firebase_service_key.json
