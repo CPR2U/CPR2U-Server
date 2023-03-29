@@ -44,19 +44,7 @@ jobs:
 
     - name: Cat application.yml
       run: cat ./src/main/resources/application-local.properties
-      
-    - name: Make Directory firebase
-      run: mkdir ./src/main/resources/firebase
-      
-    - name: Touch firebase_service_key.json
-      run: touch ./src/main/resources/firebase/firebase_service_key.json
-      
-    - name: Echo firebase_service_key.json
-      run: echo "${{ secrets.FIREBASE_SERVICE_KEY }}" > ./src/main/resources/firebase/firebase_service_key.json
 
-    - name: Cat firebase_service_key.json
-      run: cat ./src/main/resources/firebase/firebase_service_key.json
-        
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
