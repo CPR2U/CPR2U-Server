@@ -10,10 +10,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -23,8 +22,8 @@ public class FirebaseCloudMessageService {
     private final ObjectMapper objectMapper;
 
 
-    public void sendMessageTo(String targetToken, String title, String body, Integer type) throws IOException {
-        String message = makeMessage(targetToken, title, body, type);
+    public void sendMessageTo(String targetToken, String title, String body, Map<String, String> data) throws IOException {
+        String message = makeMessage(targetToken, title, body, data);
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message,
@@ -42,15 +41,11 @@ public class FirebaseCloudMessageService {
     }
 
 
-    private String makeMessage(String targetToken, String title, String body, Integer type) throws JsonProcessingException {
+    private String makeMessage(String targetToken, String title, String body, Map<String, String> data) throws JsonProcessingException {
         FcmMessage fcmMessage = FcmMessage.builder()
                 .message(FcmMessage.Message.builder()
                         .token(targetToken)
-                        .data(
-                                new LinkedHashMap<>() {{
-                                    put("type", String.valueOf(type));
-                                }}
-                        )
+                        .data(data)
                         .notification(FcmMessage.Notification.builder()
                                 .title(title)
                                 .body(body)

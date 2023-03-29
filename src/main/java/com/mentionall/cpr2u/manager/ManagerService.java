@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
@@ -34,7 +35,9 @@ public class ManagerService {
                     firebaseCloudMessageService.sendMessageTo(user.getDeviceToken().getToken(),
                             MessageEnum.ANGEL_EXPIRED_TITLE.getMessage(),
                             MessageEnum.ANGEL_EXPIRED_BODY.getMessage(),
-                            FcmPushTypeEnum.ANGLE_EXPIRATION.ordinal());
+                            new LinkedHashMap<>(){{
+                                put("type", String.valueOf(FcmPushTypeEnum.ANGLE_EXPIRATION.ordinal()));
+                            }});
                 } catch (IOException e) {
                     throw new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_SEND_FCM);
                 }
