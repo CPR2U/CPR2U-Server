@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
@@ -65,7 +66,11 @@ public class CprCallService {
                 firebaseCloudMessageService.sendMessageTo(deviceToken.getToken(),
                         MessageEnum.CPR_CALL_TITLE.getMessage(),
                         cprCall.getFullAddress(),
-                        FcmPushTypeEnum.CPR_CALL.ordinal());
+                        new LinkedHashMap<>(){{
+                            put("type", String.valueOf(FcmPushTypeEnum.CPR_CALL.ordinal()));
+                            put("call", String.valueOf(cprCall.getId()));
+                        }}
+                );
             } catch (IOException e) {
                 throw new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_SEND_FCM);
             }
