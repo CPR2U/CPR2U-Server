@@ -57,6 +57,7 @@ jobs:
       with:
         name: "firebase_service_key.json"
         json: ${{ secrets.FIREBASE_SERVICE_KEY }}
+        dir: './src/main/resources/firebase/'
 
     - name: Cat firebase_service_key.json
       run: cat ./src/main/resources/firebase/firebase_service_key.json
