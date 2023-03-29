@@ -35,7 +35,7 @@ public class UserService {
     }
 
     public UserCodeDto getVerificationCode(UserPhoneNumberDto userPhoneNumberDto) {
-        //TODO FCM 메세지 전송
+        //TODO 메세지 전송
         return new UserCodeDto(String.format("%04.0f", Math.random() * Math.pow(10, 4)));
     }
 

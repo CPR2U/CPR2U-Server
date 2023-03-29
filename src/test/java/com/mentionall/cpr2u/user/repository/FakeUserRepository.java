@@ -32,6 +32,11 @@ public class FakeUserRepository implements UserRepository{
     }
 
     @Override
+    public List<User> findAllAngel() {
+        return null;
+    }
+
+    @Override
     public List<User> findAll() {
         return null;
     }
