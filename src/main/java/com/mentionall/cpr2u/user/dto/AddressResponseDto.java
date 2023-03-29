@@ -11,11 +11,18 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class AddressResponseDto {
     @Schema(example = "시/도")
     private String sido;
 
     @JsonProperty("gugun_list")
     private List<SigugunResponseDto> gugunList = new ArrayList();
+
+    public AddressResponseDto(String sido, List<SigugunResponseDto> gugunList) {
+        int bracketIndex = sido.indexOf("(");
+        if(bracketIndex != -1)
+            sido = sido.substring(0, bracketIndex);
+        this.sido = sido;
+        this.gugunList = gugunList;
+    }
 }

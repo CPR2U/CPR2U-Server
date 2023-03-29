@@ -57,8 +57,7 @@ public class CprCall {
     public CprCall(User user, Address address, LocalDateTime calledAt, CprCallOccurDto cprCallOccurDto) {
         this.caller = user;
         this.address = address;
-        // TODO
-        this.fullAddress = fullAddress;
+        this.fullAddress = cprCallOccurDto.getFullAddress();
         this.calledAt = calledAt;
         this.latitude = cprCallOccurDto.getLatitude();
         this.longitude = cprCallOccurDto.getLongitude();
