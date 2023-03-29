@@ -17,6 +17,9 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mentionall.cpr2u.util.exception.ResponseCode.BAD_REQUEST_QUIZ_WRONG_ANSWER;
+import static com.mentionall.cpr2u.util.exception.ResponseCode.NOT_FOUND_QUIZ;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -35,7 +38,7 @@ public class QuizService {
             if (answerDto.isAnswer()) haveAnswer = true;
             answerRepository.save(new QuizAnswer(answerDto, quiz));
         }
-        if (!haveAnswer) throw new CustomException(ResponseCode.BAD_REQUEST_QUIZ_WRONG_ANSWER);
+        if (!haveAnswer) throw new CustomException(BAD_REQUEST_QUIZ_WRONG_ANSWER);
     }
 
     @Transactional
@@ -46,5 +49,11 @@ public class QuizService {
             response.add(new QuizResponseDto(i+1, quizList.get(i)));
         }
         return response;
+    }
+
+    @Transactional
+    public void deleteQuiz(Long id) {
+        Quiz quiz = quizRepository.findById(id).orElseThrow (() -> new CustomException(NOT_FOUND_QUIZ));
+        quizRepository.delete(quiz);
     }
 }
