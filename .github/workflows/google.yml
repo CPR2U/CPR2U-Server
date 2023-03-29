@@ -47,9 +47,6 @@ jobs:
       
     - name: Make Directory firebase
       run: mkdir ./src/main/resources/firebase
-      
-    - name: Touch firebase_service_key.json
-      run: touch ./src/main/resources/firebase/firebase_service_key.json
     
     - name: create-firebase_service_key.json
       id: create-json
@@ -61,6 +58,9 @@ jobs:
 
     - name: Cat firebase_service_key.json
       run: cat ./src/main/resources/firebase/firebase_service_key.json
+      
+    - name: check directory
+      run: ls -alR ./src/main/resources
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
