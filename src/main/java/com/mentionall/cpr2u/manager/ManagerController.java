@@ -31,4 +31,10 @@ public class ManagerController {
         return ResponseTemplate.toResponseEntity(OK_SUCCESS);
     }
 
+    @DeleteMapping("/quizzes")
+    public ResponseEntity<ResponseTemplate> deleteQuiz(@RequestParam Long id) {
+        quizService.deleteQuiz(id);
+        return ResponseTemplate.toResponseEntity(OK_SUCCESS);
+    }
+
 }
