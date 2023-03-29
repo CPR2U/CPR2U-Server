@@ -20,9 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -74,8 +72,18 @@ public class CprCallService {
             } catch (IOException e) {
                 throw new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_SEND_FCM);
             }
-        }
 
+            Timer timer = new Timer();
+            TimerTask task = new TimerTask() {
+                public void run() {
+                    cprCall.endSituationCprCall();
+                    cprCallRepository.save(cprCall);
+                }
+            };
+
+            //timer.schedule(task, 1000 * 60 * 10);
+            timer.schedule(task, 1000);
+        }
         return new CprCallIdDto(cprCall.getId());
     }
 
@@ -94,7 +102,7 @@ public class CprCallService {
     }
 
     public CprCallGuideResponseDto getNumberOfAngelsDispatched(Long callId) {
-        CprCall cprCall = cprCallRepository.findById(callId).orElseThrow(
+        cprCallRepository.findById(callId).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL)
         );
 
