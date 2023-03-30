@@ -8,7 +8,6 @@ import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.repository.QuizAnswerRepository;
 import com.mentionall.cpr2u.education.repository.QuizRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
-import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -81,8 +81,7 @@ public class CprCallService {
                 }
             };
 
-            //timer.schedule(task, 1000 * 60 * 10);
-            timer.schedule(task, 1000);
+            timer.schedule(task, 1000 * 60 * 10);
         }
         return new CprCallIdDto(cprCall.getId());
     }

@@ -1,6 +1,8 @@
 package com.mentionall.cpr2u.education.controller;
 
-import com.mentionall.cpr2u.education.dto.*;
+import com.mentionall.cpr2u.education.dto.EducationProgressDto;
+import com.mentionall.cpr2u.education.dto.LectureProgressDto;
+import com.mentionall.cpr2u.education.dto.ScoreDto;
 import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.service.EducationProgressService;
@@ -11,7 +13,6 @@ import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.GetUserDetails;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
-import com.mentionall.cpr2u.util.exception.ResponseCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -25,7 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
+import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_CERTIFICATED;
+import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_SUCCESS;
 
 @Tag(name = "EducationController", description = "학습 화면 컨트롤러")
 @Slf4j
