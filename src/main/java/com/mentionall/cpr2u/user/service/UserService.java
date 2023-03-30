@@ -60,6 +60,7 @@ public class UserService {
         throw new CustomException(ResponseCode.NOT_FOUND_USER);
     }
 
+    @Transactional
     public UserTokenDto reissueToken(UserTokenReissueDto userTokenReissueDto) {
         RefreshToken refreshToken;
         if(jwtTokenProvider.validateToken(userTokenReissueDto.getRefreshToken()))
@@ -71,7 +72,7 @@ public class UserService {
         return issueUserToken(user);
     }
 
-    public UserTokenDto issueUserToken(User user){
+    private UserTokenDto issueUserToken(User user){
         String newRefreshToken = jwtTokenProvider.createRefreshToken();
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(new RefreshToken(user));
         refreshToken.setToken(newRefreshToken);
