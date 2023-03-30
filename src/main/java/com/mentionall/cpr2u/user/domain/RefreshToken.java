@@ -15,17 +15,12 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "refresh_token")
+    @Column(name = "refresh_token", unique = true)
     private String token;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    public RefreshToken(String refreshToken, User user) {
-        this.user = user;
-        this.token = refreshToken;
-    }
 
     public RefreshToken(User user) {
         this.user = user;
