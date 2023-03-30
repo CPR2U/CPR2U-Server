@@ -28,6 +28,7 @@ public enum ResponseCode {
     NOT_FOUND_CPRCALL(NOT_FOUND, "해당 ID의 CPR 요청을 찾을 수 없습니다."),
     NOT_FOUND_DISPATCH(NOT_FOUND, "해당 ID의 출동 데이터를 찾을 수 없습니다."),
     NOT_FOUND_ADDRESS(NOT_FOUND, "잘못된 주소 ID입니다." ),
+    NOT_FOUND_QUIZ(NOT_FOUND, "해당 ID의 퀴즈를 찾을 수 없습니다."),
     NOT_FOUND_FAILED_TO_MATCH_ADDRESS(INTERNAL_SERVER_ERROR, "해당 주소지에 맞는 주소 지역구를 찾을 수 없습니다."),
 
     SERVER_ERROR_FAILED_TO_SEND_FCM(INTERNAL_SERVER_ERROR, "FCM 푸시 알림을 보내는 데 실패했습니다."),

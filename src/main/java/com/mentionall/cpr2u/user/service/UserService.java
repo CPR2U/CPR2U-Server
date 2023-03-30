@@ -46,7 +46,7 @@ public class UserService {
                     .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
 
             DeviceToken deviceToken = deviceTokenRepository.findByUserId(user.getId())
-                    .orElse(new DeviceToken(userLoginDto.getDeviceToken(), user));
+                    .orElseGet(()->new DeviceToken(userLoginDto.getDeviceToken(), user));
 
             if(!deviceToken.getToken().equals(userLoginDto.getDeviceToken())) {
                 deviceToken.setToken(userLoginDto.getDeviceToken());
@@ -60,6 +60,7 @@ public class UserService {
         throw new CustomException(ResponseCode.NOT_FOUND_USER);
     }
 
+    @Transactional
     public UserTokenDto reissueToken(UserTokenReissueDto userTokenReissueDto) {
         RefreshToken refreshToken;
         if(jwtTokenProvider.validateToken(userTokenReissueDto.getRefreshToken()))
@@ -71,9 +72,9 @@ public class UserService {
         return issueUserToken(user);
     }
 
-    public UserTokenDto issueUserToken(User user){
+    private UserTokenDto issueUserToken(User user){
         String newRefreshToken = jwtTokenProvider.createRefreshToken();
-        RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElse(new RefreshToken(user));
+        RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElseGet(() -> new RefreshToken(user));
         refreshToken.setToken(newRefreshToken);
         refreshTokenRepository.save(refreshToken);
 

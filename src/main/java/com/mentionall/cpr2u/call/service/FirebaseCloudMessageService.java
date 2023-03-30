@@ -36,8 +36,9 @@ public class FirebaseCloudMessageService {
                 .build();
 
         Response response = client.newCall(request).execute();
+        System.out.println(response.body().string());
+        response.close();
 
-        System.out.println(response);
     }
 
 
