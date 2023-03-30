@@ -9,7 +9,6 @@ import com.mentionall.cpr2u.user.domain.PrincipalDetails;
 import com.mentionall.cpr2u.util.GetUserDetails;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
-import com.mentionall.cpr2u.util.exception.ResponseCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,7 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
+import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_CPR_CALL_END_SITUATION;
+import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_SUCCESS;
 
 @Tag(name = "CallController", description = "호출 화면 컨트롤러")
 @RequestMapping("/call")

@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
+import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_SUCCESS;
 
 @RestController
 @RequiredArgsConstructor
