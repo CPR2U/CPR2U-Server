@@ -43,6 +43,8 @@ dependencies {
 	implementation 'com.google.firebase:firebase-admin:6.8.1'
 	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
 
+	implementation 'com.twilio.sdk:twilio:8.8.0'
+
 	compileOnly 'org.projectlombok:lombok'
 
 	runtimeOnly 'com.h2database:h2'
