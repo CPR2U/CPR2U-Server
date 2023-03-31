@@ -12,7 +12,12 @@ import com.mentionall.cpr2u.user.repository.RefreshTokenRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.rest.verify.v2.service.Verification;
+import com.twilio.type.PhoneNumber;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +31,18 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final DeviceTokenRepository deviceTokenRepository;
 
+    @Value("${security.twilio.account-sid}")
+    private String twilioAccountSid;
+
+    @Value("${security.twilio.auth-token}")
+    private String twilioAuthToken;
+
+    @Value("${security.twilio.service-sid}")
+    private String twilioServiceSid;
+
+    @Value("${security.twilio.phone-number}")
+    private String phoneNumber;
+
     public UserTokenDto signup(UserSignUpDto userSignUpDto) {
         User user = new User(userSignUpDto);
         userRepository.save(user);
@@ -35,8 +52,20 @@ public class UserService {
     }
 
     public UserCodeDto getVerificationCode(UserPhoneNumberDto userPhoneNumberDto) {
-        //TODO 메세지 전송
-        return new UserCodeDto(String.format("%04.0f", Math.random() * Math.pow(10, 4)));
+//        String code = String.format("%04.0f", Math.random() * Math.pow(10, 4));
+        String code = "1111";
+
+//        Twilio.init(twilioAccountSid, twilioAuthToken);
+//
+//        Verification.creator(
+//                        twilioServiceSid,
+//                        userPhoneNumberDto.getPhoneNumber(),
+//                        "sms");
+//
+//        Message.creator(new PhoneNumber(userPhoneNumberDto.getPhoneNumber()),
+//                new PhoneNumber(phoneNumber), "Your verification code is " + code).create();
+
+        return new UserCodeDto(code);
     }
 
     @Transactional
