@@ -31,6 +31,7 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final DeviceTokenRepository deviceTokenRepository;
 
+/* Handling sms verification comments due to cost issues
     @Value("${security.twilio.account-sid}")
     private String twilioAccountSid;
 
@@ -43,6 +44,8 @@ public class UserService {
     @Value("${security.twilio.phone-number}")
     private String phoneNumber;
 
+ */
+
     public UserTokenDto signup(UserSignUpDto userSignUpDto) {
         User user = new User(userSignUpDto);
         userRepository.save(user);
@@ -52,18 +55,21 @@ public class UserService {
     }
 
     public UserCodeDto getVerificationCode(UserPhoneNumberDto userPhoneNumberDto) {
-//        String code = String.format("%04.0f", Math.random() * Math.pow(10, 4));
         String code = "1111";
 
-//        Twilio.init(twilioAccountSid, twilioAuthToken);
-//
-//        Verification.creator(
-//                        twilioServiceSid,
-//                        userPhoneNumberDto.getPhoneNumber(),
-//                        "sms");
-//
-//        Message.creator(new PhoneNumber(userPhoneNumberDto.getPhoneNumber()),
-//                new PhoneNumber(phoneNumber), "Your verification code is " + code).create();
+        /* Handling sms verification comments due to cost issues
+
+        String code = String.format("%04.0f", Math.random() * Math.pow(10, 4));
+        Twilio.init(twilioAccountSid, twilioAuthToken);
+
+        Verification.creator(
+                        twilioServiceSid,
+                        userPhoneNumberDto.getPhoneNumber(),
+                        "sms");
+
+        Message.creator(new PhoneNumber(userPhoneNumberDto.getPhoneNumber()),
+                new PhoneNumber(phoneNumber), "Your verification code is " + code).create();
+         */
 
         return new UserCodeDto(code);
     }
