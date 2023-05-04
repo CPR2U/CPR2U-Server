@@ -2,6 +2,7 @@ package com.mentionall.cpr2u.education.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
+import com.mentionall.cpr2u.education.domain.TestStandard;
 import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
 import com.mentionall.cpr2u.user.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -48,14 +49,18 @@ public class EducationProgressDto {
         this.angelStatus = user.getStatus().ordinal();
         this.nickname = user.getNickname();
         this.progressPercent = progress.getTotalProgress();
+
         this.lastLectureTitle = progress.getLastLecture().getTitle();
         this.isLectureCompleted = progress.getLectureProgressStatus().ordinal();
         this.isQuizCompleted = progress.getQuizProgressStatus().ordinal();
         this.isPostureCompleted = progress.getPostureProgressStatus().ordinal();
+
         if(this.angelStatus != AngelStatusEnum.UNACQUIRED.ordinal()) {
             int leftDays = 90 + (int)(ChronoUnit.DAYS.between(LocalDate.now(), user.getDateOfIssue().toLocalDate().atStartOfDay()));
             this.daysLeftUntilExpiration = leftDays >= 0 ? leftDays : null;
         }
-        else this.daysLeftUntilExpiration = null;
+        else {
+            this.daysLeftUntilExpiration = null;
+        }
     }
 }

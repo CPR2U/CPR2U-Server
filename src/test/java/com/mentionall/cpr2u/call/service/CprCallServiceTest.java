@@ -167,7 +167,7 @@ class CprCallServiceTest {
 
         User user = userRepository.findByPhoneNumber("phoneNumber" + number).get();
         user.setAddress(address);
-        user.acquireCertification();
+        user.acquireCertification(LocalDateTime.now());
         userRepository.save(user);
     }
 

@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -108,14 +110,13 @@ public class UserService {
     }
 
     private UserTokenDto issueUserToken(User user){
-        String newRefreshToken = jwtTokenProvider.createRefreshToken();
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElseGet(() -> new RefreshToken(user));
-        refreshToken.setToken(newRefreshToken);
+        refreshToken.setToken(jwtTokenProvider.createRefreshToken());
         refreshTokenRepository.save(refreshToken);
 
         return new UserTokenDto(
                 jwtTokenProvider.createToken(user.getId(), user.getRoles()),
-                newRefreshToken);
+                refreshToken.getToken());
     }
 
     public void checkNicknameDuplicated(String nickname) {
@@ -124,7 +125,7 @@ public class UserService {
     }
 
     public void certificate(User user) {
-        user.acquireCertification();
+        user.acquireCertification(LocalDateTime.now());
         userRepository.save(user);
     }
 }

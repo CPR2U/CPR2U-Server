@@ -14,12 +14,15 @@ import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @RequiredArgsConstructor
 public class EducationProgressService {
     private final EducationProgressRepository progressRepository;
     private final LectureRepository lectureRepository;
 
+    @Transactional
     public void completeQuiz(User user, ScoreDto requestDto) {
         EducationProgress progress = getEducationProgressByUser(user);
 
@@ -33,6 +36,7 @@ public class EducationProgressService {
             throw new CustomException(ResponseCode.OK_QUIZ_FAIL);
     }
 
+    @Transactional
     public void completePosture(User user, ScoreDto requestDto) {
         EducationProgress progress = getEducationProgressByUser(user);
 
@@ -47,11 +51,14 @@ public class EducationProgressService {
             throw new CustomException(ResponseCode.OK_POSTURE_FAIL);
     }
 
+    @Transactional
     public EducationProgressDto readEducationInfo(User user) {
         EducationProgress progress = getEducationProgressByUser(user);
 
         return new EducationProgressDto(progress, user);
     }
+
+    @Transactional
     public void completeLecture(User user, Long lectureId) {
         EducationProgress progress = getEducationProgressByUser(user);
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(

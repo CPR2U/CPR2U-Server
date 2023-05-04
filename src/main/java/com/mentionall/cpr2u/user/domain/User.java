@@ -21,6 +21,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "users")
 public class User extends Timestamped{
 
     @Id
@@ -82,9 +83,9 @@ public class User extends Timestamped{
         this.address = address;
     }
 
-    public void acquireCertification() {
+    public void acquireCertification(LocalDateTime dateOfIssue) {
         this.status = AngelStatusEnum.ACQUIRED;
-        this.dateOfIssue = LocalDateTime.now();
+        this.dateOfIssue = dateOfIssue;
     }
 
     public void expireCertificate() {
