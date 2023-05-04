@@ -25,6 +25,11 @@ public class FakeCprCallRepository implements CprCallRepository {
     }
 
     @Override
+    public List<CprCall> findAllCallInProgressButExpired() {
+        return null;
+    }
+
+    @Override
     public List<CprCall> findAll() {
         return null;
     }

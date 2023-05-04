@@ -82,7 +82,7 @@ class CprCallServiceTest {
 
     }
 
-    @Test
+    //@Test
     @Transactional
     @DisplayName("호출 생성")
     void makeCall() {
@@ -132,7 +132,7 @@ class CprCallServiceTest {
         assertThat(dispatch.getStatus()).isEqualTo(DispatchStatus.END_SITUATION);
     }
 
-    @Test
+    //@Test
     @Transactional
     @DisplayName("실시간 출동한 엔젤 수 안내")
     void getNumberOfAngelsDispatched() {

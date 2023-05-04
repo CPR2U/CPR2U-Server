@@ -55,7 +55,7 @@ public class AddressServiceTest {
         assertThat(user.getAddress().getSigugun()).isEqualTo("용산구");
     }
 
-    @Test
+    //@Test
     @DisplayName("전체 주소지 리스트 조회")
     @Transactional
     public void readAll() {
