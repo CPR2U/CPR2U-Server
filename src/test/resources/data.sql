@@ -1,3 +1,6 @@
+INSERT INTO lecture (id, description, step, title, video_url)
+VALUES (1, '2020 Korean Cardiopulmonary Resuscitation Guidelin', 1, '일반인 심폐소생술 표준 교육 stan', 'https://youtu.be/5DWyihalLMM');
+
 INSERT INTO quiz (id, question, reason, type)
 VALUES (1,
         'If the patient''s pulse returns during CPR, the patient must be raised.',

@@ -24,9 +24,6 @@ public class LectureService {
     private final LectureRepository lectureRepository;
     private final EducationProgressRepository progressRepository;
 
-    @Value("${lecture.posture-url}")
-    private String postureUrl;
-
     public void createLecture(LectureRequestDto requestDto) {
         if (lectureRepository.existsByStep(requestDto.getStep()))
             throw new CustomException(ResponseCode.BAD_REQUEST_LECTURE_DUPLICATED);
@@ -44,15 +41,5 @@ public class LectureService {
                 .map(l -> new LectureResponseDto(l))
                 .collect(Collectors.toList());
         return new LectureProgressDto(progress, lectureResponseDtoList);
-    }
-
-    public List<LectureResponseDto> readAllTheoryLecture() {
-        return lectureRepository.findAll().stream().sorted()
-                .map(l -> new LectureResponseDto(l))
-                .collect(Collectors.toList());
-    }
-
-    public PostureLectureResponseDto readPostureLecture() {
-        return new PostureLectureResponseDto(postureUrl);
     }
 }

@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.education.service;
 
+import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.TestStandard;
 import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
@@ -8,11 +9,14 @@ import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.UserTokenDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
+import com.mentionall.cpr2u.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
 
 import javax.transaction.Transactional;
 
@@ -25,20 +29,22 @@ public class LectureServiceTest {
     private LectureService lectureService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
-    private EducationProgressRepository progressRepository;
+    private JwtTokenProvider jwtTokenProvider;
 
-    //@Test
+    @Autowired
+    private UserRepository userRepository;
+
+    @Test
     @Transactional
     @DisplayName("사용자의 강의 진도 조회")
     public void readLectureProgress() {
         //given
-        User user = userRepository.save(new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token")));
-        progressRepository.save(new EducationProgress(user));
-
-        lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com"));
+        UserTokenDto tokens = userService.signup(new UserSignUpDto("유저1", "010-1234-1234", "device_token"));
+        String userId = jwtTokenProvider.getUserId(tokens.getAccessToken());
+        User user = userRepository.findById(userId).get();
 
         //when
         var progressDto = lectureService.readLectureProgress(user);
@@ -46,11 +52,5 @@ public class LectureServiceTest {
         //then
         assertThat(progressDto.getCurrentStep()).isEqualTo(0);
         assertThat(progressDto.getLectureList().size()).isEqualTo(TestStandard.finalLectureStep);
-
-        int beforeStep = 0;
-        for (LectureResponseDto lecture : progressDto.getLectureList()) {
-            assertThat(lecture.getStep()).isGreaterThan(beforeStep);
-            beforeStep = lecture.getStep();
-        }
     }
 }

@@ -113,18 +113,6 @@ public class  EducationController {
         return ResponseTemplate.toResponseEntity(OK_SUCCESS);
     }
 
-    @Operation(summary = "자세실습 강의 조회", description = "자세실습 강의 영상 URL를 조회한다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostureLectureResponseDto.class)))),
-    })
-    @GetMapping("/exercises")
-    public ResponseEntity<ResponseDataTemplate> getPostureLecture() {
-        return ResponseDataTemplate.toResponseEntity(
-                OK_SUCCESS,
-                lectureService.readPostureLecture());
-    }
-
     @Operation(summary = "자세실습 테스트 완료", description = "유저가 자세실습 테스트를 통과했음을 저장한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
