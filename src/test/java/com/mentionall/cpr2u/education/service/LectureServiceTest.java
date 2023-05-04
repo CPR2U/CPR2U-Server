@@ -1,12 +1,7 @@
 package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
-import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.TestStandard;
-import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
-import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
-import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
-import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.UserSignUpDto;
 import com.mentionall.cpr2u.user.dto.UserTokenDto;
@@ -16,8 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.Authentication;
-
 import javax.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
