@@ -1,6 +1,6 @@
 package com.mentionall.cpr2u.user.controller;
 
-import com.mentionall.cpr2u.user.dto.*;
+import com.mentionall.cpr2u.user.dto.user.*;
 import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;

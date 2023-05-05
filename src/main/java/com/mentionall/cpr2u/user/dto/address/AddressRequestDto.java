@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.user.dto;
+package com.mentionall.cpr2u.user.dto.address;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,12 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserPhoneNumberDto {
-
-    @Schema(example = "사용자 전화번호")
-    @JsonProperty("phone_number")
-    String phoneNumber;
-
+@AllArgsConstructor
+public class AddressRequestDto {
+    @Schema(example = "주소지 ID")
+    @JsonProperty("address_id")
+    private Long addressId;
 }

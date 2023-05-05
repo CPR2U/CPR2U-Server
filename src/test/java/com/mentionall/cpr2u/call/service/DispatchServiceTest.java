@@ -1,24 +1,19 @@
 package com.mentionall.cpr2u.call.service;
 
 import com.mentionall.cpr2u.call.domain.*;
-import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
 import com.mentionall.cpr2u.call.dto.DispatchRequestDto;
 import com.mentionall.cpr2u.call.dto.ReportRequestDto;
 import com.mentionall.cpr2u.call.repository.*;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
-import com.mentionall.cpr2u.user.repository.AddressRepository;
+import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.FakeAddressRepository;
 import com.mentionall.cpr2u.user.repository.FakeUserRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

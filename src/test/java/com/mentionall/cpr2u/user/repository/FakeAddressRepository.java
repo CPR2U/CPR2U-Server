@@ -1,6 +1,7 @@
 package com.mentionall.cpr2u.user.repository;
 
 import com.mentionall.cpr2u.user.domain.Address;
+import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Example;
@@ -15,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class FakeAddressRepository implements AddressRepository{
+public class FakeAddressRepository implements AddressRepository {
     Map<Long, Address> map = new HashMap();
 
     @Override

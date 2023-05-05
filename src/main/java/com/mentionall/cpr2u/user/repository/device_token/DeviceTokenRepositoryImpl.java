@@ -1,7 +1,6 @@
-package com.mentionall.cpr2u.user.repository;
+package com.mentionall.cpr2u.user.repository.device_token;
 
 import com.mentionall.cpr2u.user.domain.DeviceToken;
-import com.mentionall.cpr2u.user.domain.QDeviceToken;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;

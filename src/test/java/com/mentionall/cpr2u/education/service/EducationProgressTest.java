@@ -2,7 +2,7 @@ package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.education.dto.ScoreDto;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.exception.CustomException;

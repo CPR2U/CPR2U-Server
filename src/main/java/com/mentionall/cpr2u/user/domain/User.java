@@ -3,7 +3,7 @@ package com.mentionall.cpr2u.user.domain;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.Report;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
 import com.mentionall.cpr2u.util.RandomGenerator;
 import com.mentionall.cpr2u.util.Timestamped;
 import lombok.AllArgsConstructor;

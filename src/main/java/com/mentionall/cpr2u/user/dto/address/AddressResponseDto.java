@@ -1,8 +1,7 @@
-package com.mentionall.cpr2u.user.dto;
+package com.mentionall.cpr2u.user.dto.address;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

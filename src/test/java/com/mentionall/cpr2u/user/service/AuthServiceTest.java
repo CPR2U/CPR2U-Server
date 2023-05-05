@@ -2,7 +2,7 @@ package com.mentionall.cpr2u.user.service;
 
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.*;
+import com.mentionall.cpr2u.user.dto.user.*;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import org.junit.jupiter.api.*;
