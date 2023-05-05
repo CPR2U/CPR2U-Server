@@ -19,6 +19,8 @@ import static com.mentionall.cpr2u.education.domain.TestStandard.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@DisplayName("유저 교육 진도 관련 테스트")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class EducationProgressTest {
     @Autowired
     private EducationProgressService progressService;
@@ -33,9 +35,8 @@ public class EducationProgressTest {
     private LectureService lectureService;
 
     @Test
-    @DisplayName("강의 코스 진행 중")
     @Transactional
-    public void takeLecturesInProgress() {
+    public void 강의_수강중인_경우() {
         //given
         userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
@@ -56,9 +57,8 @@ public class EducationProgressTest {
     }
 
     @Test
-    @DisplayName("강의 코스 통과")
     @Transactional
-    public void completeLectures() {
+    public void 강의_수강완료한_경우() {
         //given
         userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
@@ -76,9 +76,8 @@ public class EducationProgressTest {
     }
 
     @Test
-    @DisplayName("퀴즈 테스트 통과")
     @Transactional
-    public void completeQuizzes() {
+    public void 퀴즈_100점을_넘은_경우() {
         //given
         userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
@@ -96,9 +95,8 @@ public class EducationProgressTest {
     }
 
     @Test
-    @DisplayName("100점을 넘지 못하면 퀴즈 테스트 실패")
     @Transactional
-    public void failQuizzes() {
+    public void 퀴즈_100점을_넘지_않은_경우() {
         //given
         userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
@@ -114,9 +112,21 @@ public class EducationProgressTest {
     }
 
     @Test
-    @DisplayName("자세실습 테스트 통과")
     @Transactional
-    public void completePosture() {
+    public void 퀴즈_강의를_마무리하지_않고_테스트한_경우() {
+        //given
+        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+
+        //when, then
+        Assertions.assertThrows(CustomException.class,
+                () -> progressService.completeQuiz(user, new ScoreDto(100))
+        );
+    }
+
+    @Test
+    @Transactional
+    public void 자세실습_80점을_넘은_경우() {
         //given
         userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
@@ -136,9 +146,8 @@ public class EducationProgressTest {
     }
 
     @Test
-    @DisplayName("80점을 넘지 못하면 자세실습 테스트 실패")
     @Transactional
-    public void failPosture() {
+    public void 자세실습_80점을_넘지않은_경우() {
         //given
         userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
@@ -155,23 +164,8 @@ public class EducationProgressTest {
     }
 
     @Test
-    @DisplayName("강의를 마무리하지 않으면 퀴즈 테스트 불가능")
     @Transactional
-    public void completeQuizWithoutLecture() {
-        //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
-
-        //when, then
-        Assertions.assertThrows(CustomException.class,
-                () -> progressService.completeQuiz(user, new ScoreDto(100))
-        );
-    }
-
-    @Test
-    @DisplayName("강의를 마무리하지 않으면 자세 실습 불가능")
-    @Transactional
-    public void completePostureWithoutDoingLecture() {
+    public void 자세실습_강의를_마무리하지_않고_테스트한_경우() {
         //given
         userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
@@ -182,9 +176,8 @@ public class EducationProgressTest {
     }
 
     @Test
-    @DisplayName("퀴즈를 마무리하지 않으면 자세 실습 불가능")
     @Transactional
-    public void completePostureWithoutDoingQuiz() {
+    public void 자세실습_퀴즈를_마무리하지_않고_테스트한_경우() {
         //given
         userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();

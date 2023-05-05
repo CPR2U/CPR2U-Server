@@ -5,9 +5,7 @@ import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.*;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -16,6 +14,8 @@ import javax.transaction.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@DisplayName("로그인 관련 테스트")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class AuthServiceTest {
 
     @Autowired
@@ -27,56 +27,51 @@ public class AuthServiceTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    private String phoneNumber = "010-0000-0000";
-    private String nickname = "예진";
-    private String deviceToken = "device-code";
+    private static final String phoneNumber = "010-0000-0000";
+    private static final String nickname = "예진";
+    private static final String deviceToken = "device-code";
 
     @Test
     @Transactional
-    @DisplayName("회원 가입")
-    public void signup() {
+    public void 회원_가입() {
         //given
         UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
 
         //when
-        UserTokenDto userTokenDto = userService.signup(userSignUpDto);
+        var tokens = userService.signup(userSignUpDto);
 
         //then
+        String userId = jwtTokenProvider.getUserId(tokens.getAccessToken());
+
         User user = userRepository.findByPhoneNumber(phoneNumber).get();
-        String userId1 = user.getId();
-        String userId2 = jwtTokenProvider.getUserId(userTokenDto.getAccessToken());
-        assertThat(userId1).isEqualTo(userId2);
+        assertThat(user.getId()).isEqualTo(userId);
     }
 
     @Test
     @Transactional
-    @DisplayName("로그인")
-    public void login() {
+    public void 로그인() {
         //given
-        UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
-        userService.signup(userSignUpDto);
-        UserLoginDto userLoginDto = new UserLoginDto(phoneNumber, deviceToken);
+        userService.signup(new UserSignUpDto(nickname, phoneNumber, deviceToken));
 
         //when
-        UserTokenDto userTokenDto = userService.login(userLoginDto);
+        UserTokenDto userTokenDto = userService.login(new UserLoginDto(phoneNumber, deviceToken));
 
         //then
-        User user = userRepository.findByPhoneNumber(phoneNumber).get();
-        String userId1 = user.getId();
-        String userId2 = jwtTokenProvider.getUserId(userTokenDto.getAccessToken());
-        assertThat(userId1).isEqualTo(userId2);
+        String userId = jwtTokenProvider.getUserId(userTokenDto.getAccessToken());
+        User findUser = userRepository.findByPhoneNumber(phoneNumber).get();
+        assertThat(findUser.getId()).isEqualTo(userId);
     }
 
+    //TODO: 랜덤 코드 생성 테스트 리팩토링(코드 생성 서비스 분리 필요)
     @Test
     @Transactional
-    @DisplayName("전화번호 인증코드 생성")
-    public void verification(){
+    public void 전화번호_인증코드_생성(){
         //given
-        UserPhoneNumberDto userPhoneNumberDto = new UserPhoneNumberDto(phoneNumber);
+        var phoneNumberInfo = new UserPhoneNumberDto(phoneNumber);
 
         for(int i = 0 ; i < 100 ; i ++) {
             //when
-            UserCodeDto userCodeDto = userService.getVerificationCode(userPhoneNumberDto);
+            UserCodeDto userCodeDto = userService.getVerificationCode(phoneNumberInfo);
 
             //then
             assertThat(userCodeDto.getValidationCode().length()).isEqualTo(4);
@@ -85,27 +80,22 @@ public class AuthServiceTest {
 
     @Test
     @Transactional
-    @DisplayName("토큰 재발급")
-    public void autoLogin() {
+    public void 자동_로그인() {
         //given
-        UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
-        userService.signup(userSignUpDto);
-        UserLoginDto userLoginDto = new UserLoginDto(phoneNumber, deviceToken);
-        UserTokenDto userTokenDto = userService.login(userLoginDto);
-        String userId = jwtTokenProvider.getUserId(userTokenDto.getAccessToken());
-        UserTokenReissueDto userTokenReissueDto = new UserTokenReissueDto(userTokenDto.getRefreshToken());
+        userService.signup(new UserSignUpDto(nickname, phoneNumber, deviceToken));
+        var tokens = userService.login(new UserLoginDto(phoneNumber, deviceToken));
 
         //when
-        UserTokenDto newUserTokenDto = userService.reissueToken(userTokenReissueDto);
+        var newTokens = userService.reissueToken(new UserTokenReissueDto(tokens.getRefreshToken()));
 
         //then
-        assertThat(userId).isEqualTo(jwtTokenProvider.getUserId(newUserTokenDto.getAccessToken()));
+        assertThat(jwtTokenProvider.getUserId(tokens.getAccessToken()))
+                .isEqualTo(jwtTokenProvider.getUserId(newTokens.getAccessToken()));
     }
 
     @Test
     @Transactional
-    @DisplayName("닉네임 중복 체크")
-    public void nicknameCheck() {
+    public void 닉네임_중복체크시_중복되는_경우() {
         //given
         UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
         userService.signup(userSignUpDto);
@@ -114,8 +104,20 @@ public class AuthServiceTest {
         String newNickname = nickname;
 
         //then
-        Assertions.assertThrows(CustomException.class, () -> {
-                    userService.checkNicknameDuplicated(newNickname);
-        });
+        Assertions.assertThrows(CustomException.class, () -> {userService.checkNicknameDuplicated(newNickname);});
+    }
+
+    @Test
+    @Transactional
+    public void 닉네임_중복체크시_사용가능한_경우() {
+        //given
+        UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
+        userService.signup(userSignUpDto);
+
+        //when
+        String newNickname = nickname;
+
+        //then
+        Assertions.assertDoesNotThrow(() -> userService.checkNicknameDuplicated(newNickname));
     }
 }
