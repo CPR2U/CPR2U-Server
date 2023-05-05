@@ -115,7 +115,7 @@ public class AuthServiceTest {
         userService.signup(userSignUpDto);
 
         //when
-        String newNickname = nickname;
+        String newNickname = "new" + nickname;
 
         //then
         Assertions.assertDoesNotThrow(() -> userService.checkNicknameDuplicated(newNickname));
