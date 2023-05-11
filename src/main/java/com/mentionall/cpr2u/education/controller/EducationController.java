@@ -3,7 +3,6 @@ package com.mentionall.cpr2u.education.controller;
 import com.mentionall.cpr2u.education.dto.EducationProgressDto;
 import com.mentionall.cpr2u.education.dto.LectureProgressDto;
 import com.mentionall.cpr2u.education.dto.ScoreDto;
-import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.service.EducationProgressService;
 import com.mentionall.cpr2u.education.service.LectureService;
@@ -71,7 +70,7 @@ public class  EducationController {
 
         return ResponseDataTemplate.toResponseEntity(
                 OK_SUCCESS,
-                lectureService.readLectureProgress(userDetails.getUser()));
+                lectureService.readLectureProgressAndList(userDetails.getUser()));
     }
 
     @Operation(summary = "강의 수강 완료", description = "유저가 마지막으로 완료한 강의를 lectureId 값의 강의로 변경한다.")

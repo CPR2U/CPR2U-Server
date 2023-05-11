@@ -24,4 +24,10 @@ public class QuizServiceTest {
         //then
         assertThat(quizList.size()).isEqualTo(5);
     }
+
+    //TODO
+    @Test
+    public void 퀴즈_생성() {
+
+    }
 }

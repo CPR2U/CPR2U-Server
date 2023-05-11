@@ -1,7 +1,6 @@
 package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.education.dto.ScoreDto;
-import com.mentionall.cpr2u.user.domain.AngelStatus;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
@@ -44,7 +43,7 @@ public class EducationProgressTest {
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when
-        var lectureList = lectureService.readLectureProgress(user).getLectureList();
+        var lectureList = lectureService.readLectureProgressAndList(user).getLectureList();
         for (var lecture : lectureList) {
             progressService.completeLecture(user, lecture.getId());
             if (lecture.getStep() == finalLectureStep) break;
@@ -270,7 +269,7 @@ public class EducationProgressTest {
     }
 
     private void completeLectureCourse(User user) {
-        var lectureList = lectureService.readLectureProgress(user).getLectureList();
+        var lectureList = lectureService.readLectureProgressAndList(user).getLectureList();
         for (var lecture : lectureList) {
             progressService.completeLecture(user, lecture.getId());
         }
