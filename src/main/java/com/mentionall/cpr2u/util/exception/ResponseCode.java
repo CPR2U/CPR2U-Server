@@ -33,7 +33,9 @@ public enum ResponseCode {
 
     SERVER_ERROR_FAILED_TO_SEND_FCM(INTERNAL_SERVER_ERROR, "FCM 푸시 알림을 보내는 데 실패했습니다."),
     SERVER_ERROR_FAILED_TO_FIND_LECTURE(INTERNAL_SERVER_ERROR, "해당 강의를 찾을 수 없습니다."),
-    SERVER_ERROR_FAILED_TO_GET_EDUCATION_PROGRESS(INTERNAL_SERVER_ERROR, "유저의 교육 진도 정보가 조회되지 않습니다.");
+    SERVER_ERROR_FAILED_TO_GET_EDUCATION_PROGRESS(INTERNAL_SERVER_ERROR, "유저의 교육 진도 정보가 조회되지 않습니다."),
+    SERVER_ERROR_PARSING_FAILED(INTERNAL_SERVER_ERROR, "CSV 파싱을 실패했습니다."),
+    SERVER_ERROR_PARSING_URI(INTERNAL_SERVER_ERROR, "해당 이름의 리소스 파일이 없습니다.");
 
 
     private final HttpStatus httpStatus;

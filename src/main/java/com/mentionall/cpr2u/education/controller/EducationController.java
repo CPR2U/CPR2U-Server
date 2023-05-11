@@ -3,7 +3,6 @@ package com.mentionall.cpr2u.education.controller;
 import com.mentionall.cpr2u.education.dto.EducationProgressDto;
 import com.mentionall.cpr2u.education.dto.LectureProgressDto;
 import com.mentionall.cpr2u.education.dto.ScoreDto;
-import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
 import com.mentionall.cpr2u.education.dto.quiz.QuizResponseDto;
 import com.mentionall.cpr2u.education.service.EducationProgressService;
 import com.mentionall.cpr2u.education.service.LectureService;
@@ -25,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_CERTIFICATED;
 import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_SUCCESS;
@@ -69,7 +70,7 @@ public class  EducationController {
 
         return ResponseDataTemplate.toResponseEntity(
                 OK_SUCCESS,
-                lectureService.readLectureProgress(userDetails.getUser()));
+                lectureService.readLectureProgressAndList(userDetails.getUser()));
     }
 
     @Operation(summary = "강의 수강 완료", description = "유저가 마지막으로 완료한 강의를 lectureId 값의 강의로 변경한다.")
@@ -113,18 +114,6 @@ public class  EducationController {
         return ResponseTemplate.toResponseEntity(OK_SUCCESS);
     }
 
-    @Operation(summary = "자세실습 강의 조회", description = "자세실습 강의 영상 URL를 조회한다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostureLectureResponseDto.class)))),
-    })
-    @GetMapping("/exercises")
-    public ResponseEntity<ResponseDataTemplate> getPostureLecture() {
-        return ResponseDataTemplate.toResponseEntity(
-                OK_SUCCESS,
-                lectureService.readPostureLecture());
-    }
-
     @Operation(summary = "자세실습 테스트 완료", description = "유저가 자세실습 테스트를 통과했음을 저장한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
@@ -137,7 +126,7 @@ public class  EducationController {
             @GetUserDetails PrincipalDetails userDetails,
             @Parameter(description = "유저의 점수") @RequestBody ScoreDto requestDto) {
         progressService.completePosture(userDetails.getUser(), requestDto);
-        userService.certificate(userDetails.getUser());
+        userService.certificate(userDetails.getUser(), LocalDateTime.now());
 
         return ResponseTemplate.toResponseEntity(OK_CERTIFICATED);
     }

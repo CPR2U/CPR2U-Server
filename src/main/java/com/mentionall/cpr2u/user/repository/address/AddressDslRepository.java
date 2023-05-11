@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.user.repository;
+package com.mentionall.cpr2u.user.repository.address;
 
 import com.mentionall.cpr2u.user.domain.Address;
 

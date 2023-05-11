@@ -3,7 +3,7 @@ package com.mentionall.cpr2u.user.domain;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.Report;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
 import com.mentionall.cpr2u.util.RandomGenerator;
 import com.mentionall.cpr2u.util.Timestamped;
 import lombok.AllArgsConstructor;
@@ -42,7 +42,7 @@ public class User extends Timestamped{
 
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
-    private AngelStatusEnum status;
+    private AngelStatus status;
 
     @OneToOne(mappedBy = "user")
     private EducationProgress educationProgress;
@@ -66,21 +66,11 @@ public class User extends Timestamped{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "reporter")
     List<Report> reportList = new ArrayList();
 
-
-    public User(String id, UserSignUpDto userSignUpDto) {
-        this.id = id;
-        this.nickname = userSignUpDto.getNickname();
-        this.phoneNumber = userSignUpDto.getPhoneNumber();
-        this.dateOfIssue = null;
-        this.status = AngelStatusEnum.UNACQUIRED;
-        this.roles.add(UserRole.USER);
-    }
-
     public User(UserSignUpDto userSignUpDto) {
         this.nickname = userSignUpDto.getNickname();
         this.phoneNumber = userSignUpDto.getPhoneNumber();
         this.dateOfIssue = null;
-        this.status = AngelStatusEnum.UNACQUIRED;
+        this.status = AngelStatus.UNACQUIRED;
         this.roles.add(UserRole.USER);
     }
 
@@ -92,12 +82,12 @@ public class User extends Timestamped{
         this.address = address;
     }
 
-    public void acquireCertification() {
-        this.status = AngelStatusEnum.ACQUIRED;
-        this.dateOfIssue = LocalDateTime.now();
+    public void acquireCertification(LocalDateTime dateOfIssue) {
+        this.status = AngelStatus.ACQUIRED;
+        this.dateOfIssue = dateOfIssue;
     }
 
     public void expireCertificate() {
-        this.status = AngelStatusEnum.EXPIRED;
+        this.status = AngelStatus.EXPIRED;
     }
 }

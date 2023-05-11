@@ -1,8 +1,8 @@
 package com.mentionall.cpr2u.user.controller;
 
 import com.mentionall.cpr2u.user.domain.PrincipalDetails;
-import com.mentionall.cpr2u.user.dto.AddressRequestDto;
-import com.mentionall.cpr2u.user.dto.AddressResponseDto;
+import com.mentionall.cpr2u.user.dto.address.AddressRequestDto;
+import com.mentionall.cpr2u.user.dto.address.AddressResponseDto;
 import com.mentionall.cpr2u.user.service.AddressService;
 import com.mentionall.cpr2u.util.GetUserDetails;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;

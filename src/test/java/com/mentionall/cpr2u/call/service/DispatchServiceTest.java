@@ -5,112 +5,139 @@ import com.mentionall.cpr2u.call.dto.CprCallOccurDto;
 import com.mentionall.cpr2u.call.dto.DispatchRequestDto;
 import com.mentionall.cpr2u.call.dto.ReportRequestDto;
 import com.mentionall.cpr2u.call.repository.*;
-import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
-import com.mentionall.cpr2u.user.repository.AddressRepository;
-import com.mentionall.cpr2u.user.repository.FakeAddressRepository;
-import com.mentionall.cpr2u.user.repository.FakeUserRepository;
+import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.mentionall.cpr2u.user.service.AddressService;
+import com.mentionall.cpr2u.user.service.UserService;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@DisplayName("출동 관련 테스트")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class DispatchServiceTest {
 
+    @Autowired
     private DispatchService dispatchService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
     private DispatchRepository dispatchRepository;
 
+    @Autowired
+    private CprCallService callService;
+
+    @Autowired
     private CprCallRepository callRepository;
 
+    @Autowired
     private UserRepository userRepository;
 
+    @Autowired
     private ReportRepository reportRepository;
 
-    private AddressRepository addressRepository;
+    @Autowired
+    private AddressService addressService;
+
+    private static final String fullAddress = "서울특별시 용산구 청파로47길 100";
+    private static final double latitude = 37.545183430559604;
+    private static final double longitude = 126.9648022541866;
 
     @BeforeEach
     public void beforeEach() {
-        this.dispatchRepository = new FakeDispatchRepository();
-        this.callRepository = new FakeCprCallRepository();
-        this.userRepository = new FakeUserRepository();
-        this.reportRepository = new FakeReportRepository();
-        this.addressRepository = new FakeAddressRepository();
-        this.dispatchService = new DispatchService(dispatchRepository, callRepository, reportRepository);
-   }
-
-    @BeforeEach
-    public void insertData() {
-        User caller = userRepository.save(new User("2L", new UserSignUpDto("호출자", "010-0000-0000", "device_token")));
-        Address address = addressRepository.save(new Address(1L, "서울시", "용산구", new ArrayList<>()));
-        callRepository.save(new CprCall(1L, caller, address, "서울시 용산구 어쩌구",
-                LocalDateTime.now(), 36.44, 46.55, CprCallStatus.IN_PROGRESS,
-                new ArrayList<>(), new ArrayList<>()));
-
-        userRepository.save(new User("1L", new UserSignUpDto("출동자", "010-0000-0000", "device_token")));
+        addressService.loadAddressList();
     }
 
     @Test
-    @DisplayName("CPR 출동")
-    public void dispatch() {
+    @Transactional
+    public void CPR_출동_호출상황_정보_조회() {
         //given
-        User user = userRepository.findById("1L").get();
-        CprCall cprCall = callRepository.findById(1L).get();
+        createCallerAndDispatcher();
+        User caller = userRepository.findByPhoneNumber(("010-0000-0000")).get();
+        User dispatcher = userRepository.findByPhoneNumber(("010-0000-0001")).get();
+
+        long callId = callService.makeCall(new CprCallOccurDto(fullAddress, latitude, longitude), caller).getCallId();
 
         //when
-        var response = dispatchService.dispatch(user, new DispatchRequestDto(cprCall.getId()));
+        var dispatchInfo = dispatchService.dispatch(dispatcher, new DispatchRequestDto(callId));
 
         //then
-        assertThat(response.getCalledAt()).isEqualTo(cprCall.getCalledAt());
-        assertThat(response.getLatitude()).isEqualTo(36.44);
-        assertThat(response.getLongitude()).isEqualTo(46.55);
-        assertThat(response.getFullAddress()).isEqualTo("서울시 용산구 어쩌구");
+        CprCall cprCall = callRepository.findById(callId).get();
+        assertThat(dispatchInfo.getCalledAt()).isEqualTo(cprCall.getCalledAt());
+        assertThat(dispatchInfo.getLatitude()).isEqualTo(latitude);
+        assertThat(dispatchInfo.getLongitude()).isEqualTo(longitude);
+        assertThat(dispatchInfo.getFullAddress()).isEqualTo(fullAddress);
+    }
 
-        Dispatch dispatch = dispatchRepository.findById(response.getDispatchId()).get();
+    @Test
+    @Transactional
+    public void CPR_출동_시_출동상태_진행중() {
+        //given
+        createCallerAndDispatcher();
+        User caller = userRepository.findByPhoneNumber(("010-0000-0000")).get();
+        User dispatcher = userRepository.findByPhoneNumber(("010-0000-0001")).get();
+
+        long callId = callService.makeCall(new CprCallOccurDto(fullAddress, latitude, longitude), caller).getCallId();
+
+        //when
+        var callInfo = dispatchService.dispatch(dispatcher, new DispatchRequestDto(callId));
+
+        //then
+        Dispatch dispatch = dispatchRepository.findById(callInfo.getDispatchId()).get();
         assertThat(dispatch.getStatus()).isEqualTo(DispatchStatus.IN_PROGRESS);
     }
 
     @Test
-    @DisplayName("CPR 출동 도착")
-    public void arrive() {
+    @Transactional
+    public void CPR_출동_도착_시_출동상태_도착() {
         //given
-        User user = userRepository.findById("1L").get();
-        CprCall cprCall = callRepository.findById(1L).get();
+        createCallerAndDispatcher();
+        User caller = userRepository.findByPhoneNumber(("010-0000-0000")).get();
+        User dispatcher = userRepository.findByPhoneNumber(("010-0000-0001")).get();
+
+        long callId = callService.makeCall(new CprCallOccurDto(fullAddress, latitude, longitude), caller).getCallId();
+        var dispatchInfo = dispatchService.dispatch(dispatcher, new DispatchRequestDto(callId));
 
         //when
-        var response = dispatchService.dispatch(user, new DispatchRequestDto(cprCall.getId()));
-        dispatchService.arrive(response.getDispatchId());
+        dispatchService.arrive(dispatchInfo.getDispatchId());
 
         //then
-        var dispatchArrived = dispatchRepository.findById(response.getDispatchId()).get();
-        assertThat(dispatchArrived.getStatus()).isEqualTo(DispatchStatus.ARRIVED);
+        var dispatch = dispatchRepository.findById(dispatchInfo.getDispatchId()).get();
+        assertThat(dispatch.getStatus()).isEqualTo(DispatchStatus.ARRIVED);
     }
 
     @Test
-    @DisplayName("출동 신고")
-    public void report() {
+    @Transactional
+    public void CPR_허위_호출_신고() {
         //given
-        User user = userRepository.findById("1L").get();
-        CprCall cprCall = callRepository.findById(1L).get();
+        createCallerAndDispatcher();
+        User caller = userRepository.findByPhoneNumber(("010-0000-0000")).get();
+        User dispatcher = userRepository.findByPhoneNumber(("010-0000-0001")).get();
+
+        long callId = callService.makeCall(new CprCallOccurDto(fullAddress, latitude, longitude), caller).getCallId();
+        var dispatchInfo = dispatchService.dispatch(dispatcher, new DispatchRequestDto(callId));
 
         //when
-        var response = dispatchService.dispatch(user, new DispatchRequestDto(cprCall.getId()));
-        dispatchService.report(new ReportRequestDto(response.getDispatchId(), "신고 내용"));
+        dispatchService.report(new ReportRequestDto(dispatchInfo.getDispatchId(), "신고 내용"));
 
         //then
-        List<Report> reportList = reportRepository.findAllByReporter(user);
+        List<Report> reportList = reportRepository.findAllByReporter(dispatcher);
         assertThat(reportList.size()).isEqualTo(1);
-        assertThat(reportList.get(0).getCprCall().getId()).isEqualTo(1L);
+        assertThat(reportList.get(0).getCprCall().getId()).isEqualTo(callId);
         assertThat(reportList.get(0).getContent()).isEqualTo("신고 내용");
+    }
+
+    private void createCallerAndDispatcher() {
+        userService.signup(new UserSignUpDto("호출자", "010-0000-0000", "device_token"));
+        userService.signup(new UserSignUpDto("출동자", "010-0000-0001", "device_token"));
     }
 }

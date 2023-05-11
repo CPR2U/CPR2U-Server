@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.user.dto;
+package com.mentionall.cpr2u.user.dto.address;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

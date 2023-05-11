@@ -7,11 +7,11 @@ import com.mentionall.cpr2u.call.dto.*;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
-import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
+import com.mentionall.cpr2u.user.domain.AngelStatus;
 import com.mentionall.cpr2u.user.domain.DeviceToken;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.repository.AddressRepository;
-import com.mentionall.cpr2u.user.repository.DeviceTokenRepository;
+import com.mentionall.cpr2u.user.repository.address.AddressRepository;
+import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.util.MessageEnum;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
@@ -32,8 +32,8 @@ public class CprCallService {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     public CprCallNearUserDto getCallNearUser(User user) {
-        AngelStatusEnum userAngelStatus = user.getStatus();
-        if (userAngelStatus != AngelStatusEnum.ACQUIRED) {
+        AngelStatus userAngelStatus = user.getStatus();
+        if (userAngelStatus != AngelStatus.ACQUIRED) {
             return new CprCallNearUserDto(
                     userAngelStatus,
                     false,

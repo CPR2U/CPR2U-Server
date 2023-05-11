@@ -1,66 +1,71 @@
 package com.mentionall.cpr2u.education.service;
 
-import com.mentionall.cpr2u.education.domain.EducationProgress;
-import com.mentionall.cpr2u.education.domain.TestStandard;
-import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
-import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
-import com.mentionall.cpr2u.education.dto.lecture.PostureLectureResponseDto;
-import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
+import com.mentionall.cpr2u.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import javax.transaction.Transactional;
 
+import static com.mentionall.cpr2u.education.domain.TestStandard.finalLectureStep;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@DisplayName("강의 관련 테스트")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class LectureServiceTest {
 
     @Autowired
     private LectureService lectureService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
-    private EducationProgressRepository progressRepository;
+    private EducationProgressService progressService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     @Transactional
-    @DisplayName("사용자의 강의 진도 조회")
-    public void readLectureProgress() {
+    public void 강의를_이수하지_않은_유저가_강의_리스트_조회() {
         //given
-        User user = userRepository.save(new User("1L", new UserSignUpDto("현애", "010-9980-6523", "device_token")));
-        progressRepository.save(new EducationProgress(user));
-
-        lectureService.createLecture(new LectureRequestDto(1, "강의1", "1입니다.", "https://naver.com"));
+        userService.signup(new UserSignUpDto("유저1", "010-1234-1234", "device_token"));
+        User user = userRepository.findByPhoneNumber("010-1234-1234").get();
 
         //when
-        var progressDto = lectureService.readLectureProgress(user);
+        var lectureInfo = lectureService.readLectureProgressAndList(user);
 
         //then
-        assertThat(progressDto.getCurrentStep()).isEqualTo(0);
-        assertThat(progressDto.getLectureList().size()).isEqualTo(TestStandard.finalLectureStep);
-
-        int beforeStep = 0;
-        for (LectureResponseDto lecture : progressDto.getLectureList()) {
-            assertThat(lecture.getStep()).isGreaterThan(beforeStep);
-            beforeStep = lecture.getStep();
-        }
+        assertThat(lectureInfo.getCurrentStep()).isEqualTo(0);
+        assertThat(lectureInfo.getLectureList().size()).isEqualTo(finalLectureStep);
     }
 
     @Test
-    @DisplayName("자세실습 강의 조회")
-    public void readPostureLecture() {
-        //given & when
-        PostureLectureResponseDto postureLecture = lectureService.readPostureLecture();
+    @Transactional
+    public void 강의를_이수한_유저가_강의_리스트_조회() {
+        //given
+        userService.signup(new UserSignUpDto("유저1", "010-1234-1234", "device_token"));
+        User user = userRepository.findByPhoneNumber("010-1234-1234").get();
+        completeFirstLecture(user);
+
+        //when
+        var lectureInfo = lectureService.readLectureProgressAndList(user);
 
         //then
-        assertThat(postureLecture.getVideoUrl()).isEqualTo("https://www.naver.com");
+        assertThat(lectureInfo.getCurrentStep()).isEqualTo(1);
+        assertThat(lectureInfo.getLectureList().size()).isEqualTo(finalLectureStep);
+    }
+
+    private void completeFirstLecture(User user) {
+        var lectureInfo = lectureService.readLectureProgressAndList(user);
+        var lecture = lectureInfo.getLectureList().get(0);
+        progressService.completeLecture(user, lecture.getId());
     }
 }

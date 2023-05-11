@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum AngelStatusEnum {
+public enum AngelStatus {
 
     ACQUIRED("ACQUIRED"),
     EXPIRED("EXPIRED"),

@@ -16,8 +16,8 @@ public class LectureProgressDto {
     @JsonProperty("lecture_list")
     private List<LectureResponseDto> lectureList;
 
-    public LectureProgressDto(EducationProgress progress, List<LectureResponseDto> lectureList) {
-        this.currentStep = progress.getLastLecture().getStep();
+    public LectureProgressDto(int currentStep, List<LectureResponseDto> lectureList) {
+        this.currentStep = currentStep;
         this.lectureList = lectureList;
     }
 }
