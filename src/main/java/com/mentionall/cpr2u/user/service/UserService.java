@@ -106,11 +106,11 @@ public class UserService {
 
     private UserTokenDto issueUserToken(User user){
         RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElseGet(() -> new RefreshToken(user));
-        refreshToken.setToken(jwtTokenProvider.createRefreshToken());
+        refreshToken.setToken(jwtTokenProvider.createRefreshToken(user));
         refreshTokenRepository.save(refreshToken);
 
         return new UserTokenDto(
-                jwtTokenProvider.createToken(user.getId(), user.getRoles()),
+                jwtTokenProvider.createToken(user),
                 refreshToken.getToken());
     }
 

@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.user.repository;
 
+import com.mentionall.cpr2u.user.domain.AngelStatusEnum;
 import com.mentionall.cpr2u.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, String>{
 
     @Query("SELECT u FROM User u WHERE u.status = 'ACQUIRED'")
     List<User> findAllAngel();
+
+    List<User> findAllByStatus(AngelStatusEnum status);
 }

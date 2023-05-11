@@ -188,29 +188,38 @@ public class EducationProgressTest {
                 () -> progressService.completePosture(user, new ScoreDto(100)));
     }
 
-    // TODO: refreshtoken 생성 중에 에러 뜸
-    //@Test
-    @DisplayName("엔젤 유효기간 D-DAY 값 확인")
+    @Test
     @Transactional
-    public void checkAngelStatusDDay() {
+    public void 교육_수료한_후_수료증_유효기간_확인() {
         //given
-        create4CertificatedUsers();
-
+        create3CertificatedUsers();
         User todayUser = userRepository.findByPhoneNumber("010-0000-0000").get();
         User after3DaysUser = userRepository.findByPhoneNumber("010-1111-0000").get();
         User after90DaysUser = userRepository.findByPhoneNumber("010-2222-0000").get();
-        User after91DaysUser = userRepository.findByPhoneNumber("010-3333-0000").get();
 
         //when
         var todayUserInfo = progressService.readEducationInfo(todayUser);
         var after3DayUserInfo = progressService.readEducationInfo(after3DaysUser);
         var after90DaysUserInfo = progressService.readEducationInfo(after90DaysUser);
-        var after91DaysUserInfo = progressService.readEducationInfo(after91DaysUser);
 
         //then
         assertThat(todayUserInfo.getDaysLeftUntilExpiration()).isEqualTo(90);
         assertThat(after3DayUserInfo.getDaysLeftUntilExpiration()).isEqualTo(87);
         assertThat(after90DaysUserInfo.getDaysLeftUntilExpiration()).isEqualTo(0);
+    }
+
+    @Test
+    @Transactional
+    public void 교육_수료_90일_후_수료증_만료() {
+        //given
+        userService.signup(new UserSignUpDto("채영", "010-3333-0000", "device_token"));
+        User after91DaysUser = userRepository.findByPhoneNumber("010-3333-0000").get();
+        after91DaysUser.acquireCertification(LocalDate.now().minusDays(91).atStartOfDay());
+
+        //when
+        var after91DaysUserInfo = progressService.readEducationInfo(after91DaysUser);
+
+        //then
         assertThat(after91DaysUserInfo.getDaysLeftUntilExpiration()).isEqualTo(null);
     }
 
@@ -221,21 +230,21 @@ public class EducationProgressTest {
         }
     }
 
-    private void create4CertificatedUsers() {
+    private void create3CertificatedUsers() {
         userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
-        User user0 = userRepository.findByPhoneNumber("010-0000-0000").get();
-        user0.acquireCertification(LocalDateTime.now());
+        User todayUser = userRepository.findByPhoneNumber("010-0000-0000").get();
+        todayUser.acquireCertification(LocalDateTime.now());
+        userRepository.save(todayUser);
 
         userService.signup(new UserSignUpDto("예진", "010-1111-0000", "device_token"));
-        User user1 = userRepository.findByPhoneNumber("010-1111-0000").get();
-        user1.acquireCertification(LocalDate.now().minusDays(3).atStartOfDay());
+        User after3DaysUser = userRepository.findByPhoneNumber("010-1111-0000").get();
+        after3DaysUser.acquireCertification(LocalDate.now().minusDays(3).atStartOfDay());
+        userRepository.save(after3DaysUser);
+
 
         userService.signup(new UserSignUpDto("정현", "010-2222-0000", "device_token"));
-        User user2 = userRepository.findByPhoneNumber("010-2222-0000").get();
-        user2.acquireCertification(LocalDate.now().minusDays(90).atStartOfDay());
-
-        userService.signup(new UserSignUpDto("채영", "010-3333-0000", "device_token"));
-        User user3 = userRepository.findByPhoneNumber("010-3333-0000").get();
-        user3.acquireCertification(LocalDate.now().minusDays(91).atStartOfDay());
+        User after90DaysUser = userRepository.findByPhoneNumber("010-2222-0000").get();
+        after90DaysUser.acquireCertification(LocalDate.now().minusDays(90).atStartOfDay());
+        userRepository.save(after90DaysUser);
     }
 }
