@@ -21,7 +21,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
 public class User extends Timestamped{
 
     @Id
@@ -43,7 +42,7 @@ public class User extends Timestamped{
 
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
-    private AngelStatusEnum status;
+    private AngelStatus status;
 
     @OneToOne(mappedBy = "user")
     private EducationProgress educationProgress;
@@ -71,7 +70,7 @@ public class User extends Timestamped{
         this.nickname = userSignUpDto.getNickname();
         this.phoneNumber = userSignUpDto.getPhoneNumber();
         this.dateOfIssue = null;
-        this.status = AngelStatusEnum.UNACQUIRED;
+        this.status = AngelStatus.UNACQUIRED;
         this.roles.add(UserRole.USER);
     }
 
@@ -84,11 +83,11 @@ public class User extends Timestamped{
     }
 
     public void acquireCertification(LocalDateTime dateOfIssue) {
-        this.status = AngelStatusEnum.ACQUIRED;
+        this.status = AngelStatus.ACQUIRED;
         this.dateOfIssue = dateOfIssue;
     }
 
     public void expireCertificate() {
-        this.status = AngelStatusEnum.EXPIRED;
+        this.status = AngelStatus.EXPIRED;
     }
 }

@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
-@SpringBootTest(properties = "classpath=application-test.yml")
+@SpringBootTest
 class Cpr2uApplicationTests {
 
 	@Test

@@ -8,6 +8,7 @@ import com.mentionall.cpr2u.education.dto.EducationProgressDto;
 import com.mentionall.cpr2u.education.dto.ScoreDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
+import com.mentionall.cpr2u.user.domain.AngelStatus;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
@@ -15,6 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
+import static com.mentionall.cpr2u.education.domain.TestStandard.validTime;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +29,9 @@ public class EducationProgressService {
 
     @Transactional
     public void completeQuiz(User user, ScoreDto requestDto) {
-        EducationProgress progress = getEducationProgressByUser(user);
+        EducationProgress progress = getEducationProgress(user);
 
-        if (progress.getLectureProgressStatus() != ProgressStatus.Completed)
+        if (!checkPossibleToTakeQuiz(progress))
             throw new CustomException(ResponseCode.BAD_REQUEST_EDUCATION_PERMISSION_DENIED);
 
         progress.updateQuizScore(requestDto.getScore());
@@ -38,10 +43,9 @@ public class EducationProgressService {
 
     @Transactional
     public void completePosture(User user, ScoreDto requestDto) {
-        EducationProgress progress = getEducationProgressByUser(user);
+        EducationProgress progress = getEducationProgress(user);
 
-        if (progress.getLectureProgressStatus() != ProgressStatus.Completed ||
-            progress.getQuizProgressStatus() != ProgressStatus.Completed)
+        if (!checkPossibleToTakePractice(progress))
             throw new CustomException(ResponseCode.BAD_REQUEST_EDUCATION_PERMISSION_DENIED);
 
         progress.updatePostureScore(requestDto.getScore());
@@ -53,25 +57,33 @@ public class EducationProgressService {
 
     @Transactional
     public EducationProgressDto readEducationInfo(User user) {
-        EducationProgress progress = getEducationProgressByUser(user);
-
-        return new EducationProgressDto(progress, user);
+        return new EducationProgressDto(getEducationProgress(user));
     }
 
     @Transactional
     public void completeLecture(User user, Long lectureId) {
-        EducationProgress progress = getEducationProgressByUser(user);
+        EducationProgress progress = getEducationProgress(user);
+
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(
                 () -> new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_FIND_LECTURE)
         );
+
         progress.updateLecture(lecture);
         progressRepository.save(progress);
     }
 
-    private EducationProgress getEducationProgressByUser(User user) {
+    private EducationProgress getEducationProgress(User user) {
         return progressRepository.findByUser(user).orElseThrow(
                 () -> new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_GET_EDUCATION_PROGRESS)
         );
     }
 
+    private boolean checkPossibleToTakeQuiz(EducationProgress progress) {
+        return progress.getLectureProgressStatus() == ProgressStatus.Completed;
+    }
+
+    private boolean checkPossibleToTakePractice(EducationProgress progress) {
+        return progress.getLectureProgressStatus() == ProgressStatus.Completed &&
+                progress.getQuizProgressStatus() == ProgressStatus.Completed;
+    }
 }

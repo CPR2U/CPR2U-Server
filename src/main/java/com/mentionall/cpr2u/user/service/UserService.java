@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -119,8 +120,8 @@ public class UserService {
             throw new CustomException(ResponseCode.BAD_REQUEST_NICKNAME_DUPLICATED);
     }
 
-    public void certificate(User user) {
-        user.acquireCertification(LocalDateTime.now());
+    public void certificate(User user, LocalDateTime dateTime) {
+        user.acquireCertification(dateTime);
         userRepository.save(user);
     }
 }

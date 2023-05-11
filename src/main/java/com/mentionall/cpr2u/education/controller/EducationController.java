@@ -26,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_CERTIFICATED;
 import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_SUCCESS;
 
@@ -125,7 +127,7 @@ public class  EducationController {
             @GetUserDetails PrincipalDetails userDetails,
             @Parameter(description = "유저의 점수") @RequestBody ScoreDto requestDto) {
         progressService.completePosture(userDetails.getUser(), requestDto);
-        userService.certificate(userDetails.getUser());
+        userService.certificate(userDetails.getUser(), LocalDateTime.now());
 
         return ResponseTemplate.toResponseEntity(OK_CERTIFICATED);
     }

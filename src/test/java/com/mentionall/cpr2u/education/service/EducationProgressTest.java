@@ -1,6 +1,7 @@
 package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.education.dto.ScoreDto;
+import com.mentionall.cpr2u.user.domain.AngelStatus;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 
 import static com.mentionall.cpr2u.education.domain.ProgressStatus.*;
 import static com.mentionall.cpr2u.education.domain.TestStandard.*;
+import static com.mentionall.cpr2u.user.domain.AngelStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -48,11 +50,11 @@ public class EducationProgressTest {
             if (lecture.getStep() == finalLectureStep) break;
 
             // then
-            var progress = progressService.readEducationInfo(user);
-            assertThat(progress.getIsLectureCompleted()).isEqualTo(InProgress.ordinal());
+            var educationInfo = progressService.readEducationInfo(user);
+            assertThat(educationInfo.getIsLectureCompleted()).isEqualTo(InProgress.ordinal());
 
             double progressPercent = lecture.getStep() / totalStep;
-            assertThat(progress.getProgressPercent()).isEqualTo(progressPercent);
+            assertThat(educationInfo.getProgressPercent()).isEqualTo(progressPercent);
         }
     }
 
@@ -67,12 +69,12 @@ public class EducationProgressTest {
         completeLectureCourse(user);
 
         //then
-        var progress = progressService.readEducationInfo(user);
-        assertThat(progress.getIsLectureCompleted()).isEqualTo(Completed.ordinal());
-        assertThat(progress.getProgressPercent()).isEqualTo((double)finalLectureStep / (double)totalStep);
+        var educationInfo = progressService.readEducationInfo(user);
+        assertThat(educationInfo.getIsLectureCompleted()).isEqualTo(Completed.ordinal());
+        assertThat(educationInfo.getProgressPercent()).isEqualTo((double)finalLectureStep / (double)totalStep);
 
-        assertThat(progress.getIsQuizCompleted()).isEqualTo(NotCompleted.ordinal());
-        assertThat(progress.getIsPostureCompleted()).isEqualTo(NotCompleted.ordinal());
+        assertThat(educationInfo.getIsQuizCompleted()).isEqualTo(NotCompleted.ordinal());
+        assertThat(educationInfo.getIsPostureCompleted()).isEqualTo(NotCompleted.ordinal());
     }
 
     @Test
@@ -190,37 +192,81 @@ public class EducationProgressTest {
 
     @Test
     @Transactional
-    public void 교육_수료한_후_수료증_유효기간_확인() {
+    public void 교육_수료_전_수료증_확인() {
         //given
-        create3CertificatedUsers();
-        User todayUser = userRepository.findByPhoneNumber("010-0000-0000").get();
-        User after3DaysUser = userRepository.findByPhoneNumber("010-1111-0000").get();
-        User after90DaysUser = userRepository.findByPhoneNumber("010-2222-0000").get();
+        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when
-        var todayUserInfo = progressService.readEducationInfo(todayUser);
-        var after3DayUserInfo = progressService.readEducationInfo(after3DaysUser);
-        var after90DaysUserInfo = progressService.readEducationInfo(after90DaysUser);
+        var educationInfo = progressService.readEducationInfo(user);
 
         //then
-        assertThat(todayUserInfo.getDaysLeftUntilExpiration()).isEqualTo(90);
-        assertThat(after3DayUserInfo.getDaysLeftUntilExpiration()).isEqualTo(87);
-        assertThat(after90DaysUserInfo.getDaysLeftUntilExpiration()).isEqualTo(0);
+        assertThat(educationInfo.getAngelStatus()).isEqualTo(UNACQUIRED.ordinal());
+        assertThat(educationInfo.getDaysLeftUntilExpiration()).isEqualTo(null);
     }
 
     @Test
     @Transactional
-    public void 교육_수료_90일_후_수료증_만료() {
+    public void 교육_수료_당일_수료증_확인() {
         //given
-        userService.signup(new UserSignUpDto("채영", "010-3333-0000", "device_token"));
-        User after91DaysUser = userRepository.findByPhoneNumber("010-3333-0000").get();
-        after91DaysUser.acquireCertification(LocalDate.now().minusDays(91).atStartOfDay());
+        createCertificatedUser(LocalDateTime.now());
+        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when
-        var after91DaysUserInfo = progressService.readEducationInfo(after91DaysUser);
+        var educationInfo = progressService.readEducationInfo(user);
 
         //then
-        assertThat(after91DaysUserInfo.getDaysLeftUntilExpiration()).isEqualTo(null);
+        assertThat(educationInfo.getAngelStatus()).isEqualTo(ACQUIRED.ordinal());
+        assertThat(educationInfo.getDaysLeftUntilExpiration()).isEqualTo(validTime);
+    }
+
+    @Test
+    @Transactional
+    public void 교육_수료_3일_후_수료증_확인() {
+        //given
+        int day = 3;
+        createCertificatedUser(LocalDate.now().minusDays(day).atStartOfDay());
+        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+
+        //when
+        var educationInfo = progressService.readEducationInfo(user);
+
+        //then
+        assertThat(educationInfo.getAngelStatus()).isEqualTo(ACQUIRED.ordinal());
+        assertThat(educationInfo.getDaysLeftUntilExpiration()).isEqualTo(validTime - day);
+    }
+
+    @Test
+    @Transactional
+    public void 교육_수료_90일_후_수료증_확인() {
+        //given
+        int day = 90;
+        createCertificatedUser(LocalDate.now().minusDays(day).atStartOfDay());
+        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+
+        //when
+        var educationInfo = progressService.readEducationInfo(user);
+
+        //then
+        assertThat(educationInfo.getAngelStatus()).isEqualTo(ACQUIRED.ordinal());
+        assertThat(educationInfo.getDaysLeftUntilExpiration()).isEqualTo(validTime - day);
+    }
+
+    @Test
+    @Transactional
+    public void 교육_수료_91일_후_수료증_만료() {
+        //given
+        int day = 91;
+        createCertificatedUser(LocalDate.now().minusDays(day).atStartOfDay());
+        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+
+        //when
+        var educationInfo = progressService.readEducationInfo(user);
+
+        //then
+        // TODO: Scheduler 테스트 코드를 짜거나 또는 예외 상황 코드 추가
+        //assertThat(educationInfo.getAngelStatus()).isEqualTo(EXPIRED);
+        assertThat(educationInfo.getDaysLeftUntilExpiration()).isEqualTo(null);
     }
 
     private void completeLectureCourse(User user) {
@@ -230,21 +276,9 @@ public class EducationProgressTest {
         }
     }
 
-    private void create3CertificatedUsers() {
+    private void createCertificatedUser(LocalDateTime time) {
         userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
-        User todayUser = userRepository.findByPhoneNumber("010-0000-0000").get();
-        todayUser.acquireCertification(LocalDateTime.now());
-        userRepository.save(todayUser);
-
-        userService.signup(new UserSignUpDto("예진", "010-1111-0000", "device_token"));
-        User after3DaysUser = userRepository.findByPhoneNumber("010-1111-0000").get();
-        after3DaysUser.acquireCertification(LocalDate.now().minusDays(3).atStartOfDay());
-        userRepository.save(after3DaysUser);
-
-
-        userService.signup(new UserSignUpDto("정현", "010-2222-0000", "device_token"));
-        User after90DaysUser = userRepository.findByPhoneNumber("010-2222-0000").get();
-        after90DaysUser.acquireCertification(LocalDate.now().minusDays(90).atStartOfDay());
-        userRepository.save(after90DaysUser);
+        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        userService.certificate(user, time);
     }
 }
