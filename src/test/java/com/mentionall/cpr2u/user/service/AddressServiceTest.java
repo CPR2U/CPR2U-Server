@@ -6,9 +6,7 @@ import com.mentionall.cpr2u.user.dto.address.AddressRequestDto;
 import com.mentionall.cpr2u.user.dto.address.AddressResponseDto;
 import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,6 +16,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@DisplayName("주소지 관련 테스트")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class AddressServiceTest {
     @Autowired
     private AddressService addressService;
@@ -25,8 +25,6 @@ public class AddressServiceTest {
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
 
     @BeforeEach
     public void beforeEach() {
@@ -34,13 +32,11 @@ public class AddressServiceTest {
     }
 
     @Test
-    @DisplayName("사용자의 주소지 설정")
     @Transactional
-    public void setAddress() {
+    public void 유저의_주소지_설정() {
         //given
-        var tokens = userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device-token"));
-        String userId = jwtTokenProvider.getUserId(tokens.getAccessToken());
-        User user = userRepository.findById(userId).get();
+        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device-token"));
+        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         List<AddressResponseDto> addressList = addressService.readAll();
         var address = addressList.get(0);
@@ -50,16 +46,15 @@ public class AddressServiceTest {
         addressService.setAddress(user, new AddressRequestDto(addressDetail.getId()));
 
         //then
-        User findUser = userRepository.findById(userId).get();
+        User findUser = userRepository.findById("010-0000-0000").get();
         assertThat(findUser.getAddress().getSido()).isEqualTo(address.getSido());
         assertThat(findUser.getAddress().getId()).isEqualTo(addressDetail.getId());
         assertThat(findUser.getAddress().getSigugun()).isEqualTo(addressDetail.getGugun());
     }
 
     @Test
-    @DisplayName("전체 주소지 리스트 조회")
     @Transactional
-    public void readAll() {
+    public void 주소지_리스트_조회() {
         //given
 
         //when

@@ -35,20 +35,22 @@ public class AddressService {
     public void loadAddressList() {
         addressRepository.deleteAll();
 
+        List<List<String>> parsingList;
         try {
-            List<List<String>> result = csvFileParser.parse(new ClassPathResource(csvFileName).getURI());
-            // remove a header row.
-            result.remove(0);
-
-            List<Address> addressList = result.stream()
-                    .map(l -> (l.size() > 1) ? new Address(l.get(0), l.get(1)) : new Address(l.get(0), ""))
-                    .collect(Collectors.toList());
-
-            addressRepository.saveAll(addressList);
+            parsingList = csvFileParser.parse(new ClassPathResource(csvFileName).getURI());
         } catch (IOException e) {
             e.printStackTrace();
             throw new CustomException(SERVER_ERROR_PARSING_URI);
         }
+
+        // remove a header row.
+        parsingList.remove(0);
+
+        List<Address> addressList = parsingList.stream()
+                .map(l -> (l.size() > 1) ? new Address(l.get(0), l.get(1)) : new Address(l.get(0), ""))
+                .collect(Collectors.toList());
+
+        addressRepository.saveAll(addressList);
     }
 
     public List<AddressResponseDto> readAll() {
