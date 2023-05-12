@@ -1,6 +1,8 @@
 package com.mentionall.cpr2u.user.service;
 
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
+import com.mentionall.cpr2u.education.domain.EducationProgress;
+import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.*;
 import com.mentionall.cpr2u.user.repository.UserRepository;
@@ -45,7 +47,8 @@ public class AuthServiceTest {
         User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
         assertThat(user.getNickname()).isEqualTo(nickname);
-        assertThat(user.getDeviceToken()).isEqualTo(deviceToken);
+        assertThat(user.getDeviceToken().getToken()).isEqualTo(deviceToken);
+        assertThat(user.getEducationProgress()).isNotNull();
     }
 
     @Test
@@ -60,6 +63,7 @@ public class AuthServiceTest {
         //then
         User findUser = userRepository.findByPhoneNumber(phoneNumber).get();
         assertThat(findUser.getId()).isEqualTo(jwtTokenProvider.getUserId(accessToken));
+        assertThat(findUser.getDeviceToken()).isEqualTo(deviceToken);
     }
 
     //TODO: 랜덤 코드 생성 테스트 리팩토링(코드 생성 서비스 분리 필요)

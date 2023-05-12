@@ -82,6 +82,10 @@ public class User extends Timestamped{
         this.address = address;
     }
 
+    public void setEducationProgress(EducationProgress progress) {
+        this.educationProgress = progress;
+    }
+
     public void acquireCertification(LocalDateTime dateOfIssue) {
         this.status = AngelStatus.ACQUIRED;
         this.dateOfIssue = dateOfIssue;

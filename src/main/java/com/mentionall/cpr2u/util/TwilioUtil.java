@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TwilioUtil {
-    @Value("${security.twilio.account-sid}")
+    //@Value("${security.twilio.account-sid}")
     private String twilioAccountSid;
 
-    @Value("${security.twilio.auth-token}")
+    //@Value("${security.twilio.auth-token}")
     private String twilioAuthToken;
 
-    @Value("${security.twilio.service-sid}")
+    //@Value("${security.twilio.service-sid}")
     private String twilioServiceSid;
 
 

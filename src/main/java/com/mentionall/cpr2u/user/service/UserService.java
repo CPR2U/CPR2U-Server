@@ -32,10 +32,10 @@ public class UserService {
 
     public UserTokenDto signup(UserSignUpDto requestDto) {
         User user = new User(requestDto);
-
         userRepository.save(user);
-        deviceTokenRepository.save(new DeviceToken(requestDto.getDeviceToken(), user));
-        progressRepository.save(new EducationProgress(user));
+
+        setUpDeviceToken(requestDto.getDeviceToken(), user);
+        createEducationProgress(user);
 
         return issueUserTokens(user);
     }
@@ -53,14 +53,7 @@ public class UserService {
         User user = userRepository.findByPhoneNumber(requestDto.getPhoneNumber())
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_USER));
 
-        DeviceToken deviceToken = deviceTokenRepository.findByUserId(user.getId())
-                .orElseGet(() -> new DeviceToken(user));
-
-        deviceToken.setToken(requestDto.getDeviceToken());
-        deviceTokenRepository.save(deviceToken);
-
-        user.setDeviceToken(deviceToken);
-        userRepository.save(user);
+        setUpDeviceToken(requestDto.getDeviceToken(), user);
 
         return issueUserTokens(user);
     }
@@ -96,6 +89,25 @@ public class UserService {
 
     public void certificate(User user, LocalDateTime dateTime) {
         user.acquireCertification(dateTime);
+        userRepository.save(user);
+    }
+
+    private void setUpDeviceToken(String token, User user) {
+        DeviceToken deviceToken = deviceTokenRepository.findByUserId(user.getId())
+                .orElseGet(() -> new DeviceToken(user));
+
+        deviceToken.setToken(token);
+        deviceTokenRepository.save(deviceToken);
+
+        user.setDeviceToken(deviceToken);
+        userRepository.save(user);
+    }
+
+    private void createEducationProgress(User user) {
+        EducationProgress progress = new EducationProgress(user);
+        progressRepository.save(progress);
+
+        user.setEducationProgress(progress);
         userRepository.save(user);
     }
 }
