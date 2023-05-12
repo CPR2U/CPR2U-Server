@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
 @DisplayName("로그인 관련 테스트")
@@ -33,18 +34,18 @@ public class AuthServiceTest {
 
     @Test
     @Transactional
-    public void 회원_가입() {
+    public void 회원가입() {
         //given
         UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
 
         //when
-        var tokens = userService.signup(userSignUpDto);
+        userService.signup(userSignUpDto).getAccessToken();
 
         //then
-        String userId = jwtTokenProvider.getUserId(tokens.getAccessToken());
-
         User user = userRepository.findByPhoneNumber(phoneNumber).get();
-        assertThat(user.getId()).isEqualTo(userId);
+
+        assertThat(user.getNickname()).isEqualTo(nickname);
+        assertThat(user.getDeviceToken()).isEqualTo(deviceToken);
     }
 
     @Test
@@ -54,12 +55,11 @@ public class AuthServiceTest {
         userService.signup(new UserSignUpDto(nickname, phoneNumber, deviceToken));
 
         //when
-        UserTokenDto userTokenDto = userService.login(new UserLoginDto(phoneNumber, deviceToken));
+        var accessToken = userService.login(new UserLoginDto(phoneNumber, deviceToken)).getAccessToken();
 
         //then
-        String userId = jwtTokenProvider.getUserId(userTokenDto.getAccessToken());
         User findUser = userRepository.findByPhoneNumber(phoneNumber).get();
-        assertThat(findUser.getId()).isEqualTo(userId);
+        assertThat(findUser.getId()).isEqualTo(jwtTokenProvider.getUserId(accessToken));
     }
 
     //TODO: 랜덤 코드 생성 테스트 리팩토링(코드 생성 서비스 분리 필요)
@@ -118,6 +118,6 @@ public class AuthServiceTest {
         String newNickname = "new" + nickname;
 
         //then
-        Assertions.assertDoesNotThrow(() -> userService.checkNicknameDuplicated(newNickname));
+        assertDoesNotThrow(() -> userService.checkNicknameDuplicated(newNickname));
     }
 }
