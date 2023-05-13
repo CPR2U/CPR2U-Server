@@ -2,7 +2,6 @@ package com.mentionall.cpr2u.education.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
-import com.mentionall.cpr2u.user.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -13,7 +12,7 @@ import static com.mentionall.cpr2u.education.domain.TestStandard.validTime;
 import static com.mentionall.cpr2u.user.domain.AngelStatus.*;
 
 @Data
-public class EducationProgressDto {
+public class ProgressResponseDto {
     @Schema(example = "사용자의 엔젤 상태(0: 수료 / 1: 만료 / 2: 미수료)")
     @JsonProperty("angel_status")
     private int angelStatus;
@@ -42,7 +41,7 @@ public class EducationProgressDto {
     @JsonProperty("days_left_until_expiration")
     private Integer daysLeftUntilExpiration;
 
-    public EducationProgressDto(EducationProgress progress) {
+    public ProgressResponseDto(EducationProgress progress) {
         this.angelStatus = progress.getUser().getStatus().ordinal();
         this.nickname = progress.getUser().getNickname();
         this.progressPercent = progress.getTotalProgress();

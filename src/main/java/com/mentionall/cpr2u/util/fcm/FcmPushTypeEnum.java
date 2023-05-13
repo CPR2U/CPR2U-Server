@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.call.dto;
+package com.mentionall.cpr2u.util.fcm;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

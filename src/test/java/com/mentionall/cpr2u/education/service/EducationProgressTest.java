@@ -1,6 +1,6 @@
 package com.mentionall.cpr2u.education.service;
 
-import com.mentionall.cpr2u.education.dto.ScoreDto;
+import com.mentionall.cpr2u.education.dto.ScoreRequestDto;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
@@ -85,7 +85,7 @@ public class EducationProgressTest {
         completeLectureCourse(user);
 
         //when
-        progressService.completeQuiz(user, new ScoreDto(100));
+        progressService.completeQuiz(user, new ScoreRequestDto(100));
 
         //then
         var quizStatus = progressService.readEducationInfo(user).getIsQuizCompleted();
@@ -105,7 +105,7 @@ public class EducationProgressTest {
 
         //when
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completeQuiz(user, new ScoreDto(99)));
+                () -> progressService.completeQuiz(user, new ScoreRequestDto(99)));
 
         //then
         var quizStatus = progressService.readEducationInfo(user).getIsQuizCompleted();
@@ -121,7 +121,7 @@ public class EducationProgressTest {
 
         //when, then
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completeQuiz(user, new ScoreDto(100))
+                () -> progressService.completeQuiz(user, new ScoreRequestDto(100))
         );
     }
 
@@ -133,10 +133,10 @@ public class EducationProgressTest {
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         completeLectureCourse(user);
-        progressService.completeQuiz(user, new ScoreDto(100));
+        progressService.completeQuiz(user, new ScoreRequestDto(100));
 
         //when
-        progressService.completePosture(user, new ScoreDto(81));
+        progressService.completePosture(user, new ScoreRequestDto(81));
 
         //then
         int postureStatus =  progressService.readEducationInfo(user).getIsPostureCompleted();
@@ -153,11 +153,11 @@ public class EducationProgressTest {
         userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
         completeLectureCourse(user);
-        progressService.completeQuiz(user, new ScoreDto(100));
+        progressService.completeQuiz(user, new ScoreRequestDto(100));
 
         //when
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user, new ScoreDto(79)));
+                () -> progressService.completePosture(user, new ScoreRequestDto(79)));
 
         //then
         int postureStatus =  progressService.readEducationInfo(user).getIsPostureCompleted();
@@ -173,7 +173,7 @@ public class EducationProgressTest {
 
         //when, then
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user, new ScoreDto(100)));
+                () -> progressService.completePosture(user, new ScoreRequestDto(100)));
     }
 
     @Test
@@ -186,7 +186,7 @@ public class EducationProgressTest {
         //when, then
         completeLectureCourse(user);
         Assertions.assertThrows(CustomException.class,
-                () -> progressService.completePosture(user, new ScoreDto(100)));
+                () -> progressService.completePosture(user, new ScoreRequestDto(100)));
     }
 
     @Test

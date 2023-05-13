@@ -3,7 +3,7 @@ package com.mentionall.cpr2u.call.service;
 import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.DispatchStatus;
-import com.mentionall.cpr2u.call.dto.*;
+import com.mentionall.cpr2u.call.dto.cpr_call.*;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
@@ -15,6 +15,7 @@ import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.util.MessageEnum;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
+import com.mentionall.cpr2u.util.fcm.FcmPushTypeEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +32,10 @@ public class CprCallService {
     private final DeviceTokenRepository deviceTokenRepository;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
-    public CprCallNearUserDto getCallNearUser(User user) {
+    public CprCallNearUserResponseDto getCallNearUser(User user) {
         AngelStatus userAngelStatus = user.getStatus();
         if (userAngelStatus != AngelStatus.ACQUIRED) {
-            return new CprCallNearUserDto(
+            return new CprCallNearUserResponseDto(
                     userAngelStatus,
                     false,
                     new ArrayList<>()
@@ -43,19 +44,19 @@ public class CprCallService {
         if (user.getAddress() == null) {
             throw new CustomException(ResponseCode.BAD_REQUEST_ADDRESS_NOT_SET);
         }
-        List<CprCallDto> cprCallDtoList = cprCallRepository.findAllCallInProcessByAddress(user.getAddress().getId());
-        return new CprCallNearUserDto(
+        List<CprCallResponseDto> cprCallResponseDtoList = cprCallRepository.findAllCallInProcessByAddress(user.getAddress().getId());
+        return new CprCallNearUserResponseDto(
                 userAngelStatus,
-                cprCallDtoList.size() > 0,
-                cprCallDtoList
+                cprCallResponseDtoList.size() > 0,
+                cprCallResponseDtoList
         );
     }
 
-    public CprCallIdDto makeCall(CprCallOccurDto cprCallOccurDto, User user) {
-        Address callAddress = addressRepository.findByFullAddress(cprCallOccurDto.getFullAddress().split(" "))
+    public CprCallIdResponseDto makeCall(CprCallRequestDto cprCallRequestDto, User user) {
+        Address callAddress = addressRepository.findByFullAddress(cprCallRequestDto.getFullAddress().split(" "))
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_FAILED_TO_MATCH_ADDRESS));
 
-        CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallOccurDto);
+        CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallRequestDto);
         cprCallRepository.save(cprCall);
 
         List<DeviceToken> deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), user.getId());
@@ -83,7 +84,7 @@ public class CprCallService {
 
             timer.schedule(task, 1000 * 60 * 10);
         }
-        return new CprCallIdDto(cprCall.getId());
+        return new CprCallIdResponseDto(cprCall.getId());
     }
 
     public void endCall(Long callId) {

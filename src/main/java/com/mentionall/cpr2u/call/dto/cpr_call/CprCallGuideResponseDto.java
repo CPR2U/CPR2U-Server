@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.call.dto;
+package com.mentionall.cpr2u.call.dto.cpr_call;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;

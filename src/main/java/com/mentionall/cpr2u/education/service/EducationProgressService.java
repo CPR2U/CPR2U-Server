@@ -4,11 +4,10 @@ import com.mentionall.cpr2u.education.domain.EducationProgress;
 import com.mentionall.cpr2u.education.domain.Lecture;
 import com.mentionall.cpr2u.education.domain.ProgressStatus;
 import com.mentionall.cpr2u.education.domain.TestStandard;
-import com.mentionall.cpr2u.education.dto.EducationProgressDto;
-import com.mentionall.cpr2u.education.dto.ScoreDto;
+import com.mentionall.cpr2u.education.dto.ProgressResponseDto;
+import com.mentionall.cpr2u.education.dto.ScoreRequestDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
-import com.mentionall.cpr2u.user.domain.AngelStatus;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
@@ -16,10 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-
-import static com.mentionall.cpr2u.education.domain.TestStandard.validTime;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +23,7 @@ public class EducationProgressService {
     private final LectureRepository lectureRepository;
 
     @Transactional
-    public void completeQuiz(User user, ScoreDto requestDto) {
+    public void completeQuiz(User user, ScoreRequestDto requestDto) {
         EducationProgress progress = getEducationProgress(user);
 
         if (!checkPossibleToTakeQuiz(progress))
@@ -42,7 +37,7 @@ public class EducationProgressService {
     }
 
     @Transactional
-    public void completePosture(User user, ScoreDto requestDto) {
+    public void completePosture(User user, ScoreRequestDto requestDto) {
         EducationProgress progress = getEducationProgress(user);
 
         if (!checkPossibleToTakePractice(progress))
@@ -56,8 +51,8 @@ public class EducationProgressService {
     }
 
     @Transactional
-    public EducationProgressDto readEducationInfo(User user) {
-        return new EducationProgressDto(getEducationProgress(user));
+    public ProgressResponseDto readEducationInfo(User user) {
+        return new ProgressResponseDto(getEducationProgress(user));
     }
 
     @Transactional

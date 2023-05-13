@@ -1,7 +1,7 @@
 package com.mentionall.cpr2u.manager;
 
 import com.mentionall.cpr2u.call.domain.CprCall;
-import com.mentionall.cpr2u.call.dto.FcmPushTypeEnum;
+import com.mentionall.cpr2u.util.fcm.FcmPushTypeEnum;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.service.FirebaseCloudMessageService;
 import com.mentionall.cpr2u.user.domain.User;

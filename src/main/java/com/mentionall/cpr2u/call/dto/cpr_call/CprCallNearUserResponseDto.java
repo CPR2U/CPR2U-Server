@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.call.dto;
+package com.mentionall.cpr2u.call.dto.cpr_call;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mentionall.cpr2u.user.domain.AngelStatus;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class CprCallNearUserDto {
+public class CprCallNearUserResponseDto {
     @Schema(description = "사용자의 현재 자격")
     @JsonProperty("angel_status")
     @Enumerated(EnumType.STRING)
@@ -25,7 +25,7 @@ public class CprCallNearUserDto {
 
     @Schema(description = "근처 환자 정보 리스트")
     @JsonProperty("call_list")
-    private List<CprCallDto> CprCallDtoList = new ArrayList<>();
+    private List<CprCallResponseDto> cprCallResponseDtoList = new ArrayList<>();
 
 
 }

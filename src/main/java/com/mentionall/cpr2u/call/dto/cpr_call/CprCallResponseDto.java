@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.call.dto;
+package com.mentionall.cpr2u.call.dto.cpr_call;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mentionall.cpr2u.call.domain.CprCall;
@@ -9,7 +9,7 @@ import lombok.Data;
 import java.time.format.DateTimeFormatter;
 
 @Data
-public class CprCallDto {
+public class CprCallResponseDto {
     @Schema(description = "호출 id")
     @JsonProperty("cpr_call_id")
     private Long id;
@@ -31,7 +31,7 @@ public class CprCallDto {
     private Double  longitude;
 
     @QueryProjection
-    public CprCallDto(CprCall cprCall){
+    public CprCallResponseDto(CprCall cprCall){
         this.id = cprCall.getId();
         this.fullAddress = cprCall.getFullAddress();
         this.calledAt = cprCall.getCalledAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
