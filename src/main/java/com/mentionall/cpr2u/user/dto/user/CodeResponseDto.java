@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserCodeDto {
+public class CodeResponseDto {
 
     @Schema(example = "validation code")
     @JsonProperty("validation_code")

@@ -9,7 +9,7 @@ import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.UserService;
@@ -157,13 +157,13 @@ class CprCallServiceTest {
     }
 
     public void registerUserWithNumber(int number) {
-        UserSignUpDto userSignUpDto = new UserSignUpDto("nickname" + number, "phoneNumber" + number, "deviceToken");
-        userService.signup(userSignUpDto);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto("nickname" + number, "phoneNumber" + number, "deviceToken");
+        userService.signup(signUpRequestDto);
     }
 
     public void registerUserWithNumberAndAddress(int number, Address address) {
-        UserSignUpDto userSignUpDto = new UserSignUpDto("nickname" + number, "phoneNumber" + number, "deviceToken");
-        userService.signup(userSignUpDto);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto("nickname" + number, "phoneNumber" + number, "deviceToken");
+        userService.signup(signUpRequestDto);
 
         User user = userRepository.findByPhoneNumber("phoneNumber" + number).get();
         user.setAddress(address);

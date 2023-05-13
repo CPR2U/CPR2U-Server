@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPhoneNumberDto {
+public class TokenReissueRequestDto {
 
-    @Schema(example = "사용자 전화번호")
-    @JsonProperty("phone_number")
-    String phoneNumber;
+    @Schema(example = "refresh token")
+    @JsonProperty("refresh_token")
+    String refreshToken;
 
 }

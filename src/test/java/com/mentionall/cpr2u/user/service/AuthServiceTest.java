@@ -1,8 +1,6 @@
 package com.mentionall.cpr2u.user.service;
 
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
-import com.mentionall.cpr2u.education.domain.EducationProgress;
-import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.*;
 import com.mentionall.cpr2u.user.repository.UserRepository;
@@ -38,10 +36,10 @@ public class AuthServiceTest {
     @Transactional
     public void 회원가입() {
         //given
-        UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, deviceToken);
 
         //when
-        userService.signup(userSignUpDto).getAccessToken();
+        userService.signup(signUpRequestDto).getAccessToken();
 
         //then
         User user = userRepository.findByPhoneNumber(phoneNumber).get();
@@ -55,10 +53,10 @@ public class AuthServiceTest {
     @Transactional
     public void 로그인() {
         //given
-        userService.signup(new UserSignUpDto(nickname, phoneNumber, deviceToken));
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, deviceToken));
 
         //when
-        var accessToken = userService.login(new UserLoginDto(phoneNumber, deviceToken)).getAccessToken();
+        var accessToken = userService.login(new LoginRequestDto(phoneNumber, deviceToken)).getAccessToken();
 
         //then
         User findUser = userRepository.findByPhoneNumber(phoneNumber).get();
@@ -71,14 +69,14 @@ public class AuthServiceTest {
     @Transactional
     public void 전화번호_인증코드_생성(){
         //given
-        var phoneNumberInfo = new UserPhoneNumberDto(phoneNumber);
+        var phoneNumberInfo = new PhoneNumberRequestDto(phoneNumber);
 
         for(int i = 0 ; i < 100 ; i ++) {
             //when
-            UserCodeDto userCodeDto = userService.getVerificationCode(phoneNumberInfo);
+            CodeResponseDto codeResponseDto = userService.getVerificationCode(phoneNumberInfo);
 
             //then
-            assertThat(userCodeDto.getValidationCode().length()).isEqualTo(4);
+            assertThat(codeResponseDto.getValidationCode().length()).isEqualTo(4);
         }
     }
 
@@ -86,11 +84,11 @@ public class AuthServiceTest {
     @Transactional
     public void 자동_로그인() {
         //given
-        userService.signup(new UserSignUpDto(nickname, phoneNumber, deviceToken));
-        var tokens = userService.login(new UserLoginDto(phoneNumber, deviceToken));
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, deviceToken));
+        var tokens = userService.login(new LoginRequestDto(phoneNumber, deviceToken));
 
         //when
-        var newTokens = userService.reissueToken(new UserTokenReissueDto(tokens.getRefreshToken()));
+        var newTokens = userService.reissueToken(new TokenReissueRequestDto(tokens.getRefreshToken()));
 
         //then
         assertThat(jwtTokenProvider.getUserId(tokens.getAccessToken()))
@@ -101,8 +99,8 @@ public class AuthServiceTest {
     @Transactional
     public void 닉네임_중복체크시_중복되는_경우() {
         //given
-        UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
-        userService.signup(userSignUpDto);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, deviceToken);
+        userService.signup(signUpRequestDto);
 
         //when
         String newNickname = nickname;
@@ -115,8 +113,8 @@ public class AuthServiceTest {
     @Transactional
     public void 닉네임_중복체크시_사용가능한_경우() {
         //given
-        UserSignUpDto userSignUpDto = new UserSignUpDto(nickname, phoneNumber, deviceToken);
-        userService.signup(userSignUpDto);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, deviceToken);
+        userService.signup(signUpRequestDto);
 
         //when
         String newNickname = "new" + nickname;

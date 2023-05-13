@@ -1,10 +1,9 @@
 package com.mentionall.cpr2u.user.service;
 
-import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.address.AddressRequestDto;
 import com.mentionall.cpr2u.user.dto.address.AddressResponseDto;
-import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ public class AddressServiceTest {
     @Transactional
     public void 유저의_주소지_설정() {
         //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device-token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device-token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         List<AddressResponseDto> addressList = addressService.readAll();

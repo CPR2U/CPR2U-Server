@@ -2,7 +2,7 @@ package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.education.dto.ScoreDto;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.exception.CustomException;
@@ -39,7 +39,7 @@ public class EducationProgressTest {
     @Transactional
     public void 강의_수강중인_경우() {
         //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when
@@ -61,7 +61,7 @@ public class EducationProgressTest {
     @Transactional
     public void 강의_수강완료한_경우() {
         //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when
@@ -80,7 +80,7 @@ public class EducationProgressTest {
     @Transactional
     public void 퀴즈_100점을_넘은_경우() {
         //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
         completeLectureCourse(user);
 
@@ -99,7 +99,7 @@ public class EducationProgressTest {
     @Transactional
     public void 퀴즈_100점을_넘지_않은_경우() {
         //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
         completeLectureCourse(user);
 
@@ -116,7 +116,7 @@ public class EducationProgressTest {
     @Transactional
     public void 퀴즈_강의를_마무리하지_않고_테스트한_경우() {
         //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when, then
@@ -129,7 +129,7 @@ public class EducationProgressTest {
     @Transactional
     public void 자세실습_80점을_넘은_경우() {
         //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         completeLectureCourse(user);
@@ -150,7 +150,7 @@ public class EducationProgressTest {
     @Transactional
     public void 자세실습_80점을_넘지않은_경우() {
         //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
         completeLectureCourse(user);
         progressService.completeQuiz(user, new ScoreDto(100));
@@ -168,7 +168,7 @@ public class EducationProgressTest {
     @Transactional
     public void 자세실습_강의를_마무리하지_않고_테스트한_경우() {
         //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when, then
@@ -180,7 +180,7 @@ public class EducationProgressTest {
     @Transactional
     public void 자세실습_퀴즈를_마무리하지_않고_테스트한_경우() {
         //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when, then
@@ -193,7 +193,7 @@ public class EducationProgressTest {
     @Transactional
     public void 교육_수료_전_수료증_확인() {
         //given
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when
@@ -276,7 +276,7 @@ public class EducationProgressTest {
     }
 
     private void createCertificatedUser(LocalDateTime time) {
-        userService.signup(new UserSignUpDto("현애", "010-0000-0000", "device_token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
         userService.certificate(user, time);
     }

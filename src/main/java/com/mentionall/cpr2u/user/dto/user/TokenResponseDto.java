@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserTokenDto {
+public class TokenResponseDto {
 
     @Schema(example = "access token")
     @JsonProperty("access_token")
