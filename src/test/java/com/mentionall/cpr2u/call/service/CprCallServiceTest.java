@@ -14,8 +14,10 @@ import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
+import com.mentionall.cpr2u.user.service.AddressService;
 import com.mentionall.cpr2u.user.service.UserService;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,14 @@ class CprCallServiceTest {
     private DispatchRepository dispatchRepository;
     @Autowired
     private AddressRepository addressRepository;
+
+    @Autowired
+    private AddressService addressService;
+
+    @BeforeEach
+    private void beforeEach() {
+        addressService.loadAddressList();
+    }
 
     @BeforeAll
     public void beforeAll(){
@@ -159,12 +169,12 @@ class CprCallServiceTest {
     }
 
     public void registerUserWithNumber(int number) {
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto("nickname" + number, "phoneNumber" + number, "deviceToken");
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto("nickname" + number, "phoneNumber" + number, 1L, "deviceToken");
         userService.signup(signUpRequestDto);
     }
 
     public void registerUserWithNumberAndAddress(int number, Address address) {
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto("nickname" + number, "phoneNumber" + number, "deviceToken");
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto("nickname" + number, "phoneNumber" + number, 1L, "deviceToken");
         userService.signup(signUpRequestDto);
 
         User user = userRepository.findByPhoneNumber("phoneNumber" + number).get();

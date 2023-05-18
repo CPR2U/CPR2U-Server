@@ -28,15 +28,24 @@ public class AuthServiceTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    private AddressService addressService;
+
     private static final String phoneNumber = "010-0000-0000";
     private static final String nickname = "예진";
+    private static final Long addressId = 1L;
     private static final String deviceToken = "device-code";
+
+    @BeforeEach
+    private void beforeEach() {
+        addressService.loadAddressList();
+    }
 
     @Test
     @Transactional
     public void 회원가입() {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, deviceToken);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken);
 
         //when
         userService.signup(signUpRequestDto).getAccessToken();
@@ -47,13 +56,14 @@ public class AuthServiceTest {
         assertThat(user.getNickname()).isEqualTo(nickname);
         assertThat(user.getDeviceToken().getToken()).isEqualTo(deviceToken);
         assertThat(user.getEducationProgress()).isNotNull();
+        assertThat(user.getAddress().getId()).isEqualTo(addressId);
     }
 
     @Test
     @Transactional
     public void 로그인() {
         //given
-        userService.signup(new SignUpRequestDto(nickname, phoneNumber, deviceToken));
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken));
 
         //when
         var accessToken = userService.login(new LoginRequestDto(phoneNumber, deviceToken)).getAccessToken();
@@ -84,7 +94,7 @@ public class AuthServiceTest {
     @Transactional
     public void 자동_로그인() {
         //given
-        userService.signup(new SignUpRequestDto(nickname, phoneNumber, deviceToken));
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken));
         var tokens = userService.login(new LoginRequestDto(phoneNumber, deviceToken));
 
         //when
@@ -99,7 +109,7 @@ public class AuthServiceTest {
     @Transactional
     public void 닉네임_중복체크시_중복되는_경우() {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, deviceToken);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, 1L, deviceToken);
         userService.signup(signUpRequestDto);
 
         //when
@@ -113,7 +123,7 @@ public class AuthServiceTest {
     @Transactional
     public void 닉네임_중복체크시_사용가능한_경우() {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, deviceToken);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken);
         userService.signup(signUpRequestDto);
 
         //when

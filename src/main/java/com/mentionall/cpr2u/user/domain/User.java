@@ -66,9 +66,10 @@ public class User extends Timestamped{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "reporter")
     List<Report> reportList = new ArrayList();
 
-    public User(SignUpRequestDto signUpRequestDto) {
-        this.nickname = signUpRequestDto.getNickname();
-        this.phoneNumber = signUpRequestDto.getPhoneNumber();
+    public User(SignUpRequestDto requestDto, Address address) {
+        this.nickname = requestDto.getNickname();
+        this.phoneNumber = requestDto.getPhoneNumber();
+        this.address = address;
         this.dateOfIssue = null;
         this.status = AngelStatus.UNACQUIRED;
         this.roles.add(UserRole.USER);
