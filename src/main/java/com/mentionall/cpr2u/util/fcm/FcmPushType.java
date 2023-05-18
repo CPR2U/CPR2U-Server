@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum FcmPushTypeEnum {
+public enum FcmPushType {
 
     ANGLE_EXPIRATION("ANGEL_EXPIRATION"),
     CPR_CALL("CPR_CALL");

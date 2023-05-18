@@ -15,7 +15,7 @@ import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.util.MessageEnum;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
-import com.mentionall.cpr2u.util.fcm.FcmPushTypeEnum;
+import com.mentionall.cpr2u.util.fcm.FcmPushType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +66,7 @@ public class CprCallService {
                         MessageEnum.CPR_CALL_TITLE.getMessage(),
                         cprCall.getFullAddress(),
                         new LinkedHashMap<>(){{
-                            put("type", String.valueOf(FcmPushTypeEnum.CPR_CALL.ordinal()));
+                            put("type", String.valueOf(FcmPushType.CPR_CALL.ordinal()));
                             put("call", String.valueOf(cprCall.getId()));
                         }}
                 );
