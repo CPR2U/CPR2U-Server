@@ -1,7 +1,7 @@
 package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.education.domain.EducationProgress;
-import com.mentionall.cpr2u.education.dto.LectureProgressDto;
+import com.mentionall.cpr2u.education.dto.lecture.LectureListResponseDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
@@ -20,7 +20,7 @@ public class LectureService {
     private final LectureRepository lectureRepository;
     private final EducationProgressRepository progressRepository;
 
-    public LectureProgressDto readLectureProgressAndList(User user) {
+    public LectureListResponseDto readLectureProgressAndList(User user) {
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(
                 () -> new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_GET_EDUCATION_PROGRESS)
         );
@@ -30,6 +30,6 @@ public class LectureService {
                 .map(l -> new LectureResponseDto(l))
                 .collect(Collectors.toList());
 
-        return new LectureProgressDto(progress.getLastLecture().getStep(), lectureList);
+        return new LectureListResponseDto(progress.getLastLecture().getStep(), lectureList);
     }
 }

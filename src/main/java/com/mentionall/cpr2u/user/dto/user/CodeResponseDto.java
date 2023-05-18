@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.education.dto.lecture;
+package com.mentionall.cpr2u.user.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,8 +7,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class PostureLectureResponseDto {
-    @Schema(example = "강의 영상 URL")
-    @JsonProperty("video_url")
-    String videoUrl;
+public class CodeResponseDto {
+
+    @Schema(example = "validation code")
+    @JsonProperty("validation_code")
+    String validationCode;
 }

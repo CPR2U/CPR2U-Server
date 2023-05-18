@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.call.dto;
+package com.mentionall.cpr2u.call.dto.dispatch;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mentionall.cpr2u.call.domain.CprCall;

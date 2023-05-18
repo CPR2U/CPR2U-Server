@@ -1,7 +1,6 @@
 package com.mentionall.cpr2u.config.security;
 
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.domain.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -18,7 +17,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -37,7 +35,7 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(User user) {
+    public String createAccessToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getId());
         claims.put("roles", user.getRoles());
         Date now = new Date();

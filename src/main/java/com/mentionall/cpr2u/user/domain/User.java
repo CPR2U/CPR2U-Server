@@ -3,7 +3,7 @@ package com.mentionall.cpr2u.user.domain;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.Report;
 import com.mentionall.cpr2u.education.domain.EducationProgress;
-import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.util.RandomGenerator;
 import com.mentionall.cpr2u.util.Timestamped;
 import lombok.AllArgsConstructor;
@@ -66,9 +66,9 @@ public class User extends Timestamped{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "reporter")
     List<Report> reportList = new ArrayList();
 
-    public User(UserSignUpDto userSignUpDto) {
-        this.nickname = userSignUpDto.getNickname();
-        this.phoneNumber = userSignUpDto.getPhoneNumber();
+    public User(SignUpRequestDto signUpRequestDto) {
+        this.nickname = signUpRequestDto.getNickname();
+        this.phoneNumber = signUpRequestDto.getPhoneNumber();
         this.dateOfIssue = null;
         this.status = AngelStatus.UNACQUIRED;
         this.roles.add(UserRole.USER);
@@ -80,6 +80,10 @@ public class User extends Timestamped{
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public void setEducationProgress(EducationProgress progress) {
+        this.educationProgress = progress;
     }
 
     public void acquireCertification(LocalDateTime dateOfIssue) {

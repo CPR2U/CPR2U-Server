@@ -7,9 +7,14 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserCodeDto {
+public class TokenResponseDto {
 
-    @Schema(example = "validation code")
-    @JsonProperty("validation_code")
-    String validationCode;
+    @Schema(example = "access token")
+    @JsonProperty("access_token")
+    String accessToken;
+
+    @Schema(example = "refresh token")
+    @JsonProperty("refresh_token")
+    String refreshToken;
+
 }

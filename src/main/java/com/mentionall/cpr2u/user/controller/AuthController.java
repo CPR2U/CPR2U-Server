@@ -31,13 +31,13 @@ public class AuthController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원가입 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserTokenDto.class))))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TokenResponseDto.class))))
     })
     @PostMapping("/signup")
-    public ResponseEntity<ResponseDataTemplate> signup(@RequestBody UserSignUpDto userSignUpDto){
+    public ResponseEntity<ResponseDataTemplate> signup(@RequestBody SignUpRequestDto signUpRequestDto){
         return ResponseDataTemplate.toResponseEntity(
                 OK_SUCCESS,
-                userService.signup(userSignUpDto)
+                userService.signup(signUpRequestDto)
         );
     }
 
@@ -47,13 +47,13 @@ public class AuthController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "인증번호 발급 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserCodeDto.class))))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = CodeResponseDto.class))))
     })
     @PostMapping("/verification")
-    public ResponseEntity<ResponseDataTemplate> issueVerificationCode(@RequestBody UserPhoneNumberDto userPhoneNumberDto){
+    public ResponseEntity<ResponseDataTemplate> issueVerificationCode(@RequestBody PhoneNumberRequestDto userPhoneNumberRequestDto){
         return ResponseDataTemplate.toResponseEntity(
                 OK_SUCCESS,
-                userService.getVerificationCode(userPhoneNumberDto)
+                userService.getVerificationCode(userPhoneNumberRequestDto)
         );
     }
 
@@ -63,15 +63,15 @@ public class AuthController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserTokenDto.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TokenResponseDto.class)))),
             @ApiResponse(responseCode = "404", description = "회원가입이 필요한 사용자",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
     @PostMapping("/login")
-    public ResponseEntity<ResponseDataTemplate> verificationUserLogin(@RequestBody UserLoginDto userLoginDto){
+    public ResponseEntity<ResponseDataTemplate> verificationUserLogin(@RequestBody LoginRequestDto loginRequestDto){
         return ResponseDataTemplate.toResponseEntity(
                 OK_SUCCESS,
-                userService.login(userLoginDto)
+                userService.login(loginRequestDto)
         );
     }
     @Operation(summary = "닉네임 중복확인",
@@ -97,15 +97,15 @@ public class AuthController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "자동 로그인 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserTokenDto.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TokenResponseDto.class)))),
             @ApiResponse(responseCode = "403", description = "유효하지 않은 refresh token",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class))))
     })
     @PostMapping("/auto-login")
-    public ResponseEntity<ResponseDataTemplate> autoLogin(@RequestBody UserTokenReissueDto userTokenReissueDto){
+    public ResponseEntity<ResponseDataTemplate> autoLogin(@RequestBody TokenReissueRequestDto tokenReissueRequestDto){
         return ResponseDataTemplate.toResponseEntity(
                 OK_SUCCESS,
-                userService.reissueToken(userTokenReissueDto)
+                userService.reissueToken(tokenReissueRequestDto)
         );
     }
 

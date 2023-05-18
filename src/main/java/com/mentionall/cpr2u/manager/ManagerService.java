@@ -1,7 +1,7 @@
 package com.mentionall.cpr2u.manager;
 
 import com.mentionall.cpr2u.call.domain.CprCall;
-import com.mentionall.cpr2u.call.dto.FcmPushTypeEnum;
+import com.mentionall.cpr2u.util.fcm.FcmPushType;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.service.FirebaseCloudMessageService;
 import com.mentionall.cpr2u.user.domain.User;
@@ -66,7 +66,7 @@ public class ManagerService {
                     ANGEL_EXPIRED_TITLE.getMessage(),
                     ANGEL_EXPIRED_BODY.getMessage(),
                     new LinkedHashMap<>(){{
-                        put("type", String.valueOf(FcmPushTypeEnum.ANGLE_EXPIRATION.ordinal()));
+                        put("type", String.valueOf(FcmPushType.ANGLE_EXPIRATION.ordinal()));
                     }});
         } catch (IOException e) {
             throw new CustomException(SERVER_ERROR_FAILED_TO_SEND_FCM);

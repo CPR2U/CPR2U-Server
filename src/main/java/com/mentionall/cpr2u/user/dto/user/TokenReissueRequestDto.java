@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.education.dto;
+package com.mentionall.cpr2u.user.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScoreDto {
+public class TokenReissueRequestDto {
 
-    @Schema(example = "점수(1 ~ 100)")
-    @JsonProperty
-    int score;
+    @Schema(example = "refresh token")
+    @JsonProperty("refresh_token")
+    String refreshToken;
 
 }

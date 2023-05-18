@@ -9,11 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSignUpDto {
-
-    @Schema(example = "사용자 이름")
-    @JsonProperty("nickname")
-    String nickname;
+public class LoginRequestDto {
 
     @Schema(example = "사용자 전화번호")
     @JsonProperty("phone_number")

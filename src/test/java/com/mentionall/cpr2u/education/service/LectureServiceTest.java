@@ -1,7 +1,7 @@
 package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.user.UserSignUpDto;
+import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ public class LectureServiceTest {
     @Transactional
     public void 강의를_이수하지_않은_유저가_강의_리스트_조회() {
         //given
-        userService.signup(new UserSignUpDto("유저1", "010-1234-1234", "device_token"));
+        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", "device_token"));
         User user = userRepository.findByPhoneNumber("010-1234-1234").get();
 
         //when
@@ -51,7 +51,7 @@ public class LectureServiceTest {
     @Transactional
     public void 강의를_이수한_유저가_강의_리스트_조회() {
         //given
-        userService.signup(new UserSignUpDto("유저1", "010-1234-1234", "device_token"));
+        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", "device_token"));
         User user = userRepository.findByPhoneNumber("010-1234-1234").get();
         completeFirstLecture(user);
 

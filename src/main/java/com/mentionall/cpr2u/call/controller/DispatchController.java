@@ -1,7 +1,7 @@
 package com.mentionall.cpr2u.call.controller;
 
-import com.mentionall.cpr2u.call.dto.DispatchRequestDto;
-import com.mentionall.cpr2u.call.dto.DispatchResponseDto;
+import com.mentionall.cpr2u.call.dto.dispatch.DispatchRequestDto;
+import com.mentionall.cpr2u.call.dto.dispatch.DispatchResponseDto;
 import com.mentionall.cpr2u.call.dto.ReportRequestDto;
 import com.mentionall.cpr2u.call.service.DispatchService;
 import com.mentionall.cpr2u.user.domain.PrincipalDetails;
