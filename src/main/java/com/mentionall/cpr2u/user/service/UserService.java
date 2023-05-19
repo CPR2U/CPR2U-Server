@@ -1,7 +1,7 @@
 package com.mentionall.cpr2u.user.service;
 
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
-import com.mentionall.cpr2u.education.domain.EducationProgress;
+import com.mentionall.cpr2u.education.domain.progress.EducationProgress;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.user.domain.DeviceToken;
 import com.mentionall.cpr2u.user.domain.RefreshToken;

@@ -1,7 +1,7 @@
 package com.mentionall.cpr2u.education.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mentionall.cpr2u.education.domain.EducationProgress;
+import com.mentionall.cpr2u.education.domain.progress.EducationProgress;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -46,9 +46,9 @@ public class ProgressResponseDto {
         this.nickname = progress.getUser().getNickname();
         this.progressPercent = progress.getTotalProgress();
 
-        this.isLectureCompleted = progress.getLectureProgressStatus().ordinal();
-        this.isQuizCompleted = progress.getQuizProgressStatus().ordinal();
-        this.isPostureCompleted = progress.getPostureProgressStatus().ordinal();
+        this.isLectureCompleted = progress.getLectureProgress().getStatus().ordinal();
+        this.isQuizCompleted = progress.getQuizProgress().getStatus().ordinal();
+        this.isPostureCompleted = progress.getPostureProgress().getStatus().ordinal();
 
         if(progress.getUser().getAngelStatus() == UNACQUIRED) {
             this.daysLeftUntilExpiration = null;

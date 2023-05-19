@@ -1,7 +1,6 @@
 package com.mentionall.cpr2u.education.dto.lecture;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.util.List;

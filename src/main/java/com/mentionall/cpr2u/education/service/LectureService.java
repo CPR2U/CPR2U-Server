@@ -1,6 +1,6 @@
 package com.mentionall.cpr2u.education.service;
 
-import com.mentionall.cpr2u.education.domain.EducationProgress;
+import com.mentionall.cpr2u.education.domain.progress.EducationProgress;
 import com.mentionall.cpr2u.education.dto.lecture.LectureListResponseDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
@@ -30,6 +30,9 @@ public class LectureService {
                 .map(l -> new LectureResponseDto(l))
                 .collect(Collectors.toList());
 
-        return new LectureListResponseDto(progress.getLastLecture().getStep(), lectureList);
+        return new LectureListResponseDto(
+                progress.getLectureProgress().getLastStep(),
+                lectureList
+        );
     }
 }

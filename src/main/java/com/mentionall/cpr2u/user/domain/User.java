@@ -2,7 +2,7 @@ package com.mentionall.cpr2u.user.domain;
 
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.Report;
-import com.mentionall.cpr2u.education.domain.EducationProgress;
+import com.mentionall.cpr2u.education.domain.progress.EducationProgress;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.util.RandomGenerator;
 import com.mentionall.cpr2u.util.Timestamped;
