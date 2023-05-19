@@ -37,12 +37,8 @@ public class User extends Timestamped{
     @Column(length = 20, unique = true)
     private String phoneNumber;
 
-    @Column
-    private LocalDateTime dateOfIssue;
-
-    @Column(length = 10)
-    @Enumerated(EnumType.STRING)
-    private AngelStatus status;
+    @Embedded
+    private Certificate certificate;
 
     @OneToOne(mappedBy = "user")
     private EducationProgress educationProgress;
@@ -69,9 +65,12 @@ public class User extends Timestamped{
     public User(SignUpRequestDto signUpRequestDto) {
         this.nickname = signUpRequestDto.getNickname();
         this.phoneNumber = signUpRequestDto.getPhoneNumber();
-        this.dateOfIssue = null;
-        this.status = AngelStatus.UNACQUIRED;
+        this.certificate = new Certificate(AngelStatus.UNACQUIRED, null);
         this.roles.add(UserRole.USER);
+    }
+
+    public AngelStatus getAngelStatus() {
+        return this.certificate.getStatus();
     }
 
     public void setDeviceToken(DeviceToken deviceToken) {
@@ -87,11 +86,10 @@ public class User extends Timestamped{
     }
 
     public void acquireCertification(LocalDateTime dateOfIssue) {
-        this.status = AngelStatus.ACQUIRED;
-        this.dateOfIssue = dateOfIssue;
+        this.certificate.acquire(dateOfIssue);
     }
 
     public void expireCertificate() {
-        this.status = AngelStatus.EXPIRED;
+        this.certificate.expire();
     }
 }
