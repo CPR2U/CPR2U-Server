@@ -34,10 +34,10 @@ public class ManagerService {
 
     @Scheduled(cron = "1 0 0 * * *")
     public void updateAngelStatus() {
-        List<User> angelList = userRepository.findAllByStatus(ACQUIRED);
+        List<User> angelList = userRepository.findAllByCertificateStatus(ACQUIRED);
 
         for (User angel : angelList) {
-            LocalDate issuedAt = angel.getDateOfIssue().toLocalDate();
+            LocalDate issuedAt = angel.getCertificate().getDateOfIssue().toLocalDate();
             long currentTime = ChronoUnit.DAYS.between(issuedAt, LocalDate.now());
 
             if (currentTime > validTime) {

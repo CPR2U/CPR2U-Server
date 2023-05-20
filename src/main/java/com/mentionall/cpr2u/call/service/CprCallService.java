@@ -33,7 +33,7 @@ public class CprCallService {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     public CprCallNearUserResponseDto getCallNearUser(User user) {
-        AngelStatus userAngelStatus = user.getStatus();
+        AngelStatus userAngelStatus = user.getAngelStatus();
         if (userAngelStatus != AngelStatus.ACQUIRED) {
             return new CprCallNearUserResponseDto(
                     userAngelStatus,
