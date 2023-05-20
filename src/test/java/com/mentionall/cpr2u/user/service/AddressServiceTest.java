@@ -45,7 +45,7 @@ public class AddressServiceTest {
         addressService.setAddress(user, new AddressRequestDto(addressDetail.getId()));
 
         //then
-        User findUser = userRepository.findById("010-0000-0000").get();
+        User findUser = userRepository.findByPhoneNumber("010-0000-0000").get();
         assertThat(findUser.getAddress().getSido()).isEqualTo(address.getSido());
         assertThat(findUser.getAddress().getId()).isEqualTo(addressDetail.getId());
         assertThat(findUser.getAddress().getSigugun()).isEqualTo(addressDetail.getGugun());

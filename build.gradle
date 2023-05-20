@@ -8,6 +8,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.9'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'jacoco'
 }
 
 group = 'com.mentionall'
@@ -65,4 +66,12 @@ sourceSets {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jacoco {
+	toolVersion = '0.8.5'
+}
+
+tasks.withType(Test) {
+	jacoco.includeNoLocationClasses = true
 }
