@@ -74,16 +74,18 @@ public class CprCallService {
                 throw new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_SEND_FCM);
             }
 
-            Timer timer = new Timer();
-            TimerTask task = new TimerTask() {
-                public void run() {
-                    cprCall.endSituationCprCall();
-                    cprCallRepository.save(cprCall);
-                }
-            };
 
-            timer.schedule(task, 1000 * 60 * 10);
-        }
+
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+        Runnable task = () -> {
+            cprCall.endSituationCprCall();
+            cprCallRepository.save(cprCall);
+        };
+
+        executor.schedule(task, 10, TimeUnit.MINUTES);
+        executor.shutdown();
+
         return new CprCallIdResponseDto(cprCall.getId());
     }
 
