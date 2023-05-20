@@ -63,18 +63,23 @@ public class CprCallService {
         CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallRequestDto);
         cprCallRepository.save(cprCall);
 
-        List<String> deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), user.getId());
-
-        firebaseCloudMessageService.sendFcmMessage(
-                deviceTokenToSendPushList,
-                MessageEnum.CPR_CALL_TITLE.getMessage(),
-                cprCall.getFullAddress(),
-                new LinkedHashMap<>() {{
-                    put(FcmPushDataType.TYPE.getType(), String.valueOf(FcmPushType.CPR_CALL.ordinal()));
-                    put(FcmPushDataType.CPR_CALL_ID.getType(),String.valueOf(cprCall.getId()));
-                }}
-        );
-
+        List<String> deviceTokenToSendPushList;
+        int offset = 0;
+        int limit = 500;
+        LinkedHashMap<String, String> dataToSend = new LinkedHashMap<>() {{
+            put(FcmPushDataType.TYPE.getType(), String.valueOf(FcmPushType.CPR_CALL.ordinal()));
+            put(FcmPushDataType.CPR_CALL_ID.getType(), String.valueOf(cprCall.getId()));
+        }};
+        do {
+            deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), user.getId(), offset, limit);
+            firebaseCloudMessageService.sendFcmMessage(
+                    deviceTokenToSendPushList,
+                    MessageEnum.CPR_CALL_TITLE.getMessage(),
+                    cprCall.getFullAddress(),
+                    dataToSend
+            );
+            offset += limit;
+        } while (deviceTokenToSendPushList.size() >= 500);
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 

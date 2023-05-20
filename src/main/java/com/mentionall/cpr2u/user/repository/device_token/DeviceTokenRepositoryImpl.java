@@ -16,11 +16,13 @@ public class DeviceTokenRepositoryImpl implements DeviceTokenDslRepository {
     }
 
     @Override
-    public List<String> findAllDeviceTokenByUserAddress(Long addressId, String userId) {
+    public List<String> findAllDeviceTokenByUserAddress(Long addressId, String userId, Integer offset, Integer limit) {
         return queryFactory.select(deviceToken.token)
                 .from(deviceToken)
                 .where(deviceToken.user.address.id.eq(addressId)
                         .and(deviceToken.user.id.ne(userId)))
+                .offset(offset)
+                .limit(limit)
                 .fetch();
     }
 }
