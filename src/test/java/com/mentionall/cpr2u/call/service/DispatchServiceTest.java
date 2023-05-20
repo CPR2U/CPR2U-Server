@@ -137,7 +137,7 @@ public class DispatchServiceTest {
     }
 
     private void createCallerAndDispatcher() {
-        userService.signup(new SignUpRequestDto("호출자", "010-0000-0000", "device_token"));
-        userService.signup(new SignUpRequestDto("출동자", "010-0000-0001", "device_token"));
+        userService.signup(new SignUpRequestDto("호출자", "010-0000-0000", 1L, "device_token"));
+        userService.signup(new SignUpRequestDto("출동자", "010-0000-0001", 1L, "device_token"));
     }
 }
