@@ -38,4 +38,3 @@ out/
 
 ### CPR2U ###
 /src/main/resources/application-local.yml
-src/main/resources/application.properties

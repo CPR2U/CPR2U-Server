@@ -8,20 +8,24 @@ import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.AngelStatus;
-import com.mentionall.cpr2u.user.domain.DeviceToken;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.util.MessageEnum;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
-import com.mentionall.cpr2u.util.fcm.FcmPushTypeEnum;
+import com.mentionall.cpr2u.util.fcm.FcmPushDataType;
+import com.mentionall.cpr2u.util.fcm.FcmPushType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +37,7 @@ public class CprCallService {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     public CprCallNearUserResponseDto getCallNearUser(User user) {
-        AngelStatus userAngelStatus = user.getStatus();
+        AngelStatus userAngelStatus = user.getAngelStatus();
         if (userAngelStatus != AngelStatus.ACQUIRED) {
             return new CprCallNearUserResponseDto(
                     userAngelStatus,
@@ -59,31 +63,29 @@ public class CprCallService {
         CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallRequestDto);
         cprCallRepository.save(cprCall);
 
-        List<DeviceToken> deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), user.getId());
-        for(DeviceToken deviceToken : deviceTokenToSendPushList){
-            try {
-                firebaseCloudMessageService.sendMessageTo(deviceToken.getToken(),
-                        MessageEnum.CPR_CALL_TITLE.getMessage(),
-                        cprCall.getFullAddress(),
-                        new LinkedHashMap<>(){{
-                            put("type", String.valueOf(FcmPushTypeEnum.CPR_CALL.ordinal()));
-                            put("call", String.valueOf(cprCall.getId()));
-                        }}
-                );
-            } catch (IOException e) {
-                throw new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_SEND_FCM);
-            }
+        List<String> deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), user.getId());
 
-            Timer timer = new Timer();
-            TimerTask task = new TimerTask() {
-                public void run() {
-                    cprCall.endSituationCprCall();
-                    cprCallRepository.save(cprCall);
-                }
-            };
+        firebaseCloudMessageService.sendFcmMessage(
+                deviceTokenToSendPushList,
+                MessageEnum.CPR_CALL_TITLE.getMessage(),
+                cprCall.getFullAddress(),
+                new LinkedHashMap<>() {{
+                    put(FcmPushDataType.TYPE.getType(), String.valueOf(FcmPushType.CPR_CALL.ordinal()));
+                    put(FcmPushDataType.CPR_CALL_ID.getType(),String.valueOf(cprCall.getId()));
+                }}
+        );
 
-            timer.schedule(task, 1000 * 60 * 10);
-        }
+
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+        Runnable task = () -> {
+            cprCall.endSituationCprCall();
+            cprCallRepository.save(cprCall);
+        };
+
+        executor.schedule(task, 10, TimeUnit.MINUTES);
+        executor.shutdown();
+
         return new CprCallIdResponseDto(cprCall.getId());
     }
 

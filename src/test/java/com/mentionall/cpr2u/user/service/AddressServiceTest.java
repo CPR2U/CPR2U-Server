@@ -34,7 +34,7 @@ public class AddressServiceTest {
     @Transactional
     public void 유저의_주소지_설정() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", "device-token"));
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device-token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         List<AddressResponseDto> addressList = addressService.readAll();
