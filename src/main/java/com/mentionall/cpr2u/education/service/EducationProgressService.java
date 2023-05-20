@@ -1,6 +1,6 @@
 package com.mentionall.cpr2u.education.service;
 
-import com.mentionall.cpr2u.education.domain.EducationProgress;
+import com.mentionall.cpr2u.education.domain.progress.EducationProgress;
 import com.mentionall.cpr2u.education.domain.Lecture;
 import com.mentionall.cpr2u.education.domain.ProgressStatus;
 import com.mentionall.cpr2u.education.domain.TestStandard;
@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+import static com.mentionall.cpr2u.education.domain.ProgressStatus.*;
+
 @Service
 @RequiredArgsConstructor
 public class EducationProgressService {
@@ -29,7 +31,7 @@ public class EducationProgressService {
         if (!checkPossibleToTakeQuiz(progress))
             throw new CustomException(ResponseCode.BAD_REQUEST_EDUCATION_PERMISSION_DENIED);
 
-        progress.updateQuizScore(requestDto.getScore());
+        progress.getQuizProgress().updateScore(requestDto.getScore());
         progressRepository.save(progress);
 
         if (requestDto.getScore() < TestStandard.quizScore)
@@ -43,10 +45,10 @@ public class EducationProgressService {
         if (!checkPossibleToTakePractice(progress))
             throw new CustomException(ResponseCode.BAD_REQUEST_EDUCATION_PERMISSION_DENIED);
 
-        progress.updatePostureScore(requestDto.getScore());
+        progress.getPostureProgress().updateScore(requestDto.getScore());
         progressRepository.save(progress);
 
-        if (progress.getPostureScore() < TestStandard.postureScore)
+        if (progress.getPostureProgress().getScore() < TestStandard.postureScore)
             throw new CustomException(ResponseCode.OK_POSTURE_FAIL);
     }
 
@@ -63,7 +65,7 @@ public class EducationProgressService {
                 () -> new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_FIND_LECTURE)
         );
 
-        progress.updateLecture(lecture);
+        progress.getLectureProgress().updateLastLecture(lecture);
         progressRepository.save(progress);
     }
 
@@ -74,11 +76,11 @@ public class EducationProgressService {
     }
 
     private boolean checkPossibleToTakeQuiz(EducationProgress progress) {
-        return progress.getLectureProgressStatus() == ProgressStatus.Completed;
+        return progress.getLectureProgress().getStatus() == Completed;
     }
 
     private boolean checkPossibleToTakePractice(EducationProgress progress) {
-        return progress.getLectureProgressStatus() == ProgressStatus.Completed &&
-                progress.getQuizProgressStatus() == ProgressStatus.Completed;
+        return progress.getLectureProgress().getStatus() == Completed &&
+                progress.getQuizProgress().getStatus() == Completed;
     }
 }

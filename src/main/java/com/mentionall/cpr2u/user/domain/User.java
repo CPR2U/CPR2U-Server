@@ -2,7 +2,7 @@ package com.mentionall.cpr2u.user.domain;
 
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.Report;
-import com.mentionall.cpr2u.education.domain.EducationProgress;
+import com.mentionall.cpr2u.education.domain.progress.EducationProgress;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.util.RandomGenerator;
 import com.mentionall.cpr2u.util.Timestamped;
@@ -37,12 +37,8 @@ public class User extends Timestamped{
     @Column(length = 20, unique = true)
     private String phoneNumber;
 
-    @Column
-    private LocalDateTime dateOfIssue;
-
-    @Column(length = 10)
-    @Enumerated(EnumType.STRING)
-    private AngelStatus status;
+    @Embedded
+    private Certificate certificate;
 
     @OneToOne(mappedBy = "user")
     private EducationProgress educationProgress;
@@ -70,9 +66,12 @@ public class User extends Timestamped{
         this.nickname = requestDto.getNickname();
         this.phoneNumber = requestDto.getPhoneNumber();
         this.address = address;
-        this.dateOfIssue = null;
-        this.status = AngelStatus.UNACQUIRED;
+        this.certificate = new Certificate(AngelStatus.UNACQUIRED, null);
         this.roles.add(UserRole.USER);
+    }
+
+    public AngelStatus getAngelStatus() {
+        return this.certificate.getStatus();
     }
 
     public void setDeviceToken(DeviceToken deviceToken) {
@@ -88,11 +87,10 @@ public class User extends Timestamped{
     }
 
     public void acquireCertification(LocalDateTime dateOfIssue) {
-        this.status = AngelStatus.ACQUIRED;
-        this.dateOfIssue = dateOfIssue;
+        this.certificate.acquire(dateOfIssue);
     }
 
     public void expireCertificate() {
-        this.status = AngelStatus.EXPIRED;
+        this.certificate.expire();
     }
 }
