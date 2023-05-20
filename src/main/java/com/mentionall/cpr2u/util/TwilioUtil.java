@@ -1,7 +1,9 @@
 package com.mentionall.cpr2u.util;
 
 import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.verify.v2.service.Verification;
+import com.twilio.type.PhoneNumber;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +27,6 @@ public class TwilioUtil {
                         phoneNumber,
                         "sms");
 
-        // TODO: new PhonNumber() 에러 해결
-        //Message.creator(new PhoneNumber(phoneNumber), new PhoneNumber(phoneNumber), content).create();
+        Message.creator(new PhoneNumber(phoneNumber), new PhoneNumber(phoneNumber), content).create();
     }
 }
