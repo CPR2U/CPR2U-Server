@@ -3,11 +3,9 @@ package com.mentionall.cpr2u.education.service;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
+import com.mentionall.cpr2u.user.service.AddressService;
 import com.mentionall.cpr2u.user.service.UserService;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import javax.transaction.Transactional;
@@ -32,11 +30,19 @@ public class LectureServiceTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AddressService addressService;
+
+    @BeforeEach
+    private void beforeEach() {
+        addressService.loadAddressList();
+    }
+
     @Test
     @Transactional
     public void 강의를_이수하지_않은_유저가_강의_리스트_조회() {
         //given
-        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", "device_token"));
+        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", 1L, "device_token"));
         User user = userRepository.findByPhoneNumber("010-1234-1234").get();
 
         //when
@@ -51,7 +57,7 @@ public class LectureServiceTest {
     @Transactional
     public void 강의를_이수한_유저가_강의_리스트_조회() {
         //given
-        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", "device_token"));
+        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", 1L, "device_token"));
         User user = userRepository.findByPhoneNumber("010-1234-1234").get();
         completeFirstLecture(user);
 

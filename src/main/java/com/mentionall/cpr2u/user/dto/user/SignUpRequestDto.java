@@ -19,6 +19,10 @@ public class SignUpRequestDto {
     @JsonProperty("phone_number")
     String phoneNumber;
 
+    @Schema(example = "사용자 주소지 ID")
+    @JsonProperty("address_id")
+    private Long addressId;
+
     @Schema(example = "device token")
     @JsonProperty("device_token")
     String deviceToken;

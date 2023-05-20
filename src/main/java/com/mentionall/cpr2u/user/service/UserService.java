@@ -1,12 +1,14 @@
 package com.mentionall.cpr2u.user.service;
 
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
-import com.mentionall.cpr2u.education.domain.EducationProgress;
+import com.mentionall.cpr2u.education.domain.progress.EducationProgress;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
+import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.DeviceToken;
 import com.mentionall.cpr2u.user.domain.RefreshToken;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.*;
+import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.user.repository.RefreshTokenRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
@@ -29,10 +31,17 @@ public class UserService {
     private final EducationProgressRepository progressRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final DeviceTokenRepository deviceTokenRepository;
+
+    private final AddressRepository addressRepository;
     private final TwilioUtil twilioUtil;
 
+    @Transactional
     public TokenResponseDto signup(SignUpRequestDto requestDto) {
-        User user = new User(requestDto);
+        Address address = addressRepository.findById(requestDto.getAddressId()).orElseThrow(
+                () -> new CustomException(NOT_FOUND_ADDRESS)
+        );
+
+        User user = new User(requestDto, address);
         userRepository.save(user);
 
         createDeviceToken(requestDto.getDeviceToken(), user);
