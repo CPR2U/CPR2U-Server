@@ -1,7 +1,7 @@
 package com.mentionall.cpr2u.education.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mentionall.cpr2u.education.domain.EducationProgress;
+import com.mentionall.cpr2u.education.domain.progress.EducationProgress;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -42,18 +42,18 @@ public class ProgressResponseDto {
     private Integer daysLeftUntilExpiration;
 
     public ProgressResponseDto(EducationProgress progress) {
-        this.angelStatus = progress.getUser().getStatus().ordinal();
+        this.angelStatus = progress.getUser().getAngelStatus().ordinal();
         this.nickname = progress.getUser().getNickname();
         this.progressPercent = progress.getTotalProgress();
 
-        this.isLectureCompleted = progress.getLectureProgressStatus().ordinal();
-        this.isQuizCompleted = progress.getQuizProgressStatus().ordinal();
-        this.isPostureCompleted = progress.getPostureProgressStatus().ordinal();
+        this.isLectureCompleted = progress.getLectureProgress().getStatus().ordinal();
+        this.isQuizCompleted = progress.getQuizProgress().getStatus().ordinal();
+        this.isPostureCompleted = progress.getPostureProgress().getStatus().ordinal();
 
-        if(progress.getUser().getStatus() == UNACQUIRED) {
+        if(progress.getUser().getAngelStatus() == UNACQUIRED) {
             this.daysLeftUntilExpiration = null;
         } else {
-            LocalDate issuedAt = progress.getUser().getDateOfIssue().toLocalDate();
+            LocalDate issuedAt = progress.getUser().getCertificate().getDateOfIssue().toLocalDate();
             long leftDays = validTime - (ChronoUnit.DAYS.between(issuedAt, LocalDate.now()));
             this.daysLeftUntilExpiration = leftDays >= 0 ? (int)leftDays : null;
         }

@@ -3,7 +3,7 @@ package com.mentionall.cpr2u.call.repository;
 import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.CprCallStatus;
 import com.mentionall.cpr2u.call.dto.cpr_call.CprCallResponseDto;
-import com.mentionall.cpr2u.call.dto.QCprCallDto;
+import com.mentionall.cpr2u.call.dto.cpr_call.QCprCallResponseDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;
@@ -22,7 +22,7 @@ public class CprCallRepositoryImpl implements CprCallDslRepository {
 
     @Override
     public List<CprCallResponseDto> findAllCallInProcessByAddress(Long addressId) {
-        return queryFactory.select(new QCprCallDto(cprCall))
+        return queryFactory.select(new QCprCallResponseDto(cprCall))
                 .from(cprCall)
                 .where(cprCall.status.eq(CprCallStatus.IN_PROGRESS).and(cprCall.address.id.eq(addressId)))
                 .fetch();
