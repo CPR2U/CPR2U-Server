@@ -77,6 +77,9 @@ public class User extends Timestamped{
     public void setDeviceToken(DeviceToken deviceToken) {
         this.deviceToken = deviceToken;
     }
+    public void setRefreshToken(RefreshToken refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 
     public void setAddress(Address address) {
         this.address = address;

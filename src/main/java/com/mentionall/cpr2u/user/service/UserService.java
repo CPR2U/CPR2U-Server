@@ -105,6 +105,9 @@ public class UserService {
 
         refreshToken.setToken(jwtTokenProvider.createRefreshToken(user));
         refreshTokenRepository.save(refreshToken);
+
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
         return refreshToken;
     }
 
