@@ -43,10 +43,7 @@ public class UserService {
 
         try {
             userRepository.findByPhoneNumber(requestDto.getPhoneNumber())
-                    .ifPresentOrElse(
-                            user -> userRepository.delete(user),
-                            () -> {}
-                    );
+                    .ifPresent(user -> userRepository.delete(user));
             User user = new User(requestDto, address);
             userRepository.save(user);
 
@@ -136,12 +133,11 @@ public class UserService {
 
     public void logout(User user) {
         refreshTokenRepository.findByUserId(user.getId())
-                .ifPresentOrElse(
+                .ifPresent(
                         refreshToken -> {
                             refreshToken.setToken("expired");
                             refreshTokenRepository.save(refreshToken);
-                        },
-                        () -> { }
+                        }
                 );
     }
 }
