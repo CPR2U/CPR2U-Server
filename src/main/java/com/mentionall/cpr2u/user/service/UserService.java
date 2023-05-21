@@ -8,10 +8,10 @@ import com.mentionall.cpr2u.user.domain.DeviceToken;
 import com.mentionall.cpr2u.user.domain.RefreshToken;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.*;
-import com.mentionall.cpr2u.user.repository.address.AddressRepository;
-import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.user.repository.RefreshTokenRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
+import com.mentionall.cpr2u.user.repository.address.AddressRepository;
+import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.util.TwilioUtil;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
 
@@ -43,6 +42,11 @@ public class UserService {
         );
 
         try {
+            userRepository.findByPhoneNumber(requestDto.getPhoneNumber())
+                    .ifPresentOrElse(
+                            user -> userRepository.delete(user),
+                            () -> {}
+                    );
             User user = new User(requestDto, address);
             userRepository.save(user);
 
@@ -50,7 +54,7 @@ public class UserService {
             createEducationProgress(user);
 
             return issueUserTokens(user);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new CustomException(SERVER_ERROR_FAILED_TO_SIGNUP);
         }
 
@@ -79,12 +83,12 @@ public class UserService {
             throw new CustomException(FORBIDDEN_TOKEN_NOT_VALID);
 
         RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenByToken(requestDto.getRefreshToken())
-                .orElseThrow(()-> new CustomException(FORBIDDEN_TOKEN_NOT_VALID));
+                .orElseThrow(() -> new CustomException(FORBIDDEN_TOKEN_NOT_VALID));
         return issueUserTokens(refreshToken.getUser());
     }
 
     public void checkNicknameDuplicated(String nickname) {
-        if(userRepository.existsByNickname(nickname))
+        if (userRepository.existsByNickname(nickname))
             throw new CustomException(BAD_REQUEST_NICKNAME_DUPLICATED);
     }
 
@@ -93,7 +97,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    private TokenResponseDto issueUserTokens(User user){
+    private TokenResponseDto issueUserTokens(User user) {
         return new TokenResponseDto(
                 jwtTokenProvider.createAccessToken(user),
                 createRefreshToken(user).getToken());
