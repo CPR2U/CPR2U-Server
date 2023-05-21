@@ -41,13 +41,18 @@ public class UserService {
                 () -> new CustomException(NOT_FOUND_ADDRESS)
         );
 
-        User user = new User(requestDto, address);
-        userRepository.save(user);
+        try {
+            User user = new User(requestDto, address);
+            userRepository.save(user);
 
-        createDeviceToken(requestDto.getDeviceToken(), user);
-        createEducationProgress(user);
+            createDeviceToken(requestDto.getDeviceToken(), user);
+            createEducationProgress(user);
 
-        return issueUserTokens(user);
+            return issueUserTokens(user);
+        } catch (Exception e){
+            throw new CustomException(SERVER_ERROR_FAILED_TO_SIGNUP);
+        }
+
     }
 
     public CodeResponseDto getVerificationCode(PhoneNumberRequestDto requestDto) {
