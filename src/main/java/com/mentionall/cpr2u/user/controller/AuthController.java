@@ -1,7 +1,9 @@
 package com.mentionall.cpr2u.user.controller;
 
+import com.mentionall.cpr2u.user.domain.PrincipalDetails;
 import com.mentionall.cpr2u.user.dto.user.*;
 import com.mentionall.cpr2u.user.service.UserService;
+import com.mentionall.cpr2u.util.GetUserDetails;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
 import io.swagger.v3.oas.annotations.Operation;
@@ -109,5 +111,20 @@ public class AuthController {
         );
     }
 
+    @Operation(summary = "로그아웃",
+            method = "POST",
+            description = "로그아웃 API"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TokenResponseDto.class)))),
+    })
+    @PostMapping("/logout")
+    public ResponseEntity<ResponseTemplate> logout(@GetUserDetails PrincipalDetails userDetails){
+        userService.logout(userDetails.getUser());
+        return ResponseTemplate.toResponseEntity(
+                OK_SUCCESS
+        );
+    }
 
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
 
@@ -124,5 +125,16 @@ public class UserService {
 
         user.setEducationProgress(progress);
         userRepository.save(user);
+    }
+
+    public void logout(User user) {
+        refreshTokenRepository.findByUserId(user.getId())
+                .ifPresentOrElse(
+                        refreshToken -> {
+                            refreshToken.setToken("expired");
+                            refreshTokenRepository.save(refreshToken);
+                        },
+                        () -> { }
+                );
     }
 }
