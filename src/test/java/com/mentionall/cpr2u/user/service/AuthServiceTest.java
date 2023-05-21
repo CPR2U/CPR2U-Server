@@ -133,4 +133,18 @@ public class AuthServiceTest {
         //then
         assertDoesNotThrow(() -> userService.checkNicknameDuplicated(newNickname));
     }
+
+    @Test
+    @Transactional
+    public void 로그아웃() {
+        //given
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken));
+        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+
+        //when
+        userService.logout(user);
+
+        //then
+        assertThat(user.getRefreshToken().getToken()).isEqualTo("expired");
+    }
 }
