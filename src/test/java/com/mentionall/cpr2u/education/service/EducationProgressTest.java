@@ -1,12 +1,17 @@
 package com.mentionall.cpr2u.education.service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mentionall.cpr2u.education.dto.ScoreRequestDto;
+import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
+import com.mentionall.cpr2u.education.dto.quiz.QuizAnswerRequestDto;
+import com.mentionall.cpr2u.education.dto.quiz.QuizRequestDto;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
 import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.exception.CustomException;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.mentionall.cpr2u.education.domain.ProgressStatus.*;
 import static com.mentionall.cpr2u.education.domain.TestStandard.*;
@@ -37,18 +44,23 @@ public class EducationProgressTest {
     private LectureService lectureService;
 
     @Autowired
+    private QuizService quizService;
+
+    @Autowired
     private AddressService addressService;
 
     @BeforeEach
     private void beforeEach() {
         addressService.loadAddressList();
+        var address = addressService.readAll().get(0).getGugunList().get(0);
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", address.getId(), "device_token"));
     }
 
     @Test
     @Transactional
     public void 강의_수강중인_경우() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device_token"));
+        createLectureCourse();
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when
@@ -70,7 +82,7 @@ public class EducationProgressTest {
     @Transactional
     public void 강의_수강완료한_경우() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device_token"));
+        createLectureCourse();
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when
@@ -89,7 +101,7 @@ public class EducationProgressTest {
     @Transactional
     public void 퀴즈_100점을_넘은_경우() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device_token"));
+        createLectureCourse();
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
         completeLectureCourse(user);
 
@@ -108,7 +120,7 @@ public class EducationProgressTest {
     @Transactional
     public void 퀴즈_100점을_넘지_않은_경우() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device_token"));
+        createLectureCourse();
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
         completeLectureCourse(user);
 
@@ -125,7 +137,7 @@ public class EducationProgressTest {
     @Transactional
     public void 퀴즈_강의를_마무리하지_않고_테스트한_경우() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device_token"));
+        createLectureCourse();
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when, then
@@ -138,9 +150,8 @@ public class EducationProgressTest {
     @Transactional
     public void 자세실습_80점을_넘은_경우() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
-
+        createLectureCourse();
         completeLectureCourse(user);
         progressService.completeQuiz(user, new ScoreRequestDto(100));
 
@@ -159,8 +170,8 @@ public class EducationProgressTest {
     @Transactional
     public void 자세실습_80점을_넘지않은_경우() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        createLectureCourse();
         completeLectureCourse(user);
         progressService.completeQuiz(user, new ScoreRequestDto(100));
 
@@ -177,7 +188,7 @@ public class EducationProgressTest {
     @Transactional
     public void 자세실습_강의를_마무리하지_않고_테스트한_경우() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device_token"));
+        createLectureCourse();
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when, then
@@ -189,7 +200,7 @@ public class EducationProgressTest {
     @Transactional
     public void 자세실습_퀴즈를_마무리하지_않고_테스트한_경우() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device_token"));
+        createLectureCourse();
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when, then
@@ -202,7 +213,6 @@ public class EducationProgressTest {
     @Transactional
     public void 교육_수료_전_수료증_확인() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device_token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when
@@ -217,8 +227,8 @@ public class EducationProgressTest {
     @Transactional
     public void 교육_수료_당일_수료증_확인() {
         //given
-        createCertificatedUser(LocalDateTime.now());
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        userService.certificate(user, LocalDate.now().atStartOfDay());
 
         //when
         var educationInfo = progressService.readEducationInfo(user);
@@ -233,8 +243,9 @@ public class EducationProgressTest {
     public void 교육_수료_3일_후_수료증_확인() {
         //given
         int day = 3;
-        createCertificatedUser(LocalDate.now().minusDays(day).atStartOfDay());
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        userService.certificate(user, LocalDate.now().minusDays(day).atStartOfDay());
+
 
         //when
         var educationInfo = progressService.readEducationInfo(user);
@@ -249,8 +260,8 @@ public class EducationProgressTest {
     public void 교육_수료_90일_후_수료증_확인() {
         //given
         int day = 90;
-        createCertificatedUser(LocalDate.now().minusDays(day).atStartOfDay());
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        userService.certificate(user, LocalDate.now().minusDays(day).atStartOfDay());
 
         //when
         var educationInfo = progressService.readEducationInfo(user);
@@ -265,8 +276,8 @@ public class EducationProgressTest {
     public void 교육_수료_91일_후_수료증_만료() {
         //given
         int day = 91;
-        createCertificatedUser(LocalDate.now().minusDays(day).atStartOfDay());
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        userService.certificate(user, LocalDate.now().minusDays(day).atStartOfDay());
 
         //when
         var educationInfo = progressService.readEducationInfo(user);
@@ -284,9 +295,7 @@ public class EducationProgressTest {
         }
     }
 
-    private void createCertificatedUser(LocalDateTime time) {
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device_token"));
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
-        userService.certificate(user, time);
+    private void createLectureCourse() {
+        lectureService.createLecture(new LectureRequestDto(1, "일반인 심폐소생술 표준 교육", "2020 Korean Guideline", "https://youtu.be/5DWyihalLMM"));
     }
 }

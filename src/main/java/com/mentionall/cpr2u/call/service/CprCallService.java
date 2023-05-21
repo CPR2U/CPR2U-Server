@@ -17,12 +17,14 @@ import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import com.mentionall.cpr2u.util.fcm.FcmPushType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CprCallService {
@@ -52,11 +54,11 @@ public class CprCallService {
         );
     }
 
-    public CprCallIdResponseDto makeCall(CprCallRequestDto cprCallRequestDto, User user) {
-        Address callAddress = addressRepository.findByFullAddress(cprCallRequestDto.getFullAddress().split(" "))
+    public CprCallIdResponseDto makeCall(CprCallRequestDto requestDto, User user) {
+        Address callAddress = addressRepository.findByFullAddress(requestDto.getFullAddress().split(" "))
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_FAILED_TO_MATCH_ADDRESS));
 
-        CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallRequestDto);
+        CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), requestDto);
         cprCallRepository.save(cprCall);
 
         List<DeviceToken> deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), user.getId());
@@ -65,7 +67,7 @@ public class CprCallService {
                 firebaseCloudMessageService.sendMessageTo(deviceToken.getToken(),
                         MessageEnum.CPR_CALL_TITLE.getMessage(),
                         cprCall.getFullAddress(),
-                        new LinkedHashMap<>(){{
+                        new LinkedHashMap<String,String>(){{
                             put("type", String.valueOf(FcmPushType.CPR_CALL.ordinal()));
                             put("call", String.valueOf(cprCall.getId()));
                         }}

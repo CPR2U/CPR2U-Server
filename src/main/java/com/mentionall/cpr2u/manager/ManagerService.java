@@ -65,7 +65,7 @@ public class ManagerService {
                     angel.getDeviceToken().getToken(),
                     ANGEL_EXPIRED_TITLE.getMessage(),
                     ANGEL_EXPIRED_BODY.getMessage(),
-                    new LinkedHashMap<>(){{
+                    new LinkedHashMap<String, String>(){{
                         put("type", String.valueOf(FcmPushType.ANGLE_EXPIRATION.ordinal()));
                     }});
         } catch (IOException e) {

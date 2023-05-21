@@ -6,6 +6,7 @@ import com.mentionall.cpr2u.call.dto.dispatch.DispatchRequestDto;
 import com.mentionall.cpr2u.call.dto.ReportRequestDto;
 import com.mentionall.cpr2u.call.repository.*;
 import com.mentionall.cpr2u.user.domain.User;
+import com.mentionall.cpr2u.user.dto.address.AddressResponseDto;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
@@ -137,7 +138,11 @@ public class DispatchServiceTest {
     }
 
     private void createCallerAndDispatcher() {
-        userService.signup(new SignUpRequestDto("호출자", "010-0000-0000", 1L, "device_token"));
-        userService.signup(new SignUpRequestDto("출동자", "010-0000-0001", 1L, "device_token"));
+        List<AddressResponseDto> addressList = addressService.readAll();
+        var address = addressList.get(0);
+        var addressDetail = address.getGugunList().get(0);
+
+        userService.signup(new SignUpRequestDto("호출자", "010-0000-0000", addressDetail.getId(), "device_token"));
+        userService.signup(new SignUpRequestDto("출동자", "010-0000-0001", addressDetail.getId(), "device_token"));
     }
 }

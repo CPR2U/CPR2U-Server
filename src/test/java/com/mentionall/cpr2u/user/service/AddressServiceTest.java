@@ -34,14 +34,17 @@ public class AddressServiceTest {
     @Transactional
     public void 유저의_주소지_설정() {
         //given
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", 1L, "device-token"));
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
-
         List<AddressResponseDto> addressList = addressService.readAll();
         var address = addressList.get(0);
         var addressDetail = address.getGugunList().get(0);
 
+        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", addressDetail.getId(), "device-token"));
+        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+
         //when
+        address = addressList.get(1);
+        addressDetail = address.getGugunList().get(0);
+
         addressService.setAddress(user, new AddressRequestDto(addressDetail.getId()));
 
         //then
