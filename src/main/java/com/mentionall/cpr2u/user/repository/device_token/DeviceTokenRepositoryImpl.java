@@ -1,6 +1,7 @@
 package com.mentionall.cpr2u.user.repository.device_token;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -16,13 +17,13 @@ public class DeviceTokenRepositoryImpl implements DeviceTokenDslRepository {
     }
 
     @Override
-    public List<String> findAllDeviceTokenByUserAddress(Long addressId, String userId, Integer offset, Integer limit) {
+    public List<String> findAllDeviceTokenByUserAddress(Long addressId, String userId, Pageable pageable) {
         return queryFactory.select(deviceToken.token)
                 .from(deviceToken)
                 .where(deviceToken.user.address.id.eq(addressId)
                         .and(deviceToken.user.id.ne(userId)))
-                .offset(offset)
-                .limit(limit)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
     }
 }
