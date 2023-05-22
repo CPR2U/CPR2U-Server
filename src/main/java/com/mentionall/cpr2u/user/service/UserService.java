@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
 
@@ -41,9 +43,11 @@ public class UserService {
                 () -> new CustomException(NOT_FOUND_ADDRESS)
         );
 
+        Optional<User> bfUser = userRepository.findByPhoneNumber(requestDto.getPhoneNumber());
+        if (bfUser.isPresent()) userRepository.delete(bfUser.get());
+        userRepository.flush();
+
         try {
-            userRepository.findByPhoneNumber(requestDto.getPhoneNumber())
-                    .ifPresent(user -> userRepository.delete(user));
             User user = new User(requestDto, address);
             userRepository.save(user);
 
@@ -52,6 +56,7 @@ public class UserService {
 
             return issueUserTokens(user);
         } catch (Exception e) {
+            if (bfUser.isPresent()) userRepository.save(bfUser.get());
             throw new CustomException(SERVER_ERROR_FAILED_TO_SIGNUP);
         }
 

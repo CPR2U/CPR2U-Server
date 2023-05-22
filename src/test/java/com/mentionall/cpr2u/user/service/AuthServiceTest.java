@@ -70,10 +70,10 @@ public class AuthServiceTest {
         SignUpRequestDto afSignUpRequestDto = new SignUpRequestDto(afNickname, phoneNumber, afAddressId, deviceToken);
 
         //when
-        userService.signup(bfSignUpRequestDto).getAccessToken();
+        userService.signup(bfSignUpRequestDto);
         User bfUser = userRepository.findByPhoneNumber(phoneNumber).get();
         bfUser.getEducationProgress().getQuizProgress().updateScore(50);
-        userService.signup(afSignUpRequestDto).getAccessToken();
+        userService.signup(afSignUpRequestDto);
 
         //then
         User afUser = userRepository.findByPhoneNumber(phoneNumber).get();
