@@ -52,7 +52,8 @@ public class UserService {
 
     public CodeResponseDto getVerificationCode(PhoneNumberRequestDto requestDto) {
         String code = String.format("%04.0f", Math.random() * Math.pow(10, 4));
-        twilioUtil.sendSMS(requestDto.getPhoneNumber(), "Your verification code is " + code);
+        /*We omit sending messages due to cost issues*/
+        //twilioUtil.sendSMS(requestDto.getPhoneNumber(), "Your verification code is " + code);
 
         return new CodeResponseDto(code);
     }
