@@ -61,6 +61,30 @@ public class AuthServiceTest {
 
     @Test
     @Transactional
+    public void 전화번호_중복_회원_회원가입() {
+
+        //given
+        Long afAddressId = 2L;
+        String afNickname = "현애";
+        SignUpRequestDto bfSignUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken);
+        SignUpRequestDto afSignUpRequestDto = new SignUpRequestDto(afNickname, phoneNumber, afAddressId, deviceToken);
+
+        //when
+        userService.signup(bfSignUpRequestDto);
+        User bfUser = userRepository.findByPhoneNumber(phoneNumber).get();
+        bfUser.getEducationProgress().getQuizProgress().updateScore(50);
+        userService.signup(afSignUpRequestDto);
+
+        //then
+        User afUser = userRepository.findByPhoneNumber(phoneNumber).get();
+        assertThat(afUser.getEducationProgress().getQuizProgress().getScore()).isEqualTo(0);
+        assertThat(afUser.getNickname()).isEqualTo(afNickname);
+        assertThat(afUser.getEducationProgress()).isNotNull();
+        assertThat(afUser.getAddress().getId()).isEqualTo(afAddressId);
+    }
+
+    @Test
+    @Transactional
     public void 로그인() {
         //given
         var address = addressService.readAll().get(0).getGugunList().get(0);
@@ -134,5 +158,19 @@ public class AuthServiceTest {
 
         //then
         assertDoesNotThrow(() -> userService.checkNicknameDuplicated(newNickname));
+    }
+
+    @Test
+    @Transactional
+    public void 로그아웃() {
+        //given
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken));
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
+
+        //when
+        userService.logout(user);
+
+        //then
+        assertThat(user.getRefreshToken().getToken()).isEqualTo("expired");
     }
 }
