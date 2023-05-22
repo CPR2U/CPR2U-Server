@@ -5,7 +5,7 @@ import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.service.FirebaseCloudMessageService;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.UserRepository;
-import com.mentionall.cpr2u.util.fcm.FcmPushDataType;
+import com.mentionall.cpr2u.util.fcm.FcmDataType;
 import com.mentionall.cpr2u.util.fcm.FcmPushType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +20,8 @@ import java.util.List;
 
 import static com.mentionall.cpr2u.education.domain.TestStandard.validTime;
 import static com.mentionall.cpr2u.user.domain.AngelStatus.ACQUIRED;
-import static com.mentionall.cpr2u.util.MessageEnum.ANGEL_EXPIRED_BODY;
-import static com.mentionall.cpr2u.util.MessageEnum.ANGEL_EXPIRED_TITLE;
+import static com.mentionall.cpr2u.util.fcm.FcmMessage.ANGEL_EXPIRED_BODY;
+import static com.mentionall.cpr2u.util.fcm.FcmMessage.ANGEL_EXPIRED_TITLE;
 
 @Service
 @Slf4j
@@ -66,7 +66,7 @@ public class ManagerService {
                 ANGEL_EXPIRED_TITLE.getMessage(),
                 ANGEL_EXPIRED_BODY.getMessage(),
                 new LinkedHashMap<>() {{
-                    put(FcmPushDataType.TYPE.getType(), String.valueOf(FcmPushType.ANGLE_EXPIRATION.ordinal()));
+                    put(FcmDataType.TYPE.getType(), String.valueOf(FcmPushType.ANGLE_EXPIRATION.ordinal()));
                 }});
     }
 }

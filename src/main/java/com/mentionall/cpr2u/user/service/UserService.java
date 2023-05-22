@@ -12,15 +12,16 @@ import com.mentionall.cpr2u.user.repository.RefreshTokenRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
-import com.mentionall.cpr2u.util.TwilioUtil;
+import com.mentionall.cpr2u.util.twilio.TwilioUtil;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
 

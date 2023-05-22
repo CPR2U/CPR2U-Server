@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.util;
+package com.mentionall.cpr2u.util.twilio;
 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 public class TwilioUtil {
     //@Value("${security.twilio.account-sid}")
     private String twilioAccountSid;
-
     //@Value("${security.twilio.auth-token}")
     private String twilioAuthToken;
 

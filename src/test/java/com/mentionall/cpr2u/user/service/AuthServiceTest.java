@@ -66,7 +66,8 @@ public class AuthServiceTest {
         //given
         Long afAddressId = 2L;
         String afNickname = "현애";
-        SignUpRequestDto bfSignUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken);
+        var address = addressService.readAll().get(0).getGugunList().get(0);
+        SignUpRequestDto bfSignUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken);
         SignUpRequestDto afSignUpRequestDto = new SignUpRequestDto(afNickname, phoneNumber, afAddressId, deviceToken);
 
         //when

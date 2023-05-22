@@ -11,10 +11,10 @@ import com.mentionall.cpr2u.user.domain.AngelStatus;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
-import com.mentionall.cpr2u.util.MessageEnum;
+import com.mentionall.cpr2u.util.fcm.FcmMessage;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
-import com.mentionall.cpr2u.util.fcm.FcmPushDataType;
+import com.mentionall.cpr2u.util.fcm.FcmDataType;
 import com.mentionall.cpr2u.util.fcm.FcmPushType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -103,8 +103,8 @@ public class CprCallService {
         Pageable pageable;
 
         LinkedHashMap<String, String> dataToSend = new LinkedHashMap<>() {{
-            put(FcmPushDataType.TYPE.getType(), String.valueOf(FcmPushType.CPR_CALL.ordinal()));
-            put(FcmPushDataType.CPR_CALL_ID.getType(), String.valueOf(cprCall.getId()));
+            put(FcmDataType.TYPE.getType(), String.valueOf(FcmPushType.CPR_CALL.ordinal()));
+            put(FcmDataType.CPR_CALL_ID.getType(), String.valueOf(cprCall.getId()));
         }};
 
         List<String> deviceTokenToSendPushList;
@@ -113,7 +113,7 @@ public class CprCallService {
             deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), userId, pageable);
             firebaseCloudMessageService.sendFcmMessage(
                     deviceTokenToSendPushList,
-                    MessageEnum.CPR_CALL_TITLE.getMessage(),
+                    FcmMessage.CPR_CALL_TITLE.getMessage(),
                     cprCall.getFullAddress(),
                     dataToSend
             );
