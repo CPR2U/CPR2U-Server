@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.education.service;
 
+import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
@@ -42,7 +43,10 @@ public class LectureServiceTest {
     @Transactional
     public void 강의를_이수하지_않은_유저가_강의_리스트_조회() {
         //given
-        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", 1L, "device_token"));
+        createLectureCourse();
+
+        var address = addressService.readAll().get(0).getGugunList().get(0);
+        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", address.getId(), "device_token"));
         User user = userRepository.findByPhoneNumber("010-1234-1234").get();
 
         //when
@@ -57,8 +61,12 @@ public class LectureServiceTest {
     @Transactional
     public void 강의를_이수한_유저가_강의_리스트_조회() {
         //given
-        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", 1L, "device_token"));
+        createLectureCourse();
+
+        var address = addressService.readAll().get(0).getGugunList().get(0);
+        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", address.getId(), "device_token"));
         User user = userRepository.findByPhoneNumber("010-1234-1234").get();
+
         completeFirstLecture(user);
 
         //when
@@ -73,5 +81,9 @@ public class LectureServiceTest {
         var lectureInfo = lectureService.readLectureProgressAndList(user);
         var lecture = lectureInfo.getLectureList().get(0);
         progressService.completeLecture(user, lecture.getId());
+    }
+
+    private void createLectureCourse() {
+        lectureService.createLecture(new LectureRequestDto(1, "일반인 심폐소생술 표준 교육", "2020 Korean Guideline", "https://youtu.be/5DWyihalLMM"));
     }
 }

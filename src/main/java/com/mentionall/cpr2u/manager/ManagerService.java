@@ -68,6 +68,5 @@ public class ManagerService {
                 new LinkedHashMap<>() {{
                     put(FcmPushDataType.TYPE.getType(), String.valueOf(FcmPushType.ANGLE_EXPIRATION.ordinal()));
                 }});
-
     }
 }
