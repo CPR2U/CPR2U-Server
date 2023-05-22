@@ -164,7 +164,8 @@ public class AuthServiceTest {
     @Transactional
     public void 로그아웃() {
         //given
-        userService.signup(new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken));
+        var address = addressService.readAll().get(0).getGugunList().get(0);
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
         User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
         //when
