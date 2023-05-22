@@ -53,8 +53,7 @@ public class User extends Timestamped{
     private List<UserRole> roles = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
-    @Column(nullable = false)
+    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dispatcher")
