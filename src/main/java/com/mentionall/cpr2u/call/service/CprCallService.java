@@ -59,41 +59,6 @@ public class CprCallService {
         );
     }
 
-    public CprCallIdResponseDto makeCall(CprCallRequestDto requestDto, User user) {
-        Address callAddress = addressRepository.findByFullAddress(requestDto.getFullAddress().split(" "))
-                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_FAILED_TO_MATCH_ADDRESS));
-
-        CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), requestDto);
-        cprCallRepository.save(cprCall);
-
-        List<DeviceToken> deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), user.getId());
-        for(DeviceToken deviceToken : deviceTokenToSendPushList){
-            try {
-                firebaseCloudMessageService.sendMessageTo(deviceToken.getToken(),
-                        MessageEnum.CPR_CALL_TITLE.getMessage(),
-                        cprCall.getFullAddress(),
-                        new LinkedHashMap<String,String>(){{
-                            put("type", String.valueOf(FcmPushType.CPR_CALL.ordinal()));
-                            put("call", String.valueOf(cprCall.getId()));
-                        }}
-                );
-            } catch (IOException e) {
-                throw new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_SEND_FCM);
-            }
-
-            Timer timer = new Timer();
-            TimerTask task = new TimerTask() {
-                public void run() {
-                    cprCall.endSituationCprCall();
-                    cprCallRepository.save(cprCall);
-                }
-            };
-
-            timer.schedule(task, 1000 * 60 * 10);
-        }
-        return new CprCallIdResponseDto(cprCall.getId());
-    }
-  
     public void endCall(Long callId) {
         CprCall cprCall = cprCallRepository.findById(callId).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL)

@@ -133,31 +133,31 @@ class CprCallServiceTest {
     }
 
     //@Test
-//    @Transactional
-//    void makeCall() {
-//        //given
-//        User user = userRepository.findByPhoneNumber("user1").get();
-//
-//        //when
-//        Long callId1 = cprCallService.makeCall(new CprCallRequestDto("서울 종로구 종로 104", 37.56559872345163, 126.9779734762639), user).getCallId();
-//        Long callId2 = cprCallService.makeCall(new CprCallRequestDto("서울 중구 세종대로 지하 2", 37.56559872345163, 126.9779734762639), user).getCallId();
-//        Long callId3 = cprCallService.makeCall(new CprCallRequestDto("세종특별자치시 한누리대로 2130 (우)30151", 37.56559872345163, 126.9779734762639), user).getCallId();
-//        Long callId4 = cprCallService.makeCall(new CprCallRequestDto("경남 창원시 진해구 평안동 10", 37.56559872345163, 126.9779734762639), user).getCallId();
-//
-//        //then
-//        CprCall cprCall1 = cprCallRepository.findById(callId1).get();
-//        CprCall cprCall2 = cprCallRepository.findById(callId2).get();
-//        CprCall cprCall3 = cprCallRepository.findById(callId3).get();
-//        CprCall cprCall4 = cprCallRepository.findById(callId4).get();
-//
-//        assertThat(cprCall1.getAddress().getId()).isEqualTo(1L);
-//        assertThat(cprCall2.getAddress().getId()).isEqualTo(2L);
-//        assertThat(cprCall3.getAddress().getId()).isEqualTo(75L);
-//        assertThat(cprCall4.getAddress().getId()).isEqualTo(231L);
-//
-//        assertThat(cprCall1.getStatus()).isEqualTo(CprCallStatus.IN_PROGRESS);
-//
-//    }
+    @Transactional
+    void makeCall() {
+        //given
+        User user = userRepository.findByPhoneNumber("user1").get();
+
+        //when
+        Long callId1 = cprCallService.makeCall(new CprCallRequestDto("서울 종로구 종로 104", 37.56559872345163, 126.9779734762639), user).getCallId();
+        Long callId2 = cprCallService.makeCall(new CprCallRequestDto("서울 중구 세종대로 지하 2", 37.56559872345163, 126.9779734762639), user).getCallId();
+        Long callId3 = cprCallService.makeCall(new CprCallRequestDto("세종특별자치시 한누리대로 2130 (우)30151", 37.56559872345163, 126.9779734762639), user).getCallId();
+        Long callId4 = cprCallService.makeCall(new CprCallRequestDto("경남 창원시 진해구 평안동 10", 37.56559872345163, 126.9779734762639), user).getCallId();
+
+        //then
+        CprCall cprCall1 = cprCallRepository.findById(callId1).get();
+        CprCall cprCall2 = cprCallRepository.findById(callId2).get();
+        CprCall cprCall3 = cprCallRepository.findById(callId3).get();
+        CprCall cprCall4 = cprCallRepository.findById(callId4).get();
+
+        assertThat(cprCall1.getAddress().getId()).isEqualTo(1L);
+        assertThat(cprCall2.getAddress().getId()).isEqualTo(2L);
+        assertThat(cprCall3.getAddress().getId()).isEqualTo(75L);
+        assertThat(cprCall4.getAddress().getId()).isEqualTo(231L);
+
+        assertThat(cprCall1.getStatus()).isEqualTo(CprCallStatus.IN_PROGRESS);
+
+    }
 
     //@Test
     @Transactional

@@ -23,10 +23,6 @@ public class AddressRepositoryImpl implements AddressDslRepository {
 
     @Override
     public Optional<Address> findByFullAddress(String[] addressList) {
-        for (String s : addressList) {
-            log.info("address: " + s);
-        }
-
         JPAQuery<Address> findAddressQuery = queryFactory.selectFrom(address).where(address.sido.contains(addressList[0]));
         List<Address> findAddressList = findAddressQuery.fetch();
 
