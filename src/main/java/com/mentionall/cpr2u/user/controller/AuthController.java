@@ -117,7 +117,7 @@ public class AuthController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TokenResponseDto.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
     @PostMapping("/logout")
     public ResponseEntity<ResponseTemplate> logout(@GetUserDetails PrincipalDetails userDetails){
