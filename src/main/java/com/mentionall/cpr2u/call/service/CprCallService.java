@@ -8,21 +8,27 @@ import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.AngelStatus;
-import com.mentionall.cpr2u.user.domain.DeviceToken;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.util.MessageEnum;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
+import com.mentionall.cpr2u.util.fcm.FcmPushDataType;
 import com.mentionall.cpr2u.util.fcm.FcmPushType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -35,6 +41,7 @@ public class CprCallService {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     public CprCallNearUserResponseDto getCallNearUser(User user) {
+        
         AngelStatus userAngelStatus = user.getAngelStatus();
         if (userAngelStatus != AngelStatus.ACQUIRED) {
             return new CprCallNearUserResponseDto(
@@ -43,9 +50,7 @@ public class CprCallService {
                     new ArrayList<>()
             );
         }
-        if (user.getAddress() == null) {
-            throw new CustomException(ResponseCode.BAD_REQUEST_ADDRESS_NOT_SET);
-        }
+
         List<CprCallResponseDto> cprCallResponseDtoList = cprCallRepository.findAllCallInProcessByAddress(user.getAddress().getId());
         return new CprCallNearUserResponseDto(
                 userAngelStatus,
@@ -88,7 +93,7 @@ public class CprCallService {
         }
         return new CprCallIdResponseDto(cprCall.getId());
     }
-
+  
     public void endCall(Long callId) {
         CprCall cprCall = cprCallRepository.findById(callId).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_FOUND_CPRCALL)
@@ -111,4 +116,57 @@ public class CprCallService {
         List<Dispatch> dispatchList = dispatchRepository.findAllByCprCallId(callId);
         return new CprCallGuideResponseDto(dispatchList.size());
     }
+
+    public CprCallIdResponseDto makeCall(CprCallRequestDto cprCallRequestDto, User user) {
+        Address callAddress = addressRepository.findByFullAddress(cprCallRequestDto.getFullAddress().split(" "))
+                .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_FAILED_TO_MATCH_ADDRESS));
+
+        CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallRequestDto);
+        cprCallRepository.save(cprCall);
+
+        sendFcmPushToAddress(cprCall, user.getId());
+
+        endCprCallAfterMinutes(cprCall, 10);
+
+        return new CprCallIdResponseDto(cprCall.getId());
+    }
+
+    private void sendFcmPushToAddress(CprCall cprCall, String userId) {
+
+        int offset = 0;
+        int maxSize = 500;
+        Pageable pageable;
+
+        LinkedHashMap<String, String> dataToSend = new LinkedHashMap<>() {{
+            put(FcmPushDataType.TYPE.getType(), String.valueOf(FcmPushType.CPR_CALL.ordinal()));
+            put(FcmPushDataType.CPR_CALL_ID.getType(), String.valueOf(cprCall.getId()));
+        }};
+
+        List<String> deviceTokenToSendPushList;
+        do {
+            pageable = PageRequest.of(offset, maxSize);
+            deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), userId, pageable);
+            firebaseCloudMessageService.sendFcmMessage(
+                    deviceTokenToSendPushList,
+                    MessageEnum.CPR_CALL_TITLE.getMessage(),
+                    cprCall.getFullAddress(),
+                    dataToSend
+            );
+            offset += maxSize;
+        } while (deviceTokenToSendPushList.size() >= maxSize);
+
+    }
+
+    private void endCprCallAfterMinutes(CprCall cprCall, Integer minutes) {
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+        Runnable task = () -> {
+            cprCall.endSituationCprCall();
+            cprCallRepository.save(cprCall);
+        };
+
+        executor.schedule(task, minutes, TimeUnit.MINUTES);
+        executor.shutdown();
+    }
+
 }
