@@ -54,6 +54,7 @@ public class User extends Timestamped{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
+    @Column(nullable = false)
     private Address address;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dispatcher")

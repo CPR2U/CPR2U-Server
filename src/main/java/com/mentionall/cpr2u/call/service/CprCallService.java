@@ -39,11 +39,7 @@ public class CprCallService {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     public CprCallNearUserResponseDto getCallNearUser(User user) {
-
-        if (user.getAddress() == null) {
-            throw new CustomException(ResponseCode.BAD_REQUEST_ADDRESS_NOT_SET);
-        }
-
+        
         AngelStatus userAngelStatus = user.getAngelStatus();
         if (userAngelStatus != AngelStatus.ACQUIRED) {
             return new CprCallNearUserResponseDto(
