@@ -83,7 +83,7 @@ public class CprCallService {
     }
 
     public CprCallIdResponseDto makeCall(CprCallRequestDto cprCallRequestDto, User user) {
-        Address callAddress = addressRepository.findByFullAddress(cprCallRequestDto.getFullAddress().split(" "))
+        Address callAddress = addressRepository.findByFullAddress(cprCallRequestDto.getFullAddress())
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_FAILED_TO_MATCH_ADDRESS));
 
         CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallRequestDto);
@@ -110,7 +110,7 @@ public class CprCallService {
         List<String> deviceTokenToSendPushList;
         do {
             pageable = PageRequest.of(offset, maxSize);
-            deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), userId, pageable);
+            deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddressExceptCaller(cprCall.getAddress().getId(), userId, pageable);
             firebaseCloudMessageService.sendFcmMessage(
                     deviceTokenToSendPushList,
                     FcmMessage.CPR_CALL_TITLE.getMessage(),

@@ -5,5 +5,5 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface DeviceTokenDslRepository {
-    List<String> findAllDeviceTokenByUserAddress(Long addressId, String userId, Pageable pageable);
+    List<String> findAllDeviceTokenByUserAddressExceptCaller(Long addressId, String userId, Pageable pageable);
 }

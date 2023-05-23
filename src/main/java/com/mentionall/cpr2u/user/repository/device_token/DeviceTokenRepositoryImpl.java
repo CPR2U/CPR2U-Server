@@ -17,7 +17,7 @@ public class DeviceTokenRepositoryImpl implements DeviceTokenDslRepository {
     }
 
     @Override
-    public List<String> findAllDeviceTokenByUserAddress(Long addressId, String userId, Pageable pageable) {
+    public List<String> findAllDeviceTokenByUserAddressExceptCaller(Long addressId, String userId, Pageable pageable) {
         return queryFactory.select(deviceToken.token)
                 .from(deviceToken)
                 .where(deviceToken.user.address.id.eq(addressId)
