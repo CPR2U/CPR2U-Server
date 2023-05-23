@@ -7,7 +7,7 @@ import com.twilio.type.PhoneNumber;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TwilioUtility {
+public class TwilioUtil {
     //@Value("${security.twilio.account-sid}")
     private String twilioAccountSid;
     //@Value("${security.twilio.auth-token}")

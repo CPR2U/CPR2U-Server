@@ -13,9 +13,8 @@ import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
-import com.mentionall.cpr2u.util.twilio.TwilioUtility;
+import com.mentionall.cpr2u.util.twilio.TwilioUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +33,7 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final DeviceTokenRepository deviceTokenRepository;
     private final AddressRepository addressRepository;
-    private final TwilioUtility fakeTwilioUtility;
+    private final TwilioUtil fakeTwilioUtil;
 
     @Transactional
     public TokenResponseDto signup(SignUpRequestDto requestDto) {
@@ -62,8 +61,8 @@ public class UserService {
     }
 
     public CodeResponseDto getVerificationCode(PhoneNumberRequestDto requestDto) {
-        String code = fakeTwilioUtility.makeCodeToVerify();
-        fakeTwilioUtility.sendSMS(requestDto.getPhoneNumber(), "Your verification code is " + code);
+        String code = fakeTwilioUtil.makeCodeToVerify();
+        fakeTwilioUtil.sendSMS(requestDto.getPhoneNumber(), "Your verification code is " + code);
         return new CodeResponseDto(code);
     }
 
