@@ -26,6 +26,9 @@ spring:
   sql:
     init:
       mode: always
+      
+  main:
+    allow-bean-definition-overriding : true
 
 security:
   secret-key: testtesttesttesttest
