@@ -38,7 +38,7 @@ public class CprCallService {
     private final DispatchRepository dispatchRepository;
     private final AddressRepository addressRepository;
     private final DeviceTokenRepository deviceTokenRepository;
-    private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final FirebaseCloudMessageUtil firebaseCloudMessageUtil;
 
     public CprCallNearUserResponseDto getCallNearUser(User user) {
         
@@ -111,7 +111,7 @@ public class CprCallService {
         do {
             pageable = PageRequest.of(offset, maxSize);
             deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddressExceptCaller(cprCall.getAddress().getId(), userId, pageable);
-            firebaseCloudMessageService.sendFcmMessage(
+            firebaseCloudMessageUtil.sendFcmMessage(
                     deviceTokenToSendPushList,
                     FcmMessage.CPR_CALL_TITLE.getMessage(),
                     cprCall.getFullAddress(),

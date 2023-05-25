@@ -7,7 +7,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Notification;
-import com.google.gson.Gson;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class FirebaseCloudMessageService {
+public class FirebaseCloudMessageUtil {
     public static FirebaseApp firebaseApp;
     public static final String firebaseAppName = "CPR2U";
 
@@ -33,7 +32,6 @@ public class FirebaseCloudMessageService {
                 .build();
 
         firebaseApp = FirebaseApp.initializeApp(options, firebaseAppName);
-
     }
 
     public void sendFcmMessage(List<String> deviceTokenToSendList, String title, String body, Map<String, String> data) {
@@ -45,7 +43,7 @@ public class FirebaseCloudMessageService {
                     .putAllData(data).build();
 
             try {
-                FirebaseMessaging.getInstance(firebaseApp).sendMulticast(message);
+                FirebaseMessaging.getInstance().sendMulticast(message);
             } catch (FirebaseMessagingException e) {
                 throw new CustomException(ResponseCode.SERVER_ERROR_FAILED_TO_SEND_FCM);
             }
