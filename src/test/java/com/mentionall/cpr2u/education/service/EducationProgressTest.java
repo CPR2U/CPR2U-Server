@@ -2,6 +2,7 @@ package com.mentionall.cpr2u.education.service;
 
 import com.mentionall.cpr2u.education.dto.ScoreRequestDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
+import com.mentionall.cpr2u.user.domain.AngelStatus;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
@@ -28,27 +29,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EducationProgressTest {
     @Autowired
     private EducationProgressService progressService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private AuthService authService;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private LectureService lectureService;
-
     @Autowired
     private AddressService addressService;
+
+    private static final String phoneNumber = "010-0000-0000";
 
     @BeforeEach
     private void beforeEach() {
         addressService.loadAddressList();
         var address = addressService.readAll().get(0).getGugunList().get(0);
-        authService.signup(new SignUpRequestDto("현애", "010-0000-0000", address.getId(), "device_token"));
+        authService.signup(new SignUpRequestDto("현애", phoneNumber, address.getId(), "device_token"));
     }
 
     @Test
@@ -56,7 +54,7 @@ public class EducationProgressTest {
     public void 강의_수강중인_경우() {
         //given
         createLectureCourse();
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
         //when
         var lectureList = lectureService.readLectureProgressAndList(user).getLectureList();
@@ -78,7 +76,7 @@ public class EducationProgressTest {
     public void 강의_수강완료한_경우() {
         //given
         createLectureCourse();
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
         //when
         completeLectureCourse(user);
@@ -97,7 +95,7 @@ public class EducationProgressTest {
     public void 퀴즈_100점을_넘은_경우() {
         //given
         createLectureCourse();
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
         completeLectureCourse(user);
 
         //when
@@ -116,7 +114,7 @@ public class EducationProgressTest {
     public void 퀴즈_100점을_넘지_않은_경우() {
         //given
         createLectureCourse();
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
         completeLectureCourse(user);
 
         //when
@@ -133,7 +131,7 @@ public class EducationProgressTest {
     public void 퀴즈_강의를_마무리하지_않고_테스트한_경우() {
         //given
         createLectureCourse();
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
         //when, then
         Assertions.assertThrows(CustomException.class,
@@ -145,7 +143,7 @@ public class EducationProgressTest {
     @Transactional
     public void 자세실습_80점을_넘은_경우() {
         //given
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
         createLectureCourse();
         completeLectureCourse(user);
         progressService.completeQuiz(user, new ScoreRequestDto(100));
@@ -165,7 +163,7 @@ public class EducationProgressTest {
     @Transactional
     public void 자세실습_80점을_넘지않은_경우() {
         //given
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
         createLectureCourse();
         completeLectureCourse(user);
         progressService.completeQuiz(user, new ScoreRequestDto(100));
@@ -184,7 +182,7 @@ public class EducationProgressTest {
     public void 자세실습_강의를_마무리하지_않고_테스트한_경우() {
         //given
         createLectureCourse();
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
         //when, then
         Assertions.assertThrows(CustomException.class,
@@ -196,7 +194,7 @@ public class EducationProgressTest {
     public void 자세실습_퀴즈를_마무리하지_않고_테스트한_경우() {
         //given
         createLectureCourse();
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
         //when, then
         completeLectureCourse(user);
@@ -208,7 +206,7 @@ public class EducationProgressTest {
     @Transactional
     public void 교육_수료_전_수료증_확인() {
         //given
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
         //when
         var educationInfo = progressService.readEducationInfo(user);
@@ -222,7 +220,7 @@ public class EducationProgressTest {
     @Transactional
     public void 교육_수료_당일_수료증_확인() {
         //given
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
         userService.certificate(user, LocalDate.now().atStartOfDay());
 
         //when
@@ -238,7 +236,7 @@ public class EducationProgressTest {
     public void 교육_수료_3일_후_수료증_확인() {
         //given
         int day = 3;
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
         userService.certificate(user, LocalDate.now().minusDays(day).atStartOfDay());
 
 
@@ -255,7 +253,7 @@ public class EducationProgressTest {
     public void 교육_수료_90일_후_수료증_확인() {
         //given
         int day = 90;
-        User user = userRepository.findByPhoneNumber("010-0000-0000").get();
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
         userService.certificate(user, LocalDate.now().minusDays(day).atStartOfDay());
 
         //when

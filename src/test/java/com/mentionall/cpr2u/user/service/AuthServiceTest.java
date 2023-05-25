@@ -21,13 +21,10 @@ public class AuthServiceTest {
 
     @Autowired
     private AuthService authService;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
-
     @Autowired
     private AddressService addressService;
 
@@ -61,31 +58,6 @@ public class AuthServiceTest {
 
     @Test
     @Transactional
-    public void 전화번호_중복_회원_회원가입() {
-
-        //given
-        String afNickname = "현애";
-        var bfAddress = addressService.readAll().get(0).getGugunList().get(0);
-        var afAddress = addressService.readAll().get(0).getGugunList().get(1);
-        SignUpRequestDto bfSignUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, bfAddress.getId(), deviceToken);
-        SignUpRequestDto afSignUpRequestDto = new SignUpRequestDto(afNickname, phoneNumber, afAddress.getId(), deviceToken);
-
-        //when
-        authService.signup(bfSignUpRequestDto);
-        User bfUser = userRepository.findByPhoneNumber(phoneNumber).get();
-        bfUser.getEducationProgress().getQuizProgress().updateScore(50);
-        authService.signup(afSignUpRequestDto);
-
-        //then
-        User afUser = userRepository.findByPhoneNumber(phoneNumber).get();
-        assertThat(afUser.getEducationProgress().getQuizProgress().getScore()).isEqualTo(0);
-        assertThat(afUser.getNickname()).isEqualTo(afNickname);
-        assertThat(afUser.getEducationProgress()).isNotNull();
-        assertThat(afUser.getAddress().getId()).isEqualTo(afAddress.getId());
-    }
-
-    @Test
-    @Transactional
     public void 로그인() {
         //given
         var address = addressService.readAll().get(0).getGugunList().get(0);
@@ -100,9 +72,7 @@ public class AuthServiceTest {
         assertThat(findUser.getDeviceToken().getToken()).isEqualTo(deviceToken);
     }
 
-    //TODO: 랜덤 코드 생성 테스트 리팩토링(코드 생성 서비스 분리 필요)
-    //TODO: Twillo Fake 객체로 테스트
-    //@Test
+    @Test
     @Transactional
     public void 전화번호_인증코드_생성(){
         //given

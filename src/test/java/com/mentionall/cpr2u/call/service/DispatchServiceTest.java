@@ -16,7 +16,6 @@ import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
 import com.mentionall.cpr2u.user.service.AuthService;
-import com.mentionall.cpr2u.user.service.UserService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,8 +35,6 @@ public class DispatchServiceTest {
     @Autowired
     private DispatchRepository dispatchRepository;
     @Autowired
-    private UserService userService;
-    @Autowired
     private AuthService authService;
     @Autowired
     private UserRepository userRepository;
@@ -53,6 +50,8 @@ public class DispatchServiceTest {
     private static final String fullAddress = "서울특별시 용산구 청파로47길 100";
     private static final double latitude = 37.545183430559604;
     private static final double longitude = 126.9648022541866;
+    private static final String callerPhoneNumber  = "010-0000-0000";
+    private static final String dispatcherPhoneNumber = "010-0000-0001";
 
     @BeforeEach
     public void beforeEach() {
@@ -64,8 +63,8 @@ public class DispatchServiceTest {
     public void CPR_출동_호출상황_정보_조회() {
         //given
         createCallerAndDispatcher();
-        User caller = userRepository.findByPhoneNumber(("010-0000-0000")).get();
-        User dispatcher = userRepository.findByPhoneNumber(("010-0000-0001")).get();
+        User caller = userRepository.findByPhoneNumber(callerPhoneNumber).get();
+        User dispatcher = userRepository.findByPhoneNumber(dispatcherPhoneNumber).get();
 
         long callId = callService.makeCall(new CprCallRequestDto(fullAddress, latitude, longitude), caller).getCallId();
 
@@ -85,8 +84,8 @@ public class DispatchServiceTest {
     public void CPR_출동_시_출동상태_진행중() {
         //given
         createCallerAndDispatcher();
-        User caller = userRepository.findByPhoneNumber(("010-0000-0000")).get();
-        User dispatcher = userRepository.findByPhoneNumber(("010-0000-0001")).get();
+        User caller = userRepository.findByPhoneNumber(callerPhoneNumber).get();
+        User dispatcher = userRepository.findByPhoneNumber(dispatcherPhoneNumber).get();
 
         long callId = callService.makeCall(new CprCallRequestDto(fullAddress, latitude, longitude), caller).getCallId();
 
@@ -103,8 +102,8 @@ public class DispatchServiceTest {
     public void CPR_출동_도착_시_출동상태_도착() {
         //given
         createCallerAndDispatcher();
-        User caller = userRepository.findByPhoneNumber(("010-0000-0000")).get();
-        User dispatcher = userRepository.findByPhoneNumber(("010-0000-0001")).get();
+        User caller = userRepository.findByPhoneNumber(callerPhoneNumber).get();
+        User dispatcher = userRepository.findByPhoneNumber(dispatcherPhoneNumber).get();
 
         long callId = callService.makeCall(new CprCallRequestDto(fullAddress, latitude, longitude), caller).getCallId();
         var dispatchInfo = dispatchService.dispatch(dispatcher, new DispatchRequestDto(callId));
@@ -122,8 +121,8 @@ public class DispatchServiceTest {
     public void CPR_허위_호출_신고() {
         //given
         createCallerAndDispatcher();
-        User caller = userRepository.findByPhoneNumber(("010-0000-0000")).get();
-        User dispatcher = userRepository.findByPhoneNumber(("010-0000-0001")).get();
+        User caller = userRepository.findByPhoneNumber(callerPhoneNumber).get();
+        User dispatcher = userRepository.findByPhoneNumber(dispatcherPhoneNumber).get();
 
         long callId = callService.makeCall(new CprCallRequestDto(fullAddress, latitude, longitude), caller).getCallId();
         var dispatchInfo = dispatchService.dispatch(dispatcher, new DispatchRequestDto(callId));

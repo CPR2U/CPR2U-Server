@@ -50,10 +50,10 @@ class CprCallServiceTest {
     private static final double longitude = 126.9771473198163;
     private static final String userPhoneNumber = "010-0000-0000";
     private static final String angelPhoneNumber = "010-1111-1111";
-    private static String testFullAddress1 = "서울 종로구 종로 104";
-    private static String testFullAddress2 = "서울 중구 세종대로 지하 2";
-    private static String testFullAddress3 = "세종특별자치시 한누리대로 2130 (우)30151";
-    private static String testFullAddress4 = "경상남도 창원시 진해구 평안동 10";
+    private static final String testFullAddress1 = "서울 종로구 종로 104";
+    private static final String testFullAddress2 = "서울 중구 세종대로 지하 2";
+    private static final String testFullAddress3 = "세종특별자치시 한누리대로 2130 (우)30151";
+    private static final String testFullAddress4 = "경상남도 창원시 진해구 평안동 10";
 
     @BeforeEach
     private void beforeEach() {
@@ -92,6 +92,24 @@ class CprCallServiceTest {
 
         //then
         assertThat(callListForNotAngel.getCprCallResponseDtoList().size()).isEqualTo(0);
+    }
+
+    @Test
+    @Transactional
+    public void 호출_주변에_만료된_엔젤이_있는_경우() {
+        //given
+        createUsers();
+        User caller = userRepository.findByPhoneNumber(angelPhoneNumber).get();
+        User expiredAngel = userRepository.findByPhoneNumber(userPhoneNumber).get();
+        expiredAngel.expireCertificate();
+
+        cprCallService.makeCall(new CprCallRequestDto(testFullAddress1, latitude, longitude), caller);
+
+        //when
+        var callListForExpiredAngel = cprCallService.getCallNearUser(expiredAngel);
+
+        //then
+        assertThat(callListForExpiredAngel.getCprCallResponseDtoList().size()).isEqualTo(0);
     }
 
     @Test

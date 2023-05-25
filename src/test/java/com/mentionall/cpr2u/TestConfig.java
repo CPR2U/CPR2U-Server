@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TestConfig {
     @Bean
-    public FirebaseCloudMessageUtil firebaseCloudMessageService() {
+    public FirebaseCloudMessageUtil firebaseCloudMessageUtil() {
         return new FakeFirebaseCloudMessageUtil();
     }
 
