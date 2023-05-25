@@ -23,7 +23,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class FirebaseCloudMessageService {
     public static FirebaseApp firebaseApp;
-    public static String firebaseAppName = "CPR2U";
+    public static final String firebaseAppName = "CPR2U";
 
     @PostConstruct
     private void initialFirebaseApp() throws IOException {
