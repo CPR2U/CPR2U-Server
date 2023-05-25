@@ -8,17 +8,18 @@ import com.mentionall.cpr2u.user.domain.DeviceToken;
 import com.mentionall.cpr2u.user.domain.RefreshToken;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.*;
-import com.mentionall.cpr2u.user.repository.address.AddressRepository;
-import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.user.repository.RefreshTokenRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
-import com.mentionall.cpr2u.util.TwilioUtil;
+import com.mentionall.cpr2u.user.repository.address.AddressRepository;
+import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
+import com.mentionall.cpr2u.util.twilio.TwilioUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
 
@@ -31,9 +32,8 @@ public class UserService {
     private final EducationProgressRepository progressRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final DeviceTokenRepository deviceTokenRepository;
-
     private final AddressRepository addressRepository;
-    private final TwilioUtil twilioUtil;
+    private final TwilioUtil fakeTwilioUtil;
 
     @Transactional
     public TokenResponseDto signup(SignUpRequestDto requestDto) {
@@ -41,20 +41,28 @@ public class UserService {
                 () -> new CustomException(NOT_FOUND_ADDRESS)
         );
 
-        User user = new User(requestDto, address);
-        userRepository.save(user);
+        Optional<User> bfUser = userRepository.findByPhoneNumber(requestDto.getPhoneNumber());
+        if (bfUser.isPresent()) userRepository.delete(bfUser.get());
+        userRepository.flush();
 
-        createDeviceToken(requestDto.getDeviceToken(), user);
-        createEducationProgress(user);
+        try {
+            User user = new User(requestDto, address);
+            userRepository.save(user);
 
-        return issueUserTokens(user);
+            createDeviceToken(requestDto.getDeviceToken(), user);
+            createEducationProgress(user);
+
+            return issueUserTokens(user);
+        } catch (Exception e) {
+            if (bfUser.isPresent()) userRepository.save(bfUser.get());
+            throw new CustomException(SERVER_ERROR_FAILED_TO_SIGNUP);
+        }
+
     }
 
     public CodeResponseDto getVerificationCode(PhoneNumberRequestDto requestDto) {
-        String code = String.format("%04.0f", Math.random() * Math.pow(10, 4));
-        /*We omit sending messages due to cost issues*/
-        //twilioUtil.sendSMS(requestDto.getPhoneNumber(), "Your verification code is " + code);
-
+        String code = fakeTwilioUtil.makeCodeToVerify();
+        fakeTwilioUtil.sendSMS(requestDto.getPhoneNumber(), "Your verification code is " + code);
         return new CodeResponseDto(code);
     }
 
@@ -74,12 +82,12 @@ public class UserService {
             throw new CustomException(FORBIDDEN_TOKEN_NOT_VALID);
 
         RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenByToken(requestDto.getRefreshToken())
-                .orElseThrow(()-> new CustomException(FORBIDDEN_TOKEN_NOT_VALID));
+                .orElseThrow(() -> new CustomException(FORBIDDEN_TOKEN_NOT_VALID));
         return issueUserTokens(refreshToken.getUser());
     }
 
     public void checkNicknameDuplicated(String nickname) {
-        if(userRepository.existsByNickname(nickname))
+        if (userRepository.existsByNickname(nickname))
             throw new CustomException(BAD_REQUEST_NICKNAME_DUPLICATED);
     }
 
@@ -88,7 +96,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    private TokenResponseDto issueUserTokens(User user){
+    private TokenResponseDto issueUserTokens(User user) {
         return new TokenResponseDto(
                 jwtTokenProvider.createAccessToken(user),
                 createRefreshToken(user).getToken());
@@ -100,6 +108,9 @@ public class UserService {
 
         refreshToken.setToken(jwtTokenProvider.createRefreshToken(user));
         refreshTokenRepository.save(refreshToken);
+
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
         return refreshToken;
     }
 
@@ -120,5 +131,15 @@ public class UserService {
 
         user.setEducationProgress(progress);
         userRepository.save(user);
+    }
+
+    public void logout(User user) {
+        refreshTokenRepository.findByUserId(user.getId())
+                .ifPresent(
+                        refreshToken -> {
+                            refreshToken.setToken("expired");
+                            refreshTokenRepository.save(refreshToken);
+                        }
+                );
     }
 }

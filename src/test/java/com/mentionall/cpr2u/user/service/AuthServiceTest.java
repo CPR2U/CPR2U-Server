@@ -33,7 +33,6 @@ public class AuthServiceTest {
 
     private static final String phoneNumber = "010-0000-0000";
     private static final String nickname = "예진";
-    private static final Long addressId = 1L;
     private static final String deviceToken = "device-code";
 
     @BeforeEach
@@ -45,7 +44,8 @@ public class AuthServiceTest {
     @Transactional
     public void 회원가입() {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken);
+        var address = addressService.readAll().get(0).getGugunList().get(0);
+        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken);
 
         //when
         userService.signup(signUpRequestDto).getAccessToken();
@@ -56,14 +56,40 @@ public class AuthServiceTest {
         assertThat(user.getNickname()).isEqualTo(nickname);
         assertThat(user.getDeviceToken().getToken()).isEqualTo(deviceToken);
         assertThat(user.getEducationProgress()).isNotNull();
-        assertThat(user.getAddress().getId()).isEqualTo(addressId);
+        assertThat(user.getAddress().getId()).isEqualTo(address.getId());
+    }
+
+    @Test
+    @Transactional
+    public void 전화번호_중복_회원_회원가입() {
+
+        //given
+        String afNickname = "현애";
+        var bfAddress = addressService.readAll().get(0).getGugunList().get(0);
+        var afAddress = addressService.readAll().get(0).getGugunList().get(1);
+        SignUpRequestDto bfSignUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, bfAddress.getId(), deviceToken);
+        SignUpRequestDto afSignUpRequestDto = new SignUpRequestDto(afNickname, phoneNumber, afAddress.getId(), deviceToken);
+
+        //when
+        userService.signup(bfSignUpRequestDto);
+        User bfUser = userRepository.findByPhoneNumber(phoneNumber).get();
+        bfUser.getEducationProgress().getQuizProgress().updateScore(50);
+        userService.signup(afSignUpRequestDto);
+
+        //then
+        User afUser = userRepository.findByPhoneNumber(phoneNumber).get();
+        assertThat(afUser.getEducationProgress().getQuizProgress().getScore()).isEqualTo(0);
+        assertThat(afUser.getNickname()).isEqualTo(afNickname);
+        assertThat(afUser.getEducationProgress()).isNotNull();
+        assertThat(afUser.getAddress().getId()).isEqualTo(afAddress.getId());
     }
 
     @Test
     @Transactional
     public void 로그인() {
         //given
-        userService.signup(new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken));
+        var address = addressService.readAll().get(0).getGugunList().get(0);
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
 
         //when
         var accessToken = userService.login(new LoginRequestDto(phoneNumber, deviceToken)).getAccessToken();
@@ -95,7 +121,8 @@ public class AuthServiceTest {
     @Transactional
     public void 자동_로그인() {
         //given
-        userService.signup(new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken));
+        var address = addressService.readAll().get(0).getGugunList().get(0);
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
         var tokens = userService.login(new LoginRequestDto(phoneNumber, deviceToken));
 
         //when
@@ -110,8 +137,8 @@ public class AuthServiceTest {
     @Transactional
     public void 닉네임_중복체크시_중복되는_경우() {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, 1L, deviceToken);
-        userService.signup(signUpRequestDto);
+        var address = addressService.readAll().get(0).getGugunList().get(0);
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
 
         //when
         String newNickname = nickname;
@@ -124,13 +151,28 @@ public class AuthServiceTest {
     @Transactional
     public void 닉네임_중복체크시_사용가능한_경우() {
         //given
-        SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken);
-        userService.signup(signUpRequestDto);
+        var address = addressService.readAll().get(0).getGugunList().get(0);
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
 
         //when
         String newNickname = "new" + nickname;
 
         //then
         assertDoesNotThrow(() -> userService.checkNicknameDuplicated(newNickname));
+    }
+
+    @Test
+    @Transactional
+    public void 로그아웃() {
+        //given
+        var address = addressService.readAll().get(0).getGugunList().get(0);
+        userService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
+
+        //when
+        userService.logout(user);
+
+        //then
+        assertThat(user.getRefreshToken().getToken()).isEqualTo("expired");
     }
 }

@@ -40,21 +40,20 @@ public class User extends Timestamped{
     @Embedded
     private Certificate certificate;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private EducationProgress educationProgress;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private DeviceToken deviceToken;
 
     @ElementCollection(fetch = FetchType.LAZY)
     private List<UserRole> roles = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
-    @Column(nullable = false)
+    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dispatcher")
@@ -77,6 +76,9 @@ public class User extends Timestamped{
 
     public void setDeviceToken(DeviceToken deviceToken) {
         this.deviceToken = deviceToken;
+    }
+    public void setRefreshToken(RefreshToken refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public void setAddress(Address address) {

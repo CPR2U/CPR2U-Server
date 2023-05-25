@@ -9,9 +9,4 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AddressRepository extends JpaRepository<Address, Long> , AddressDslRepository, QuerydslPredicateExecutor<Address> {
-
-    // TODO: Querydsl로 리팩토링
-    @Query("SELECT DISTINCT a.sido FROM Address a")
-    List<String> findAllSido();
-}
+public interface AddressRepository extends JpaRepository<Address, Long> , AddressDslRepository, QuerydslPredicateExecutor<Address> { }

@@ -1,7 +1,9 @@
 package com.mentionall.cpr2u.education.service;
 
+import com.mentionall.cpr2u.education.domain.Lecture;
 import com.mentionall.cpr2u.education.domain.progress.EducationProgress;
 import com.mentionall.cpr2u.education.dto.lecture.LectureListResponseDto;
+import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureResponseDto;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.education.repository.LectureRepository;
@@ -19,6 +21,10 @@ import java.util.stream.Collectors;
 public class LectureService {
     private final LectureRepository lectureRepository;
     private final EducationProgressRepository progressRepository;
+
+    public void createLecture(LectureRequestDto requestDto) {
+        lectureRepository.save(new Lecture(requestDto));
+    }
 
     public LectureListResponseDto readLectureProgressAndList(User user) {
         EducationProgress progress = progressRepository.findByUser(user).orElseThrow(

@@ -11,12 +11,13 @@ import com.mentionall.cpr2u.user.domain.AngelStatus;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
-import com.mentionall.cpr2u.util.MessageEnum;
+import com.mentionall.cpr2u.util.fcm.FcmMessage;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
-import com.mentionall.cpr2u.util.fcm.FcmPushDataType;
+import com.mentionall.cpr2u.util.fcm.FcmDataType;
 import com.mentionall.cpr2u.util.fcm.FcmPushType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CprCallService {
@@ -81,7 +83,7 @@ public class CprCallService {
     }
 
     public CprCallIdResponseDto makeCall(CprCallRequestDto cprCallRequestDto, User user) {
-        Address callAddress = addressRepository.findByFullAddress(cprCallRequestDto.getFullAddress().split(" "))
+        Address callAddress = addressRepository.findByFullAddress(cprCallRequestDto.getFullAddress())
                 .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_FAILED_TO_MATCH_ADDRESS));
 
         CprCall cprCall = new CprCall(user, callAddress, LocalDateTime.now(), cprCallRequestDto);
@@ -101,17 +103,17 @@ public class CprCallService {
         Pageable pageable;
 
         LinkedHashMap<String, String> dataToSend = new LinkedHashMap<>() {{
-            put(FcmPushDataType.TYPE.getType(), String.valueOf(FcmPushType.CPR_CALL.ordinal()));
-            put(FcmPushDataType.CPR_CALL_ID.getType(), String.valueOf(cprCall.getId()));
+            put(FcmDataType.TYPE.getType(), String.valueOf(FcmPushType.CPR_CALL.ordinal()));
+            put(FcmDataType.CPR_CALL_ID.getType(), String.valueOf(cprCall.getId()));
         }};
 
         List<String> deviceTokenToSendPushList;
         do {
             pageable = PageRequest.of(offset, maxSize);
-            deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddress(cprCall.getAddress().getId(), userId, pageable);
+            deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddressExceptCaller(cprCall.getAddress().getId(), userId, pageable);
             firebaseCloudMessageService.sendFcmMessage(
                     deviceTokenToSendPushList,
-                    MessageEnum.CPR_CALL_TITLE.getMessage(),
+                    FcmMessage.CPR_CALL_TITLE.getMessage(),
                     cprCall.getFullAddress(),
                     dataToSend
             );
