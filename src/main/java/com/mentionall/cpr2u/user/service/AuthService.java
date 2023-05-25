@@ -40,10 +40,6 @@ public class AuthService {
                 () -> new CustomException(NOT_FOUND_ADDRESS)
         );
 
-        Optional<User> bfUser = userRepository.findByPhoneNumber(requestDto.getPhoneNumber());
-        if (bfUser.isPresent()) userRepository.delete(bfUser.get());
-        userRepository.flush();
-
         try {
             User user = new User(requestDto, address);
             userRepository.save(user);
@@ -53,7 +49,6 @@ public class AuthService {
 
             return issueUserTokens(user);
         } catch (Exception e) {
-            if (bfUser.isPresent()) userRepository.save(bfUser.get());
             throw new CustomException(SERVER_ERROR_FAILED_TO_SIGNUP);
         }
 
