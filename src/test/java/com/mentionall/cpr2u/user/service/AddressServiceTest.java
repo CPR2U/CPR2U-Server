@@ -23,6 +23,8 @@ public class AddressServiceTest {
     @Autowired
     private UserService userService;
     @Autowired
+    private AuthService authService;
+    @Autowired
     private UserRepository userRepository;
 
     @BeforeEach
@@ -38,7 +40,7 @@ public class AddressServiceTest {
         var address = addressList.get(0);
         var addressDetail = address.getGugunList().get(0);
 
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", addressDetail.getId(), "device-token"));
+        authService.signup(new SignUpRequestDto("현애", "010-0000-0000", addressDetail.getId(), "device-token"));
         User user = userRepository.findByPhoneNumber("010-0000-0000").get();
 
         //when

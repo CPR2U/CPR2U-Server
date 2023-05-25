@@ -1,15 +1,21 @@
 package com.mentionall.cpr2u.call.service;
 
-import com.mentionall.cpr2u.call.domain.*;
+import com.mentionall.cpr2u.call.domain.CprCall;
+import com.mentionall.cpr2u.call.domain.Dispatch;
+import com.mentionall.cpr2u.call.domain.DispatchStatus;
+import com.mentionall.cpr2u.call.domain.Report;
+import com.mentionall.cpr2u.call.dto.ReportRequestDto;
 import com.mentionall.cpr2u.call.dto.cpr_call.CprCallRequestDto;
 import com.mentionall.cpr2u.call.dto.dispatch.DispatchRequestDto;
-import com.mentionall.cpr2u.call.dto.ReportRequestDto;
-import com.mentionall.cpr2u.call.repository.*;
+import com.mentionall.cpr2u.call.repository.CprCallRepository;
+import com.mentionall.cpr2u.call.repository.DispatchRepository;
+import com.mentionall.cpr2u.call.repository.ReportRepository;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.address.AddressResponseDto;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
+import com.mentionall.cpr2u.user.service.AuthService;
 import com.mentionall.cpr2u.user.service.UserService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,27 +33,22 @@ public class DispatchServiceTest {
 
     @Autowired
     private DispatchService dispatchService;
-
-    @Autowired
-    private UserService userService;
-
     @Autowired
     private DispatchRepository dispatchRepository;
-
     @Autowired
-    private CprCallService callService;
-
+    private UserService userService;
     @Autowired
-    private CprCallRepository callRepository;
-
+    private AuthService authService;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
-    private ReportRepository reportRepository;
-
+    private CprCallService callService;
+    @Autowired
+    private CprCallRepository callRepository;
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private ReportRepository reportRepository;
 
     private static final String fullAddress = "서울특별시 용산구 청파로47길 100";
     private static final double latitude = 37.545183430559604;
@@ -142,7 +143,7 @@ public class DispatchServiceTest {
         var address = addressList.get(0);
         var addressDetail = address.getGugunList().get(0);
 
-        userService.signup(new SignUpRequestDto("호출자", "010-0000-0000", addressDetail.getId(), "device_token"));
-        userService.signup(new SignUpRequestDto("출동자", "010-0000-0001", addressDetail.getId(), "device_token"));
+        authService.signup(new SignUpRequestDto("호출자", "010-0000-0000", addressDetail.getId(), "device_token"));
+        authService.signup(new SignUpRequestDto("출동자", "010-0000-0001", addressDetail.getId(), "device_token"));
     }
 }

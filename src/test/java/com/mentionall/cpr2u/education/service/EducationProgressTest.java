@@ -1,18 +1,17 @@
 package com.mentionall.cpr2u.education.service;
 
-import com.mentionall.cpr2u.TestConfig;
 import com.mentionall.cpr2u.education.dto.ScoreRequestDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
+import com.mentionall.cpr2u.user.service.AuthService;
 import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -34,13 +33,13 @@ public class EducationProgressTest {
     private UserService userService;
 
     @Autowired
+    private AuthService authService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private LectureService lectureService;
-
-    @Autowired
-    private QuizService quizService;
 
     @Autowired
     private AddressService addressService;
@@ -49,7 +48,7 @@ public class EducationProgressTest {
     private void beforeEach() {
         addressService.loadAddressList();
         var address = addressService.readAll().get(0).getGugunList().get(0);
-        userService.signup(new SignUpRequestDto("현애", "010-0000-0000", address.getId(), "device_token"));
+        authService.signup(new SignUpRequestDto("현애", "010-0000-0000", address.getId(), "device_token"));
     }
 
     @Test

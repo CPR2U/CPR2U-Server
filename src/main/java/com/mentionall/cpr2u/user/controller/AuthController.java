@@ -4,7 +4,7 @@ import com.mentionall.cpr2u.user.domain.PrincipalDetails;
 import com.mentionall.cpr2u.user.dto.address.AddressResponseDto;
 import com.mentionall.cpr2u.user.dto.user.*;
 import com.mentionall.cpr2u.user.service.AddressService;
-import com.mentionall.cpr2u.user.service.UserService;
+import com.mentionall.cpr2u.user.service.AuthService;
 import com.mentionall.cpr2u.util.GetUserDetails;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
 import com.mentionall.cpr2u.util.ResponseTemplate;
@@ -27,7 +27,7 @@ import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_SUCCESS;
 @RequestMapping("/auth")
 @Tag(name = "AuthController", description = "회원가입/로그인")
 public class AuthController {
-    private final UserService userService;
+    private final AuthService authService;
     private final AddressService addressService;
 
     @Operation(summary = "회원가입",
@@ -42,7 +42,7 @@ public class AuthController {
     public ResponseEntity<ResponseDataTemplate> signup(@RequestBody SignUpRequestDto signUpRequestDto){
         return ResponseDataTemplate.toResponseEntity(
                 OK_SUCCESS,
-                userService.signup(signUpRequestDto)
+                authService.signup(signUpRequestDto)
         );
     }
 
@@ -58,7 +58,7 @@ public class AuthController {
     public ResponseEntity<ResponseDataTemplate> issueVerificationCode(@RequestBody PhoneNumberRequestDto userPhoneNumberRequestDto){
         return ResponseDataTemplate.toResponseEntity(
                 OK_SUCCESS,
-                userService.getVerificationCode(userPhoneNumberRequestDto)
+                authService.getVerificationCode(userPhoneNumberRequestDto)
         );
     }
 
@@ -88,7 +88,7 @@ public class AuthController {
     public ResponseEntity<ResponseDataTemplate> verificationUserLogin(@RequestBody LoginRequestDto loginRequestDto){
         return ResponseDataTemplate.toResponseEntity(
                 OK_SUCCESS,
-                userService.login(loginRequestDto)
+                authService.login(loginRequestDto)
         );
     }
     @Operation(summary = "닉네임 중복확인",
@@ -103,7 +103,7 @@ public class AuthController {
     })
     @GetMapping("/nickname")
     public ResponseEntity<ResponseTemplate> nicknameCheck(@RequestParam("nickname") String nickname){
-        userService.checkNicknameDuplicated(nickname);
+        authService.checkNicknameDuplicated(nickname);
 
         return ResponseTemplate.toResponseEntity(OK_NICKNAME_CHECK);
     }
@@ -122,7 +122,7 @@ public class AuthController {
     public ResponseEntity<ResponseDataTemplate> autoLogin(@RequestBody TokenReissueRequestDto tokenReissueRequestDto){
         return ResponseDataTemplate.toResponseEntity(
                 OK_SUCCESS,
-                userService.reissueToken(tokenReissueRequestDto)
+                authService.reissueToken(tokenReissueRequestDto)
         );
     }
 
@@ -136,7 +136,7 @@ public class AuthController {
     })
     @PostMapping("/logout")
     public ResponseEntity<ResponseTemplate> logout(@GetUserDetails PrincipalDetails userDetails) {
-        userService.logout(userDetails.getUser());
+        authService.logout(userDetails.getUser());
         return ResponseTemplate.toResponseEntity(
                 OK_SUCCESS
         );

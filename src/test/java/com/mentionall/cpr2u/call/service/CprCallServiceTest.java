@@ -14,7 +14,7 @@ import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
-import com.mentionall.cpr2u.user.service.UserService;
+import com.mentionall.cpr2u.user.service.AuthService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +34,7 @@ class CprCallServiceTest {
     @Autowired
     private CprCallRepository cprCallRepository;
     @Autowired
-    private UserService userService;
+    private AuthService authService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -43,7 +43,6 @@ class CprCallServiceTest {
     private DispatchRepository dispatchRepository;
     @Autowired
     private AddressService addressService;
-
     @Autowired
     private AddressRepository addressRepository;
 
@@ -210,8 +209,8 @@ class CprCallServiceTest {
         String angelNickname = "현애";
         String deviceToken = "device-code";
         var address = addressRepository.findByFullAddress(testFullAddress1).get();
-        userService.signup(new SignUpRequestDto(userNickname, userPhoneNumber, address.getId(), deviceToken));
-        userService.signup(new SignUpRequestDto(angelNickname, angelPhoneNumber, address.getId(), deviceToken));
+        authService.signup(new SignUpRequestDto(userNickname, userPhoneNumber, address.getId(), deviceToken));
+        authService.signup(new SignUpRequestDto(angelNickname, angelPhoneNumber, address.getId(), deviceToken));
 
         User angel = userRepository.findByPhoneNumber(angelPhoneNumber).get();
         angel.acquireCertification(LocalDateTime.now());
