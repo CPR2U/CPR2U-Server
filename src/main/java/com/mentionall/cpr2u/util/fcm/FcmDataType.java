@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum FcmPushDataType {
+public enum FcmDataType {
 
     TYPE("type"),
     CPR_CALL_ID("call");

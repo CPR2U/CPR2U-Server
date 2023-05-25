@@ -62,6 +62,18 @@ sourceSets {
 			srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
 		}
 	}
+	test{
+		java {
+			srcDirs = ["$projectDir/src/test", "$projectDir/build/generated"]
+		}
+		resources {
+			includes = ["$projectDir/src/test/resources/config/application.yml"]
+		}
+	}
+}
+
+test {
+	classpath += sourceSets.test.output
 }
 
 tasks.named('test') {

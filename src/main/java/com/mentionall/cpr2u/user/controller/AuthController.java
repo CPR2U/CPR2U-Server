@@ -1,7 +1,9 @@
 package com.mentionall.cpr2u.user.controller;
 
 import com.mentionall.cpr2u.user.domain.PrincipalDetails;
+import com.mentionall.cpr2u.user.dto.address.AddressResponseDto;
 import com.mentionall.cpr2u.user.dto.user.*;
+import com.mentionall.cpr2u.user.service.AddressService;
 import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.GetUserDetails;
 import com.mentionall.cpr2u.util.ResponseDataTemplate;
@@ -26,6 +28,7 @@ import static com.mentionall.cpr2u.util.exception.ResponseCode.OK_SUCCESS;
 @Tag(name = "AuthController", description = "회원가입/로그인")
 public class AuthController {
     private final UserService userService;
+    private final AddressService addressService;
 
     @Operation(summary = "회원가입",
             method = "POST",
@@ -56,6 +59,18 @@ public class AuthController {
         return ResponseDataTemplate.toResponseEntity(
                 OK_SUCCESS,
                 userService.getVerificationCode(userPhoneNumberRequestDto)
+        );
+    }
+
+    @Operation(summary = "주소 리스트 조회", description = "전국 시도와 시군구 주소 리스트를 조회한다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(array = @ArraySchema(schema = @Schema(implementation = AddressResponseDto.class)))),
+    })
+    @GetMapping("/address")
+    public ResponseEntity<ResponseDataTemplate> readAddressList() {
+        return ResponseDataTemplate.toResponseEntity(
+                OK_SUCCESS,
+                addressService.readAll()
         );
     }
 
@@ -120,7 +135,7 @@ public class AuthController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })
     @PostMapping("/logout")
-    public ResponseEntity<ResponseTemplate> logout(@GetUserDetails PrincipalDetails userDetails){
+    public ResponseEntity<ResponseTemplate> logout(@GetUserDetails PrincipalDetails userDetails) {
         userService.logout(userDetails.getUser());
         return ResponseTemplate.toResponseEntity(
                 OK_SUCCESS

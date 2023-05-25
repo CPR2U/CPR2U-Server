@@ -1,30 +1,26 @@
 package com.mentionall.cpr2u.education.service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mentionall.cpr2u.TestConfig;
 import com.mentionall.cpr2u.education.dto.ScoreRequestDto;
 import com.mentionall.cpr2u.education.dto.lecture.LectureRequestDto;
-import com.mentionall.cpr2u.education.dto.quiz.QuizAnswerRequestDto;
-import com.mentionall.cpr2u.education.dto.quiz.QuizRequestDto;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
 import com.mentionall.cpr2u.user.service.UserService;
 import com.mentionall.cpr2u.util.exception.CustomException;
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.mentionall.cpr2u.education.domain.ProgressStatus.*;
 import static com.mentionall.cpr2u.education.domain.TestStandard.*;
-import static com.mentionall.cpr2u.user.domain.AngelStatus.*;
+import static com.mentionall.cpr2u.user.domain.AngelStatus.ACQUIRED;
+import static com.mentionall.cpr2u.user.domain.AngelStatus.UNACQUIRED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

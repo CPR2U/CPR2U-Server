@@ -12,15 +12,14 @@ import com.mentionall.cpr2u.user.repository.RefreshTokenRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
-import com.mentionall.cpr2u.util.TwilioUtil;
 import com.mentionall.cpr2u.util.exception.CustomException;
+import com.mentionall.cpr2u.util.twilio.TwilioUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
 
@@ -33,9 +32,8 @@ public class UserService {
     private final EducationProgressRepository progressRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final DeviceTokenRepository deviceTokenRepository;
-
     private final AddressRepository addressRepository;
-    private final TwilioUtil twilioUtil;
+    private final TwilioUtil fakeTwilioUtil;
 
     @Transactional
     public TokenResponseDto signup(SignUpRequestDto requestDto) {
@@ -63,10 +61,8 @@ public class UserService {
     }
 
     public CodeResponseDto getVerificationCode(PhoneNumberRequestDto requestDto) {
-        String code = String.format("%04.0f", Math.random() * Math.pow(10, 4));
-        /*We omit sending messages due to cost issues*/
-        //twilioUtil.sendSMS(requestDto.getPhoneNumber(), "Your verification code is " + code);
-
+        String code = fakeTwilioUtil.makeCodeToVerify();
+        fakeTwilioUtil.sendSMS(requestDto.getPhoneNumber(), "Your verification code is " + code);
         return new CodeResponseDto(code);
     }
 

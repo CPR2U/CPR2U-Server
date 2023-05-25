@@ -64,10 +64,11 @@ public class AuthServiceTest {
     public void 전화번호_중복_회원_회원가입() {
 
         //given
-        Long afAddressId = 2L;
         String afNickname = "현애";
-        SignUpRequestDto bfSignUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, addressId, deviceToken);
-        SignUpRequestDto afSignUpRequestDto = new SignUpRequestDto(afNickname, phoneNumber, afAddressId, deviceToken);
+        var bfAddress = addressService.readAll().get(0).getGugunList().get(0);
+        var afAddress = addressService.readAll().get(0).getGugunList().get(1);
+        SignUpRequestDto bfSignUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, bfAddress.getId(), deviceToken);
+        SignUpRequestDto afSignUpRequestDto = new SignUpRequestDto(afNickname, phoneNumber, afAddress.getId(), deviceToken);
 
         //when
         userService.signup(bfSignUpRequestDto);
@@ -80,7 +81,7 @@ public class AuthServiceTest {
         assertThat(afUser.getEducationProgress().getQuizProgress().getScore()).isEqualTo(0);
         assertThat(afUser.getNickname()).isEqualTo(afNickname);
         assertThat(afUser.getEducationProgress()).isNotNull();
-        assertThat(afUser.getAddress().getId()).isEqualTo(afAddressId);
+        assertThat(afUser.getAddress().getId()).isEqualTo(afAddress.getId());
     }
 
     @Test
