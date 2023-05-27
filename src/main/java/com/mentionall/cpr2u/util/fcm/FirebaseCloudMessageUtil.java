@@ -1,4 +1,4 @@
-package com.mentionall.cpr2u.call.service;
+package com.mentionall.cpr2u.util.fcm;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;

@@ -2,7 +2,7 @@ package com.mentionall.cpr2u.manager;
 
 import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
-import com.mentionall.cpr2u.call.service.FirebaseCloudMessageUtil;
+import com.mentionall.cpr2u.util.fcm.FirebaseCloudMessageUtil;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.fcm.FcmDataType;
