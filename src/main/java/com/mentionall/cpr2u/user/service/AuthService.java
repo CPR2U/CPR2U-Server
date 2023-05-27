@@ -86,11 +86,11 @@ public class AuthService {
     }
 
     public void logout(User user) {
-        String expiredValue = "expired";
+        String expiredValue = "expired_";
         refreshTokenRepository.findByUserId(user.getId())
                 .ifPresent(
                         refreshToken -> {
-                            refreshToken.setToken(expiredValue);
+                            refreshToken.setToken(expiredValue + user.getId());
                             refreshTokenRepository.save(refreshToken);
                         }
                 );
