@@ -4,28 +4,29 @@ import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.CprCallStatus;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.DispatchStatus;
-import com.mentionall.cpr2u.call.dto.*;
+import com.mentionall.cpr2u.call.dto.cpr_call.CprCallRequestDto;
+import com.mentionall.cpr2u.call.dto.dispatch.DispatchRequestDto;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
-import com.mentionall.cpr2u.user.dto.UserSignUpDto;
-import com.mentionall.cpr2u.user.repository.AddressRepository;
+import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
-import com.mentionall.cpr2u.user.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.mentionall.cpr2u.user.repository.address.AddressRepository;
+import com.mentionall.cpr2u.user.service.AddressService;
+import com.mentionall.cpr2u.user.service.AuthService;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@DisplayName("호출 관련 테스트")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class CprCallServiceTest {
 
     @Autowired
@@ -33,7 +34,7 @@ class CprCallServiceTest {
     @Autowired
     private CprCallRepository cprCallRepository;
     @Autowired
-    private UserService userService;
+    private AuthService authService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -41,85 +42,107 @@ class CprCallServiceTest {
     @Autowired
     private DispatchRepository dispatchRepository;
     @Autowired
+    private AddressService addressService;
+    @Autowired
     private AddressRepository addressRepository;
 
-    @BeforeEach
-    public void beforeEach(){
-        Address address1 = addressRepository.save(new Address(101L, "서울시", "용산구", new ArrayList<>()));
-        Address address2 = addressRepository.save(new Address(102L, "서울시", "동작구", new ArrayList<>()));
+    private static final double latitude = 37.56559872345163;
+    private static final double longitude = 126.9771473198163;
+    private static final String userPhoneNumber = "010-0000-0000";
+    private static final String angelPhoneNumber = "010-1111-1111";
+    private static final String testFullAddress1 = "서울 종로구 종로 104";
+    private static final String testFullAddress2 = "서울 중구 세종대로 지하 2";
+    private static final String testFullAddress3 = "세종특별자치시 한누리대로 2130 (우)30151";
+    private static final String testFullAddress4 = "경상남도 창원시 진해구 평안동 10";
 
-        registerUserWithNumberAndAddress(1, address1);
-        registerUserWithNumberAndAddress(2, address2);
-        registerUserWithNumber(3);
-        registerUserWithNumber(4);
+    @BeforeEach
+    private void beforeEach() {
+        addressService.loadAddressList();
     }
 
     @Test
     @Transactional
-    @DisplayName("엔젤 유저들의 근처 호출 조회")
-    void getNowCallStatusNearUser() {
+    public void 호출_주변에_엔젤이_있는_경우() {
         //given
-        User caller = userRepository.findByPhoneNumber("phoneNumber" + 1).get();
-        User cprAngel = userRepository.findByPhoneNumber("phoneNumber" + 2).get();
-        User notAngel = userRepository.findByPhoneNumber("phoneNumber" + 3).get();
-        User cprAngelButNoPatient = userRepository.findByPhoneNumber("phoneNumber" + 4).get();
+        createUsers();
+        User caller = userRepository.findByPhoneNumber(userPhoneNumber).get();
+        User cprAngel = userRepository.findByPhoneNumber(angelPhoneNumber).get();
 
-        makeCallInAngelArea(caller, cprAngel, 37.56559872345163, 126.9779734762639);
-        makeCallInAngelArea(caller, cprAngel, 37.56520212814079, 126.9771473198163);
-        makeCallInAngelArea(caller, cprAngel, 37.56520212814079, 126.9771473198163);
-        CprCall endCall = makeCallInAngelArea(caller, cprAngel, 37.56549899694667, 126.97488345790383);
-        cprCallService.endCall(endCall.getId());
+        cprCallService.makeCall(new CprCallRequestDto(testFullAddress1, latitude, longitude), caller);
 
         //when
         var callListForAngel = cprCallService.getCallNearUser(cprAngel);
-        var callListForAngelButNoPatient = cprCallService.getCallNearUser(cprAngelButNoPatient);
+
+        //then
+        assertThat(callListForAngel.getCprCallResponseDtoList().size()).isEqualTo(1);
+    }
+
+    @Test
+    @Transactional
+    public void 호출_주변에_일반인이_있는_경우() {
+        //given
+        createUsers();
+        User caller = userRepository.findByPhoneNumber(angelPhoneNumber).get();
+        User notAngel = userRepository.findByPhoneNumber(userPhoneNumber).get();
+
+        cprCallService.makeCall(new CprCallRequestDto(testFullAddress1, latitude, longitude), caller);
+
+        //when
         var callListForNotAngel = cprCallService.getCallNearUser(notAngel);
 
         //then
-        assertThat(callListForAngel.getCprCallDtoList().size()).isEqualTo(3);
-        assertThat(callListForAngelButNoPatient.getCprCallDtoList().size()).isEqualTo(0);
-        assertThat(callListForNotAngel.getCprCallDtoList().size()).isEqualTo(0);
-
+        assertThat(callListForNotAngel.getCprCallResponseDtoList().size()).isEqualTo(0);
     }
 
     @Test
     @Transactional
-    @DisplayName("호출 생성")
-    void makeCall() {
+    public void 호출_주변에_만료된_엔젤이_있는_경우() {
         //given
-        User user = userRepository.findByPhoneNumber("phoneNumber" + 1).get();
+        createUsers();
+        User caller = userRepository.findByPhoneNumber(angelPhoneNumber).get();
+        User expiredAngel = userRepository.findByPhoneNumber(userPhoneNumber).get();
+        expiredAngel.expireCertificate();
+
+        cprCallService.makeCall(new CprCallRequestDto(testFullAddress1, latitude, longitude), caller);
 
         //when
-        Long callId1 = cprCallService.makeCall(new CprCallOccurDto("서울 종로구 종로 104", 37.56559872345163, 126.9779734762639), user).getCallId();
-        Long callId2 = cprCallService.makeCall(new CprCallOccurDto("서울 중구 세종대로 지하 2", 37.56559872345163, 126.9779734762639), user).getCallId();
-        Long callId3 = cprCallService.makeCall(new CprCallOccurDto("세종특별자치시 한누리대로 2130 (우)30151", 37.56559872345163, 126.9779734762639), user).getCallId();
-        Long callId4 = cprCallService.makeCall(new CprCallOccurDto("경남 창원시 진해구 평안동 10", 37.56559872345163, 126.9779734762639), user).getCallId();
+        var callListForExpiredAngel = cprCallService.getCallNearUser(expiredAngel);
 
         //then
-        CprCall cprCall1 = cprCallRepository.findById(callId1).get();
-        CprCall cprCall2 = cprCallRepository.findById(callId2).get();
-        CprCall cprCall3 = cprCallRepository.findById(callId3).get();
-        CprCall cprCall4 = cprCallRepository.findById(callId4).get();
-
-        assertThat(cprCall1.getAddress().getId()).isEqualTo(1L);
-        assertThat(cprCall2.getAddress().getId()).isEqualTo(2L);
-        assertThat(cprCall3.getAddress().getId()).isEqualTo(75L);
-        assertThat(cprCall4.getAddress().getId()).isEqualTo(231L);
-
-        assertThat(cprCall1.getStatus()).isEqualTo(CprCallStatus.IN_PROGRESS);
-
+        assertThat(callListForExpiredAngel.getCprCallResponseDtoList().size()).isEqualTo(0);
     }
 
     @Test
     @Transactional
-    @DisplayName("호출 종료")
-    void endCall() {
+    public void 호출_종료() {
         //given
-        User caller = userRepository.findByPhoneNumber("phoneNumber" + 1).get();
-        User dispatcher = userRepository.findByPhoneNumber("phoneNumber" + 2).get();
+        createUsers();
+        User caller = userRepository.findByPhoneNumber(userPhoneNumber).get();
+        User cprAngel = userRepository.findByPhoneNumber(angelPhoneNumber).get();
 
-        Long callId = cprCallService.makeCall(new CprCallOccurDto("서울시 용산구", 37.56559872345163, 126.9779734762639), caller).getCallId();
-        DispatchResponseDto dispatchInfo = dispatchService.dispatch(dispatcher, new DispatchRequestDto(callId));
+        Long callId = cprCallService.makeCall(new CprCallRequestDto(testFullAddress1, latitude, longitude), caller).getCallId();
+        cprCallService.endCall(callId);
+
+        //when
+        var callListForAngel = cprCallService.getCallNearUser(cprAngel);
+
+        //then
+        assertThat(callListForAngel.getCprCallResponseDtoList().size()).isEqualTo(0);
+    }
+
+    @Test
+    @Transactional
+    public void 호출_종료_출동한_엔젤이_있는_경우() {
+        //given
+        createUsers();
+        User caller = userRepository.findByPhoneNumber(userPhoneNumber).get();
+        User dispatcher = userRepository.findByPhoneNumber(angelPhoneNumber).get();
+
+        Long callId = cprCallService
+                .makeCall(new CprCallRequestDto(testFullAddress1, latitude, longitude), caller)
+                .getCallId();
+
+        var dispatchInfo = dispatchService.dispatch(dispatcher, new DispatchRequestDto(callId));
 
         //when
         cprCallService.endCall(callId);
@@ -134,44 +157,81 @@ class CprCallServiceTest {
 
     @Test
     @Transactional
-    @DisplayName("실시간 출동한 엔젤 수 안내")
-    void getNumberOfAngelsDispatched() {
+    public void 지역별_호출_생성() {
         //given
-        User caller = userRepository.findByPhoneNumber("phoneNumber" + 1).get();
-        User dispatcher = userRepository.findByPhoneNumber("phoneNumber" + 2).get();
+        createUsers();
+        User user = userRepository.findByPhoneNumber(userPhoneNumber).get();
+        Address testAddress1 = addressRepository.findByFullAddress(testFullAddress1).get();
+        Address testAddress2 = addressRepository.findByFullAddress(testFullAddress2).get();
+        Address testAddress3 = addressRepository.findByFullAddress(testFullAddress3).get();
+        Address testAddress4 = addressRepository.findByFullAddress(testFullAddress4).get();
 
-        Long callId = cprCallService.makeCall(new CprCallOccurDto("서울시 동작구", 37.56559872345163, 126.9779734762639), caller).getCallId();
-
-        //when no one dispatched
-        var noOneDispatched = cprCallService.getNumberOfAngelsDispatched(callId);
+        //when
+        Long callId1 = cprCallService.makeCall(new CprCallRequestDto(testFullAddress1, latitude, longitude), user).getCallId();
+        Long callId2 = cprCallService.makeCall(new CprCallRequestDto(testFullAddress2, latitude, longitude), user).getCallId();
+        Long callId3 = cprCallService.makeCall(new CprCallRequestDto(testFullAddress3, latitude, longitude), user).getCallId();
+        Long callId4 = cprCallService.makeCall(new CprCallRequestDto(testFullAddress4, latitude, longitude), user).getCallId();
 
         //then
-        assertThat(noOneDispatched.getNumberOfAngels()).isEqualTo(0);
+        CprCall cprCall1 = cprCallRepository.findById(callId1).get();
+        CprCall cprCall2 = cprCallRepository.findById(callId2).get();
+        CprCall cprCall3 = cprCallRepository.findById(callId3).get();
+        CprCall cprCall4 = cprCallRepository.findById(callId4).get();
 
-        //when 1 angel dispatched
+        assertThat(cprCall1.getAddress().getId()).isEqualTo(testAddress1.getId());
+        assertThat(cprCall2.getAddress().getId()).isEqualTo(testAddress2.getId());
+        assertThat(cprCall3.getAddress().getId()).isEqualTo(testAddress3.getId());
+        assertThat(cprCall4.getAddress().getId()).isEqualTo(testAddress4.getId());
+
+        assertThat(cprCall1.getStatus()).isEqualTo(CprCallStatus.IN_PROGRESS);
+
+    }
+
+    @Test
+    @Transactional
+    public void 실시간_출동_안내_출동한_엔젤이_없는_경우() {
+        //given
+        createUsers();
+        User caller = userRepository.findByPhoneNumber(userPhoneNumber).get();
+        Long callId = cprCallService.makeCall(new CprCallRequestDto(testFullAddress1, latitude, longitude), caller)
+                .getCallId();
+
+        //when
+        var callGuide = cprCallService.getNumberOfAngelsDispatched(callId);
+
+        //then
+        assertThat(callGuide.getNumberOfAngels()).isEqualTo(0);
+    }
+
+    @Test
+    @Transactional
+    public void 실시간_출동_안내_출동한_엔젤이_있는_경우() {
+        //given
+        createUsers();
+        User caller = userRepository.findByPhoneNumber(userPhoneNumber).get();
+        User dispatcher = userRepository.findByPhoneNumber(angelPhoneNumber).get();
+
+        Long callId = cprCallService.makeCall(new CprCallRequestDto(testFullAddress1, latitude, longitude), caller).getCallId();
         dispatchService.dispatch(dispatcher, new DispatchRequestDto(callId));
-        var oneAngelDispatched = cprCallService.getNumberOfAngelsDispatched(callId);
+
+        //when
+        var callGuide = cprCallService.getNumberOfAngelsDispatched(callId);
 
         //then
-        assertThat(oneAngelDispatched.getNumberOfAngels()).isEqualTo(1);
+        assertThat(callGuide.getNumberOfAngels()).isEqualTo(1);
     }
 
-    public void registerUserWithNumber(int number) {
-        UserSignUpDto userSignUpDto = new UserSignUpDto("nickname" + number, "phoneNumber" + number, "deviceToken");
-        userService.signup(userSignUpDto);
-    }
+    private void createUsers() {
 
-    public void registerUserWithNumberAndAddress(int number, Address address) {
-        UserSignUpDto userSignUpDto = new UserSignUpDto("nickname" + number, "phoneNumber" + number, "deviceToken");
-        userService.signup(userSignUpDto);
+        String userNickname = "예진";
+        String angelNickname = "현애";
+        String deviceToken = "device-code";
+        var address = addressRepository.findByFullAddress(testFullAddress1).get();
+        authService.signup(new SignUpRequestDto(userNickname, userPhoneNumber, address.getId(), deviceToken));
+        authService.signup(new SignUpRequestDto(angelNickname, angelPhoneNumber, address.getId(), deviceToken));
 
-        User user = userRepository.findByPhoneNumber("phoneNumber" + number).get();
-        user.setAddress(address);
-        user.acquireCertification();
-        userRepository.save(user);
-    }
-
-    private CprCall makeCallInAngelArea(User caller, User angel, double latitude, double longitude) {
-        return cprCallRepository.save(new CprCall(caller, angel.getAddress(), LocalDateTime.now(), new CprCallOccurDto("fullAddress", latitude, longitude)));
+        User angel = userRepository.findByPhoneNumber(angelPhoneNumber).get();
+        angel.acquireCertification(LocalDateTime.now());
+        userRepository.save(angel);
     }
 }
