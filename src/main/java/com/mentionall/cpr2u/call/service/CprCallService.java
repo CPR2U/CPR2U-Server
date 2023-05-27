@@ -11,11 +11,12 @@ import com.mentionall.cpr2u.user.domain.AngelStatus;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
-import com.mentionall.cpr2u.util.fcm.FcmMessage;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
 import com.mentionall.cpr2u.util.fcm.FcmDataType;
+import com.mentionall.cpr2u.util.fcm.FcmMessage;
 import com.mentionall.cpr2u.util.fcm.FcmPushType;
+import com.mentionall.cpr2u.util.fcm.FirebaseCloudMessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -38,7 +39,7 @@ public class CprCallService {
     private final DispatchRepository dispatchRepository;
     private final AddressRepository addressRepository;
     private final DeviceTokenRepository deviceTokenRepository;
-    private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final FirebaseCloudMessageUtil firebaseCloudMessageUtil;
 
     public CprCallNearUserResponseDto getCallNearUser(User user) {
         
@@ -91,7 +92,8 @@ public class CprCallService {
 
         sendFcmPushToAddress(cprCall, user.getId());
 
-        endCprCallAfterMinutes(cprCall, 10);
+        Integer minutesUntilCallDisappear = 10;
+        endCprCallAfterMinutes(cprCall, minutesUntilCallDisappear);
 
         return new CprCallIdResponseDto(cprCall.getId());
     }
@@ -111,7 +113,7 @@ public class CprCallService {
         do {
             pageable = PageRequest.of(offset, maxSize);
             deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddressExceptCaller(cprCall.getAddress().getId(), userId, pageable);
-            firebaseCloudMessageService.sendFcmMessage(
+            firebaseCloudMessageUtil.sendFcmMessage(
                     deviceTokenToSendPushList,
                     FcmMessage.CPR_CALL_TITLE.getMessage(),
                     cprCall.getFullAddress(),

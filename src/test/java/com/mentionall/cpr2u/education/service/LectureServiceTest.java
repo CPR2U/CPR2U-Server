@@ -5,10 +5,11 @@ import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
-import com.mentionall.cpr2u.user.service.UserService;
+import com.mentionall.cpr2u.user.service.AuthService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import javax.transaction.Transactional;
 
 import static com.mentionall.cpr2u.education.domain.TestStandard.finalLectureStep;
@@ -20,19 +21,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LectureServiceTest {
 
     @Autowired
-    private LectureService lectureService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private EducationProgressService progressService;
-
+    private AuthService authService;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private EducationProgressService progressService;
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private LectureService lectureService;
+
+    private static final String phoneNumber = "010-0000-0000";
+    private static final String nickname = "유저";
 
     @BeforeEach
     private void beforeEach() {
@@ -46,8 +46,8 @@ public class LectureServiceTest {
         createLectureCourse();
 
         var address = addressService.readAll().get(0).getGugunList().get(0);
-        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", address.getId(), "device_token"));
-        User user = userRepository.findByPhoneNumber("010-1234-1234").get();
+        authService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), "device_token"));
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
         //when
         var lectureInfo = lectureService.readLectureProgressAndList(user);
@@ -64,8 +64,8 @@ public class LectureServiceTest {
         createLectureCourse();
 
         var address = addressService.readAll().get(0).getGugunList().get(0);
-        userService.signup(new SignUpRequestDto("유저1", "010-1234-1234", address.getId(), "device_token"));
-        User user = userRepository.findByPhoneNumber("010-1234-1234").get();
+        authService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), "device_token"));
+        User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
         completeFirstLecture(user);
 

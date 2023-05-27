@@ -7,6 +7,8 @@ import lombok.Getter;
 @Getter
 public enum FcmDataType {
 
+    TITLE("title"),
+    BODY("body"),
     TYPE("type"),
     CPR_CALL_ID("call");
 

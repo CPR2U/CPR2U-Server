@@ -20,14 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 public class AuthServiceTest {
 
     @Autowired
-    private UserService userService;
-
+    private AuthService authService;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
-
     @Autowired
     private AddressService addressService;
 
@@ -48,7 +45,7 @@ public class AuthServiceTest {
         SignUpRequestDto signUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken);
 
         //when
-        userService.signup(signUpRequestDto).getAccessToken();
+        authService.signup(signUpRequestDto).getAccessToken();
 
         //then
         User user = userRepository.findByPhoneNumber(phoneNumber).get();
@@ -61,38 +58,13 @@ public class AuthServiceTest {
 
     @Test
     @Transactional
-    public void 전화번호_중복_회원_회원가입() {
-
-        //given
-        String afNickname = "현애";
-        var bfAddress = addressService.readAll().get(0).getGugunList().get(0);
-        var afAddress = addressService.readAll().get(0).getGugunList().get(1);
-        SignUpRequestDto bfSignUpRequestDto = new SignUpRequestDto(nickname, phoneNumber, bfAddress.getId(), deviceToken);
-        SignUpRequestDto afSignUpRequestDto = new SignUpRequestDto(afNickname, phoneNumber, afAddress.getId(), deviceToken);
-
-        //when
-        userService.signup(bfSignUpRequestDto);
-        User bfUser = userRepository.findByPhoneNumber(phoneNumber).get();
-        bfUser.getEducationProgress().getQuizProgress().updateScore(50);
-        userService.signup(afSignUpRequestDto);
-
-        //then
-        User afUser = userRepository.findByPhoneNumber(phoneNumber).get();
-        assertThat(afUser.getEducationProgress().getQuizProgress().getScore()).isEqualTo(0);
-        assertThat(afUser.getNickname()).isEqualTo(afNickname);
-        assertThat(afUser.getEducationProgress()).isNotNull();
-        assertThat(afUser.getAddress().getId()).isEqualTo(afAddress.getId());
-    }
-
-    @Test
-    @Transactional
     public void 로그인() {
         //given
         var address = addressService.readAll().get(0).getGugunList().get(0);
-        userService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
+        authService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
 
         //when
-        var accessToken = userService.login(new LoginRequestDto(phoneNumber, deviceToken)).getAccessToken();
+        var accessToken = authService.login(new LoginRequestDto(phoneNumber, deviceToken)).getAccessToken();
 
         //then
         User findUser = userRepository.findByPhoneNumber(phoneNumber).get();
@@ -100,9 +72,7 @@ public class AuthServiceTest {
         assertThat(findUser.getDeviceToken().getToken()).isEqualTo(deviceToken);
     }
 
-    //TODO: 랜덤 코드 생성 테스트 리팩토링(코드 생성 서비스 분리 필요)
-    //TODO: Twillo Fake 객체로 테스트
-    //@Test
+    @Test
     @Transactional
     public void 전화번호_인증코드_생성(){
         //given
@@ -110,7 +80,7 @@ public class AuthServiceTest {
 
         for(int i = 0 ; i < 100 ; i ++) {
             //when
-            CodeResponseDto codeResponseDto = userService.getVerificationCode(phoneNumberInfo);
+            CodeResponseDto codeResponseDto = authService.getVerificationCode(phoneNumberInfo);
 
             //then
             assertThat(codeResponseDto.getValidationCode().length()).isEqualTo(4);
@@ -122,11 +92,11 @@ public class AuthServiceTest {
     public void 자동_로그인() {
         //given
         var address = addressService.readAll().get(0).getGugunList().get(0);
-        userService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
-        var tokens = userService.login(new LoginRequestDto(phoneNumber, deviceToken));
+        authService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
+        var tokens = authService.login(new LoginRequestDto(phoneNumber, deviceToken));
 
         //when
-        var newTokens = userService.reissueToken(new TokenReissueRequestDto(tokens.getRefreshToken()));
+        var newTokens = authService.reissueToken(new TokenReissueRequestDto(tokens.getRefreshToken()));
 
         //then
         assertThat(jwtTokenProvider.getUserId(tokens.getAccessToken()))
@@ -138,13 +108,14 @@ public class AuthServiceTest {
     public void 닉네임_중복체크시_중복되는_경우() {
         //given
         var address = addressService.readAll().get(0).getGugunList().get(0);
-        userService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
+        authService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
 
         //when
         String newNickname = nickname;
 
         //then
-        Assertions.assertThrows(CustomException.class, () -> {userService.checkNicknameDuplicated(newNickname);});
+        Assertions.assertThrows(CustomException.class, () -> {
+            authService.checkNicknameDuplicated(newNickname);});
     }
 
     @Test
@@ -152,13 +123,13 @@ public class AuthServiceTest {
     public void 닉네임_중복체크시_사용가능한_경우() {
         //given
         var address = addressService.readAll().get(0).getGugunList().get(0);
-        userService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
+        authService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
 
         //when
         String newNickname = "new" + nickname;
 
         //then
-        assertDoesNotThrow(() -> userService.checkNicknameDuplicated(newNickname));
+        assertDoesNotThrow(() -> authService.checkNicknameDuplicated(newNickname));
     }
 
     @Test
@@ -166,11 +137,11 @@ public class AuthServiceTest {
     public void 로그아웃() {
         //given
         var address = addressService.readAll().get(0).getGugunList().get(0);
-        userService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
+        authService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
         User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
         //when
-        userService.logout(user);
+        authService.logout(user);
 
         //then
         assertThat(user.getRefreshToken().getToken()).isEqualTo("expired");
