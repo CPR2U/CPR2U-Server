@@ -41,6 +41,7 @@ public class DispatchService {
                 () -> new CustomException(NOT_FOUND_DISPATCH)
         );
         dispatch.arrive();
+        dispatchRepository.save(dispatch);
     }
 
     public void report(ReportRequestDto requestDto) {
