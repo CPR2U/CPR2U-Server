@@ -18,6 +18,14 @@ public class DispatchRepositoryImpl implements DispatchDslRepository {
     }
 
     @Override
+    public List<Dispatch> findAllNotArrivedAngelByCprCallId(Long cprCallId) {
+        return queryFactory.selectFrom(dispatch)
+                .where(dispatch.status.eq(DispatchStatus.IN_PROGRESS)
+                        .and(dispatch.cprCall.id.eq(cprCallId)))
+                .fetch();
+    }
+
+    @Override
     public boolean existsByCprCallIdAndUserId(Long cprCallId, String userId) {
         Dispatch foundDispatch = queryFactory.selectFrom(dispatch)
                 .where(dispatch.cprCall.id.eq(cprCallId)

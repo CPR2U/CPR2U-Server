@@ -5,6 +5,7 @@ import com.mentionall.cpr2u.call.domain.Dispatch;
 import java.util.List;
 
 public interface DispatchDslRepository {
+    List<Dispatch> findAllNotArrivedAngelByCprCallId(Long cprCallId);
 
     boolean existsByCprCallIdAndUserId(Long cprCallId, String userId);
 }
