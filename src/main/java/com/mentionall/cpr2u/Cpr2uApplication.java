@@ -13,7 +13,7 @@ import java.util.TimeZone;
 public class Cpr2uApplication {
 
 	public static void main(String[] args) {
-		TimeZone.setDefault(TimeZone.getTimeZone("KST"));
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
 		SpringApplication.run(Cpr2uApplication.class, args);
 	}
 
