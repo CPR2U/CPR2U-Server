@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class Cpr2uApplication {
 
 	public static void main(String[] args) {
+		TimeZone.setDefault(TimeZone.getTimeZone("KST"));
 		SpringApplication.run(Cpr2uApplication.class, args);
 	}
 
