@@ -34,6 +34,8 @@ public class DispatchController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = DispatchResponseDto.class)))),
+            @ApiResponse(responseCode = "400", description = "본인이 생성한 호출에 출동할 수 없습니다.",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
             @ApiResponse(responseCode = "404", description = "해당 ID의 CPR 요청 정보를 찾을 수 없습니다.",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ResponseTemplate.class)))),
     })

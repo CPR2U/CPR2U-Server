@@ -17,6 +17,7 @@ public enum ResponseCode {
     OK_CPR_CALL_END_SITUATION(OK, "호출이 종료되었습니다."),
 
     BAD_REQUEST_NICKNAME_DUPLICATED(BAD_REQUEST, "중복된 닉네임 입니다."),
+    BAD_REQUEST_SELF_DISPATCH(BAD_REQUEST, "본인이 생성한 호출에 출동할 수 없습니다."),
     BAD_REQUEST_LECTURE_DUPLICATED(BAD_REQUEST, "중북되는 섹션의 강의가 존재합니다."),
     BAD_REQUEST_QUIZ_WRONG_ANSWER(BAD_REQUEST, "해당 퀴즈의 답안 인덱스가 잘못된 값을 갖고 있습니다."),
     BAD_REQUEST_EDUCATION_PERMISSION_DENIED(BAD_REQUEST, "이전 진도를 모두 완료해야 수강할 수 있습니다."),
