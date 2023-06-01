@@ -3,6 +3,7 @@ package com.mentionall.cpr2u.user.domain;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.Report;
 import com.mentionall.cpr2u.education.domain.progress.EducationProgress;
+import com.mentionall.cpr2u.user.domain.token.DeviceToken;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
 import com.mentionall.cpr2u.util.RandomGenerator;
 import com.mentionall.cpr2u.util.Timestamped;
@@ -44,9 +45,6 @@ public class User extends Timestamped{
     private EducationProgress educationProgress;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private RefreshToken refreshToken;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private DeviceToken deviceToken;
 
     @ElementCollection(fetch = FetchType.LAZY)
@@ -77,11 +75,8 @@ public class User extends Timestamped{
     public void setDeviceToken(DeviceToken deviceToken) {
         this.deviceToken = deviceToken;
     }
-    public void setRefreshToken(RefreshToken refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 
-    public void setAddress(Address address) {
+    public void updateAddress(Address address) {
         this.address = address;
     }
 

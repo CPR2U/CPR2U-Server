@@ -75,7 +75,7 @@ public class AddressService {
                 () -> new CustomException(ResponseCode.NOT_FOUND_ADDRESS)
         );
 
-        user.setAddress(address);
+        user.updateAddress(address);
         userRepository.save(user);
     }
 }

@@ -3,6 +3,7 @@ package com.mentionall.cpr2u.user.service;
 import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.*;
+import com.mentionall.cpr2u.user.repository.RefreshTokenRepository;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import org.junit.jupiter.api.*;
@@ -23,6 +24,8 @@ public class AuthServiceTest {
     private AuthService authService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
@@ -144,6 +147,7 @@ public class AuthServiceTest {
         authService.logout(user);
 
         //then
-        assertThat(user.getRefreshToken().getToken()).isEqualTo("expired");
+        var refreshToken = refreshTokenRepository.findRefreshTokenByUserId(user.getId()).get();
+        assertThat(refreshToken).isNull();
     }
 }

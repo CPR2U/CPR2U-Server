@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.mentionall.cpr2u.user.domain.QDeviceToken.deviceToken;
+import static com.mentionall.cpr2u.user.domain.token.QDeviceToken.deviceToken;
 
 public class DeviceTokenRepositoryImpl implements DeviceTokenDslRepository {
 

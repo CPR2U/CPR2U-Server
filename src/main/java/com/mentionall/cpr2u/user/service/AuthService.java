@@ -4,8 +4,8 @@ import com.mentionall.cpr2u.config.security.JwtTokenProvider;
 import com.mentionall.cpr2u.education.domain.progress.EducationProgress;
 import com.mentionall.cpr2u.education.repository.EducationProgressRepository;
 import com.mentionall.cpr2u.user.domain.Address;
-import com.mentionall.cpr2u.user.domain.DeviceToken;
-import com.mentionall.cpr2u.user.domain.RefreshToken;
+import com.mentionall.cpr2u.user.domain.token.DeviceToken;
+import com.mentionall.cpr2u.user.domain.token.RefreshToken;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.*;
 import com.mentionall.cpr2u.user.repository.RefreshTokenRepository;
@@ -72,12 +72,12 @@ public class AuthService {
 
     @Transactional
     public TokenResponseDto reissueToken(TokenReissueRequestDto requestDto) {
-        if (!jwtTokenProvider.validateToken(requestDto.getRefreshToken()))
-            throw new CustomException(FORBIDDEN_TOKEN_NOT_VALID);
-
-        RefreshToken refreshToken = refreshTokenRepository.findRefreshTokenByToken(requestDto.getRefreshToken())
+        RefreshToken refreshToken = refreshTokenRepository.findById(requestDto.getRefreshToken())
                 .orElseThrow(() -> new CustomException(FORBIDDEN_TOKEN_NOT_VALID));
-        return issueUserTokens(refreshToken.getUser());
+
+        User user = userRepository.findById(refreshToken.getUserId())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+        return issueUserTokens(user);
     }
 
     public void checkNicknameDuplicated(String nickname) {
@@ -86,28 +86,14 @@ public class AuthService {
     }
 
     public void logout(User user) {
-        refreshTokenRepository.findByUserId(user.getId())
-                .ifPresent(
-                        refreshToken -> refreshTokenRepository.delete(refreshToken)
-                );
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findRefreshTokenByUserId(user.getId());
+        if (refreshToken.isPresent()) refreshTokenRepository.delete(refreshToken.get());
     }
 
     private TokenResponseDto issueUserTokens(User user) {
         return new TokenResponseDto(
                 jwtTokenProvider.createAccessToken(user),
-                createRefreshToken(user).getToken());
-    }
-
-    private RefreshToken createRefreshToken(User user) {
-        RefreshToken refreshToken = refreshTokenRepository.findByUserId(user.getId())
-                .orElseGet(() -> new RefreshToken(user));
-
-        refreshToken.setToken(jwtTokenProvider.createRefreshToken(user));
-        refreshTokenRepository.save(refreshToken);
-
-        user.setRefreshToken(refreshToken);
-        userRepository.save(user);
-        return refreshToken;
+                jwtTokenProvider.createRefreshToken(user));
     }
 
     private void createDeviceToken(String token, User user) {

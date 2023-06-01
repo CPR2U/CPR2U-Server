@@ -1,6 +1,8 @@
 package com.mentionall.cpr2u.config.security;
 
 import com.mentionall.cpr2u.user.domain.User;
+import com.mentionall.cpr2u.user.domain.token.RefreshToken;
+import com.mentionall.cpr2u.user.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -17,18 +19,18 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
+    private final UserDetailsService userDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    private final long validTime = 3 * 60 * 60 * 1000L;
 
     @Value("${security.secret-key}")
     private String secretKey;
-
-    private final long tokenValidTime = 3 * 60 * 60 * 1000L;
-    private final long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L;
-
-    private final UserDetailsService userDetailsService;
 
     @PostConstruct
     protected void init(){
@@ -42,21 +44,16 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + tokenValidTime))
+                .setExpiration(new Date(now.getTime() + validTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
     public String createRefreshToken(User user) {
-        Claims claims = Jwts.claims().setSubject(user.getId());
+        RefreshToken refreshToken = new RefreshToken(user, UUID.randomUUID().toString());
+        refreshTokenRepository.save(refreshToken);
 
-        Date now = new Date();
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+        return refreshToken.getRefreshToken();
     }
 
     public Authentication getAuthentication(String token) {

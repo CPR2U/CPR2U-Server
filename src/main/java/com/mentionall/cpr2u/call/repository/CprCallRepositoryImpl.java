@@ -4,13 +4,13 @@ import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.domain.CprCallStatus;
 import com.mentionall.cpr2u.call.dto.cpr_call.CprCallResponseDto;
 import com.mentionall.cpr2u.call.dto.cpr_call.QCprCallResponseDto;
+import static com.mentionall.cpr2u.call.domain.QCprCall.cprCall;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.mentionall.cpr2u.call.domain.QCprCall.cprCall;
 
 public class CprCallRepositoryImpl implements CprCallDslRepository {
 

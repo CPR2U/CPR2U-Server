@@ -1,5 +1,6 @@
-package com.mentionall.cpr2u.user.domain;
+package com.mentionall.cpr2u.user.domain.token;
 
+import com.mentionall.cpr2u.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
