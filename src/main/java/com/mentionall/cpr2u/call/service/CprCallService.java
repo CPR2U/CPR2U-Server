@@ -66,8 +66,8 @@ public class CprCallService {
         );
         cprCall.endSituationCprCall();
         cprCallRepository.save(cprCall);
-        List<Dispatch> dispatchList = dispatchRepository.findAllByCprCallId(cprCall.getId());
-        for (Dispatch dispatch : dispatchList) {
+        List<Dispatch> notArrivedDispatchList = dispatchRepository.findAllNotArrivedAngelByCprCallId(cprCall.getId());
+        for (Dispatch dispatch : notArrivedDispatchList) {
             dispatch.setStatus(DispatchStatus.END_SITUATION);
             dispatchRepository.save(dispatch);
         }
