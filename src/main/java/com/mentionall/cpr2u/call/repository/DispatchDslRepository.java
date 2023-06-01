@@ -8,5 +8,4 @@ import java.util.Optional;
 public interface DispatchDslRepository {
     List<Dispatch> findAllNotArrivedAngelByCprCallId(Long cprCallId);
 
-    Optional<Dispatch> findByCprCallIdAndUserId(Long cprCallId, String userId);
 }

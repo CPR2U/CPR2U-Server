@@ -30,7 +30,7 @@ public class DispatchService {
                 () -> new CustomException(NOT_FOUND_CPRCALL)
         );
 
-        Dispatch dispatch = dispatchRepository.findByCprCallIdAndUserId(cprCall.getId(), user.getId()).orElseGet(() -> new Dispatch(user, cprCall));
+        Dispatch dispatch = dispatchRepository.findByCprCallIdAndDispatcherId(cprCall.getId(), user.getId()).orElseGet(() -> new Dispatch(user, cprCall));
         dispatchRepository.save(dispatch);
         return new DispatchResponseDto(cprCall, dispatch);
     }
