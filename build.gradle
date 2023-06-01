@@ -76,6 +76,10 @@ test {
 	classpath += sourceSets.test.output
 }
 
+bootJar {
+	archiveFileName = 'app.jar'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 	finalizedBy 'jacocoTestReport'
