@@ -43,10 +43,10 @@ public class User extends Timestamped{
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private EducationProgress educationProgress;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private RefreshToken refreshToken;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private DeviceToken deviceToken;
 
     @ElementCollection(fetch = FetchType.LAZY)
