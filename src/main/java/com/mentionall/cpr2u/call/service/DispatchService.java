@@ -1,6 +1,7 @@
 package com.mentionall.cpr2u.call.service;
 
 import com.mentionall.cpr2u.call.domain.CprCall;
+import com.mentionall.cpr2u.call.domain.CprCallStatus;
 import com.mentionall.cpr2u.call.domain.Dispatch;
 import com.mentionall.cpr2u.call.domain.Report;
 import com.mentionall.cpr2u.call.dto.ReportRequestDto;
@@ -28,8 +29,9 @@ public class DispatchService {
         CprCall cprCall = cprCallRepository.findById(requestDto.getCprCallId()).orElseThrow(
                 () -> new CustomException(NOT_FOUND_CPRCALL)
         );
-        
-        if(cprCall.getCaller().getId()== user.getId()) throw new CustomException(BAD_REQUEST_SELF_DISPATCH);
+
+        if(cprCall.getCaller().getId()== user.getId() || cprCall.getStatus().equals(CprCallStatus.END_SITUATION))
+            throw new CustomException(BAD_REQUEST_NOT_VALID_DISPATCH);
 
         Dispatch dispatch = dispatchRepository.findByCprCallIdAndDispatcherId(cprCall.getId(), user.getId()).orElseGet(() -> new Dispatch(user, cprCall));
         dispatchRepository.save(dispatch);
