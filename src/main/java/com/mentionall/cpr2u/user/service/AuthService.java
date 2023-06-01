@@ -86,13 +86,9 @@ public class AuthService {
     }
 
     public void logout(User user) {
-        String expiredValue = "expired";
         refreshTokenRepository.findByUserId(user.getId())
                 .ifPresent(
-                        refreshToken -> {
-                            refreshToken.setToken(expiredValue);
-                            refreshTokenRepository.save(refreshToken);
-                        }
+                        refreshToken -> refreshTokenRepository.delete(refreshToken)
                 );
     }
 
