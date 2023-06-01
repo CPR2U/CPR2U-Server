@@ -30,10 +30,10 @@ public class CprCallResponseDto {
 
     @Schema(description = "호출 장소 경도")
     @JsonProperty
-    private Double  longitude;
+    private Double longitude;
 
     @QueryProjection
-    public CprCallResponseDto(CprCall cprCall){
+    public CprCallResponseDto(CprCall cprCall) {
         this.id = cprCall.getId();
         this.fullAddress = cprCall.getFullAddress();
         this.calledAt = cprCall.getCalledAt();
