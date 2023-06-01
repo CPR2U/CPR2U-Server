@@ -14,8 +14,7 @@ import com.mentionall.cpr2u.util.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.mentionall.cpr2u.util.exception.ResponseCode.NOT_FOUND_CPRCALL;
-import static com.mentionall.cpr2u.util.exception.ResponseCode.NOT_FOUND_DISPATCH;
+import static com.mentionall.cpr2u.util.exception.ResponseCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +29,9 @@ public class DispatchService {
                 () -> new CustomException(NOT_FOUND_CPRCALL)
         );
 
+        if(dispatchRepository.existsByCprCallIdAndUserId(cprCall.getId(), user.getId()))
+            throw new CustomException(BAD_REQUEST_DISPATCH_DUPLICATED);
+
         Dispatch dispatch = new Dispatch(user, cprCall);
         dispatchRepository.save(dispatch);
 
@@ -41,6 +43,7 @@ public class DispatchService {
                 () -> new CustomException(NOT_FOUND_DISPATCH)
         );
         dispatch.arrive();
+        dispatchRepository.save(dispatch);
     }
 
     public void report(ReportRequestDto requestDto) {
