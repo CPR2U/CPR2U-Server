@@ -92,7 +92,7 @@ public class CprCallService {
 
         sendFcmPushToAddress(cprCall, user.getId());
 
-        Integer minutesUntilCallDisappear = 10;
+        Integer minutesUntilCallDisappear = 15;
         endCprCallAfterMinutes(cprCall, minutesUntilCallDisappear);
 
         return new CprCallIdResponseDto(cprCall.getId());

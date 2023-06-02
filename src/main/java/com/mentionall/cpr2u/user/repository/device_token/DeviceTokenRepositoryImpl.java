@@ -1,5 +1,6 @@
 package com.mentionall.cpr2u.user.repository.device_token;
 
+import com.mentionall.cpr2u.user.domain.AngelStatus;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
 
@@ -21,7 +22,8 @@ public class DeviceTokenRepositoryImpl implements DeviceTokenDslRepository {
         return queryFactory.select(deviceToken.token)
                 .from(deviceToken)
                 .where(deviceToken.user.address.id.eq(addressId)
-                        .and(deviceToken.user.id.ne(userId)))
+                        .and(deviceToken.user.id.ne(userId))
+                        .and(deviceToken.user.certificate.status.eq(AngelStatus.ACQUIRED)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
