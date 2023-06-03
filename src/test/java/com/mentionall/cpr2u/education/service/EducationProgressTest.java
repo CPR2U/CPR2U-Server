@@ -216,6 +216,7 @@ public class EducationProgressTest {
         assertThat(educationInfo.getDaysLeftUntilExpiration()).isEqualTo(null);
     }
 
+    //TODO: 당일, 3일, 90일, 91일 수료증 확인 과정 하나로 합치기
     @Test
     @Transactional
     public void 교육_수료_당일_수료증_확인() {
@@ -276,7 +277,6 @@ public class EducationProgressTest {
         var educationInfo = progressService.readEducationInfo(user);
 
         //then
-        // TODO: Scheduler 테스트 코드를 짜거나 또는 예외 상황 코드 추가
         //assertThat(educationInfo.getAngelStatus()).isEqualTo(EXPIRED);
         assertThat(educationInfo.getDaysLeftUntilExpiration()).isEqualTo(null);
     }

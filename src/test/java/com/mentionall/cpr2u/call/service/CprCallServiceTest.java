@@ -8,6 +8,7 @@ import com.mentionall.cpr2u.call.dto.cpr_call.CprCallRequestDto;
 import com.mentionall.cpr2u.call.dto.dispatch.DispatchRequestDto;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
 import com.mentionall.cpr2u.call.repository.DispatchRepository;
+import com.mentionall.cpr2u.call.util.FakeFirebaseCloudMessageUtil;
 import com.mentionall.cpr2u.user.domain.Address;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.SignUpRequestDto;
@@ -15,9 +16,15 @@ import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
 import com.mentionall.cpr2u.user.service.AuthService;
+import com.mentionall.cpr2u.util.fcm.FirebaseCloudMessageUtil;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -28,9 +35,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("호출 관련 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class CprCallServiceTest {
-
     @Autowired
     private CprCallService cprCallService;
+
+    @Autowired
+    private FakeFirebaseCloudMessageUtil firebaseCloudMessageUtil;
+
     @Autowired
     private CprCallRepository cprCallRepository;
     @Autowired

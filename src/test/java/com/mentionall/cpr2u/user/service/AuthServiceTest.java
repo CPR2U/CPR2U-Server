@@ -5,9 +5,15 @@ import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.dto.user.*;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
+import com.mentionall.cpr2u.util.twilio.TwilioUtil;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.transaction.Transactional;
 
@@ -18,9 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 @DisplayName("로그인 관련 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class AuthServiceTest {
-
     @Autowired
     private AuthService authService;
+
+    @MockBean
+    private TwilioUtil twilioUtil;
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
