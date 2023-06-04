@@ -90,6 +90,10 @@ public class AuthService {
                 .ifPresent(
                         refreshToken -> refreshTokenRepository.delete(refreshToken)
                 );
+        deviceTokenRepository.findByUserId(user.getId())
+                .ifPresent(
+                        deviceToken -> deviceTokenRepository.delete(deviceToken)
+                );
     }
 
     private TokenResponseDto issueUserTokens(User user) {
