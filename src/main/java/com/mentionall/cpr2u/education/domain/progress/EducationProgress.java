@@ -59,4 +59,10 @@ public class EducationProgress extends Timestamped {
 
         return (double)currentProgress / (double)TestStandard.totalStep;
     }
+
+    public void reset() {
+        this.lectureProgress = new LectureProgress();
+        this.quizProgress = new QuizProgress();
+        this.postureProgress = new PostureProgress();
+    }
 }

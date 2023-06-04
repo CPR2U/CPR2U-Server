@@ -95,5 +95,6 @@ public class User extends Timestamped{
 
     public void expireCertificate() {
         this.certificate.expire();
+        this.educationProgress.reset();
     }
 }
