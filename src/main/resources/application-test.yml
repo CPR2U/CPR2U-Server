@@ -1,4 +1,5 @@
 spring:
+  config.activate.on-profile: test
   h2:
     console:
       enabled: true

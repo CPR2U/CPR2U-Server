@@ -13,10 +13,7 @@ import com.mentionall.cpr2u.user.repository.address.AddressRepository;
 import com.mentionall.cpr2u.user.repository.device_token.DeviceTokenRepository;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
-import com.mentionall.cpr2u.util.fcm.FcmDataType;
-import com.mentionall.cpr2u.util.fcm.FcmMessage;
-import com.mentionall.cpr2u.util.fcm.FcmPushType;
-import com.mentionall.cpr2u.util.fcm.FirebaseCloudMessageUtil;
+import com.mentionall.cpr2u.util.fcm.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +36,7 @@ public class CprCallService {
     private final DispatchRepository dispatchRepository;
     private final AddressRepository addressRepository;
     private final DeviceTokenRepository deviceTokenRepository;
-    private final FirebaseCloudMessageUtil firebaseCloudMessageUtil;
+    private final MessageUtil firebaseCloudMessageUtil;
 
     public CprCallNearUserResponseDto getCallNearUser(User user) {
         
@@ -113,7 +110,7 @@ public class CprCallService {
         do {
             pageable = PageRequest.of(offset, maxSize);
             deviceTokenToSendPushList = deviceTokenRepository.findAllDeviceTokenByUserAddressExceptCaller(cprCall.getAddress().getId(), userId, pageable);
-            firebaseCloudMessageUtil.sendFcmMessage(
+            firebaseCloudMessageUtil.sendMessage(
                     deviceTokenToSendPushList,
                     FcmMessage.CPR_CALL_TITLE.getMessage(),
                     cprCall.getFullAddress(),

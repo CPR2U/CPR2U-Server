@@ -45,6 +45,7 @@ dependencies {
 	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
 
 	implementation 'com.twilio.sdk:twilio:8.8.0'
+	implementation 'com.h2database:h2:1.4.200'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -53,7 +54,6 @@ dependencies {
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'com.h2database:h2:1.4.200'
 }
 
 sourceSets {

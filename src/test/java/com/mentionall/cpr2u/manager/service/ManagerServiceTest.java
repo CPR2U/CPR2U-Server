@@ -11,15 +11,10 @@ import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.user.service.AddressService;
 import com.mentionall.cpr2u.user.service.AuthService;
 import com.mentionall.cpr2u.user.service.UserService;
-import com.mentionall.cpr2u.util.fcm.FirebaseCloudMessageUtil;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -27,13 +22,12 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @DisplayName("관리자 관련 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class ManagerServiceTest {
     @Autowired
     private ManagerService managerService;
-    @MockBean
-    private FirebaseCloudMessageUtil firebaseCloudMessageUtil;
     @Autowired
     private EducationProgressService progressService;
     @Autowired
@@ -67,7 +61,7 @@ public class ManagerServiceTest {
         user = userRepository.findByPhoneNumber(phoneNumber).get();
         var educationInfo = progressService.readEducationInfo(user);
 
-        assertThat(educationInfo.getAngelStatus()).isEqualTo(AngelStatus.EXPIRED);
+        assertThat(educationInfo.getAngelStatus()).isEqualTo(AngelStatus.EXPIRED.ordinal());
         assertThat(educationInfo.getProgressPercent()).isEqualTo(.0);
 
         assertThat(educationInfo.getIsLectureCompleted()).isEqualTo(ProgressStatus.NotCompleted.ordinal());

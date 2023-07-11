@@ -13,6 +13,7 @@ import com.mentionall.cpr2u.util.exception.CustomException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import static com.mentionall.cpr2u.user.domain.AngelStatus.UNACQUIRED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @DisplayName("유저 교육 진도 관련 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class EducationProgressTest {

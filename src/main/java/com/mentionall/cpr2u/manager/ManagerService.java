@@ -2,11 +2,11 @@ package com.mentionall.cpr2u.manager;
 
 import com.mentionall.cpr2u.call.domain.CprCall;
 import com.mentionall.cpr2u.call.repository.CprCallRepository;
-import com.mentionall.cpr2u.util.fcm.FirebaseCloudMessageUtil;
 import com.mentionall.cpr2u.user.domain.User;
 import com.mentionall.cpr2u.user.repository.UserRepository;
 import com.mentionall.cpr2u.util.fcm.FcmDataType;
 import com.mentionall.cpr2u.util.fcm.FcmPushType;
+import com.mentionall.cpr2u.util.fcm.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,7 +29,7 @@ import static com.mentionall.cpr2u.util.fcm.FcmMessage.ANGEL_EXPIRED_TITLE;
 public class ManagerService {
     private final UserRepository userRepository;
     private final CprCallRepository cprCallRepository;
-    private final FirebaseCloudMessageUtil firebaseCloudMessageUtil;
+    private final MessageUtil messageUtil;
 
     @Scheduled(cron = "1 0 0 * * *")
     public void updateAngelStatus() {
@@ -61,7 +61,7 @@ public class ManagerService {
     }
 
     private void sendExpiredFcm(List<String> expiredAngelTokenList) {
-        firebaseCloudMessageUtil.sendFcmMessage(
+        messageUtil.sendMessage(
                 expiredAngelTokenList,
                 ANGEL_EXPIRED_TITLE.getMessage(),
                 ANGEL_EXPIRED_BODY.getMessage(),

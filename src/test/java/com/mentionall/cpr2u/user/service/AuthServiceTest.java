@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 
@@ -21,15 +22,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @DisplayName("로그인 관련 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class AuthServiceTest {
     @Autowired
     private AuthService authService;
-
-    @MockBean
-    private TwilioUtil twilioUtil;
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -146,6 +144,7 @@ public class AuthServiceTest {
     public void 로그아웃() {
         //given
         var address = addressService.readAll().get(0).getGugunList().get(0);
+
         authService.signup(new SignUpRequestDto(nickname, phoneNumber, address.getId(), deviceToken));
         User user = userRepository.findByPhoneNumber(phoneNumber).get();
 
@@ -153,6 +152,7 @@ public class AuthServiceTest {
         authService.logout(user);
 
         //then
-        assertThat(user.getRefreshToken().getToken()).isEqualTo("expired");
+        user = userRepository.findByPhoneNumber(phoneNumber).get();
+        assertThat(user.getRefreshToken()).isNull();
     }
 }

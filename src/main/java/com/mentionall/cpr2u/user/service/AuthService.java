@@ -88,8 +88,10 @@ public class AuthService {
     public void logout(User user) {
         refreshTokenRepository.findByUserId(user.getId())
                 .ifPresent(
-                        refreshToken -> refreshTokenRepository.delete(refreshToken)
-                );
+                        refreshToken -> refreshTokenRepository.delete(refreshToken));
+
+        user.setRefreshToken(null);
+        userRepository.save(user);
     }
 
     private TokenResponseDto issueUserTokens(User user) {
