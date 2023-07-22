@@ -40,7 +40,7 @@ public class ManagerService {
             LocalDate issuedAt = angel.getCertificate().getDateOfIssue().toLocalDate();
             long currentTime = ChronoUnit.DAYS.between(issuedAt, LocalDate.now());
 
-            if (currentTime > validTime) {
+            if (currentTime >= validTime) {
                 angel.expireCertificate();
                 userRepository.save(angel);
                 expiredAngelTokenList.add(angel.getDeviceToken().getToken());
