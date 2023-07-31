@@ -40,13 +40,13 @@ public class User extends Timestamped{
     @Embedded
     private Certificate certificate;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private EducationProgress educationProgress;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private RefreshToken refreshToken;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private DeviceToken deviceToken;
 
     @ElementCollection(fetch = FetchType.LAZY)
@@ -95,5 +95,6 @@ public class User extends Timestamped{
 
     public void expireCertificate() {
         this.certificate.expire();
+        this.educationProgress.reset();
     }
 }

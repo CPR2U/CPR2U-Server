@@ -13,6 +13,7 @@ import com.mentionall.cpr2u.util.exception.CustomException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import static com.mentionall.cpr2u.user.domain.AngelStatus.UNACQUIRED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @DisplayName("유저 교육 진도 관련 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class EducationProgressTest {
@@ -216,6 +218,7 @@ public class EducationProgressTest {
         assertThat(educationInfo.getDaysLeftUntilExpiration()).isEqualTo(null);
     }
 
+    //TODO: 당일, 3일, 90일, 91일 수료증 확인 과정 하나로 합치기
     @Test
     @Transactional
     public void 교육_수료_당일_수료증_확인() {
@@ -276,7 +279,6 @@ public class EducationProgressTest {
         var educationInfo = progressService.readEducationInfo(user);
 
         //then
-        // TODO: Scheduler 테스트 코드를 짜거나 또는 예외 상황 코드 추가
         //assertThat(educationInfo.getAngelStatus()).isEqualTo(EXPIRED);
         assertThat(educationInfo.getDaysLeftUntilExpiration()).isEqualTo(null);
     }

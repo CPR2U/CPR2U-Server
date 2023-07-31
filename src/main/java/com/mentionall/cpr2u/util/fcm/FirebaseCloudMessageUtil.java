@@ -6,9 +6,9 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
 import com.mentionall.cpr2u.util.exception.CustomException;
 import com.mentionall.cpr2u.util.exception.ResponseCode;
-import com.mentionall.cpr2u.util.fcm.FcmDataType;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -18,15 +18,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@Profile("prod")
 @Component
 @RequiredArgsConstructor
-public class FirebaseCloudMessageUtil {
-    public static FirebaseApp firebaseApp;
-    public static final String firebaseAppName = "CPR2U";
+public class FirebaseCloudMessageUtil implements MessageUtil {
+    static FirebaseApp firebaseApp;
+    static final String firebaseAppName = "CPR2U";
+    static final String firebaseConfigPath = "firebase/firebase_service_key.json";
 
     @PostConstruct
     private void initialFirebaseApp() throws IOException {
-        String firebaseConfigPath = "firebase/firebase_service_key.json";
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(new ClassPathResource(firebaseConfigPath).getInputStream()))
                 .build();
@@ -34,7 +35,8 @@ public class FirebaseCloudMessageUtil {
         firebaseApp = FirebaseApp.initializeApp(options, firebaseAppName);
     }
 
-    public void sendFcmMessage(List<String> deviceTokenToSendList, String title, String body, Map<String, String> data) {
+    @Override
+    public void sendMessage(List<String> deviceTokenToSendList, String title, String body, Map<String, String> data) {
 
         if (deviceTokenToSendList.size() > 0) {
             MulticastMessage message = MulticastMessage.builder()
